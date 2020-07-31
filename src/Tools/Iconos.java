@@ -5,7 +5,6 @@ import javax.swing.ImageIcon;
 
 public class Iconos {
 
-    String rutaWallpaper;
     ImageIcon wallpaper = new ImageIcon("src/Images/FondoPrincipal.jpg");
     ImageIcon wallpaperFormulario = new ImageIcon("src/Images/FondoFormulario.jpg");
     ImageIcon iconoRefrescar = new ImageIcon("src/Images/refresh.png");
