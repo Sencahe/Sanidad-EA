@@ -30,7 +30,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     private final JTextField[] textField;
     public final JComboBox[] comboBox;
     private final JDateChooser[] dateChooser;
-    private final JCheckBox[] checkBox = new JCheckBox[6];
+    private final JCheckBox[] checkBox;
     private final JLabel[] labels;
 
     private JButton calcularIMC, Agregar, Eliminar, Modificar;
@@ -66,6 +66,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         textField = new JTextField[new Arreglos().getTextFieldLength()];
         comboBox = new JComboBox[new Arreglos().getComboBoxLength()];
         dateChooser = new JDateChooser[new Arreglos().getDateChooserLength()];
+        checkBox = new JCheckBox[new Arreglos().getCheckBoxLength()];
         labels = new JLabel[textField.length + comboBox.length + dateChooser.length];
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
