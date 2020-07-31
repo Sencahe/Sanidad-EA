@@ -196,7 +196,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             checkBox[i].setBounds(X, 405, 46, 20);
             checkBox[i].setFont(new Utilidades().fuenteChecks());
             checkBox[i].setOpaque(false);
-            checkBox[i].setBackground(new Color(255, 255, 255, 1));
+            checkBox[i].setBackground(new Utilidades().transparencia());
             add(checkBox[i]);
             X += 44;
         }
