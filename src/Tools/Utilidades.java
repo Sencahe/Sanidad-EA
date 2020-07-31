@@ -13,6 +13,10 @@ public class Utilidades {
     public Color colorTabla(){
         return new Color(200,250,150);
     }
+    //transparencia
+    public Color transparencia(){
+        return new Color(255,255,255,1);
+    }
     //FUENTES
     //tabla
     public Font fuentePestañas(){
