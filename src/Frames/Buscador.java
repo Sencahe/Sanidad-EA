@@ -21,15 +21,14 @@ import javax.swing.JTextField;
 
 public class Buscador extends javax.swing.JDialog implements ActionListener {
 
-    public static JButton boton;
-    public static JTextField texto;
-    public static JLabel mensaje;
-    public static int puntero = 0;
-    public static int categoria;
-    public static String buscar = "";
-    public static boolean encontrado = false;
-    public static String[] categorias;
-     //Hace falta que sean staticos? intentar ponerlos como privados ***
+    private JButton boton;
+    private JTextField texto;
+    private JLabel mensaje;
+    private int puntero = 0;
+    private int categoria;
+    private String buscar = "";
+    private boolean encontrado = false;
+    private String[] categorias;
 
     public Buscador(java.awt.Frame parent, boolean modal) {
         // FRAME DEL BUSCADOR
