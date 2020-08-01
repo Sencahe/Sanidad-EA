@@ -57,7 +57,6 @@ public class Tabla extends JFrame implements ActionListener {
         setTitle("Carta de Situacion - Seccion Sanidad RI-1");
         setLayout(null);
         setSize(1500, 600);
-        setBackground(Color.red);
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
