@@ -28,18 +28,31 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
     private int categoria;
     private String buscar = "";
     private boolean encontrado = false;
-    private String[] categorias;
 
     public Buscador(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);        
+        Componentes();        
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                Tabla.menuFiltrar.setEnabled(true);
+                Tabla.menuRef.setEnabled(true);
+                Tabla.menuBuscar.setEnabled(true);
+                puntero = 0;
+                buscar = "";
+                encontrado = false;
+                mensaje.setText("");
+                dispose();
+            }
+        });
+
+    }
+    private void Componentes() {
         // FRAME DEL BUSCADOR
-        super(parent, modal);
         setLayout(null);
         setSize(400, 175);
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setTitle("Buscar");
-        // COMPONENTES-----------------------------------------------
         //Text FIELD-------------------
         texto = new JTextField();
         texto.setBounds(100, 45, 250, 25);
@@ -47,10 +60,10 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     buscarPorNombre();
                 }
-            }   
+            }
         });
         texto.setVisible(true);
         add(texto);
@@ -61,28 +74,12 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         add(boton);
         // Label----------------------
         mensaje = new JLabel();
-        mensaje.setFont(new Font("Tahoma",1,11));
+        mensaje.setFont(new Font("Tahoma", 1, 11));
         mensaje.setBounds(100, 100, 250, 40);
         add(mensaje);
-        //-------------------------------------
-       
-        categorias = new Arreglos().Categorias();
-
-        //ACTIVAR COMPONENTES DE LA BARRA AL CERRARSE BUSCADOR
-        try {
-            addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    Tabla.menuFiltrar.setEnabled(true);
-                    Tabla.menuRef.setEnabled(true);
-                    Tabla.menuBuscar.setEnabled(true);
-                    
-                }
-            });
-        } catch (Exception e) {
-        }
         // otro label
         JLabel label = new JLabel("Ingrese palabra para buscar por Apellido y Nombre");
-        label.setBounds(30+70,15,300,30);
+        label.setBounds(30 + 70, 15, 300, 30);
         label.setFont(new Font("Tahoma", 0, 11));
         add(label);
         // Icono Buscar-----------------------------
@@ -100,9 +97,14 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         Icon fondo = new ImageIcon((new Iconos().getWallpaperFormulario()).getImage().getScaledInstance(wallpaper.getWidth(),
                 wallpaper.getHeight(), Image.SCALE_DEFAULT));
         wallpaper.setIcon(fondo);
-    }    
-    //-----------------CODIGO PARA BUSCAR EN LAS TABLAS------------------------
+
+        System.gc();
+    }
+
+    //------------------------------------------------------------------------
+    //-----------------METODO PARA BUSCAR EN LAS TABLAS-----------------------
     public void buscarPorNombre() {
+        String[] categorias = new Arreglos().Categorias();
         //SOLO BUSCA SI HAY TEXTO EN EL TEXT FIELD
         if (!"".equals(texto.getText())) {
             //REINICIA EL PUNTERO SI SE CAMBIA LA PALABRA A SER BUSCADA
@@ -121,19 +123,17 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                     setTitle("Buscando en " + categorias[i]);
                 }
             }
-
             buscar = texto.getText().toLowerCase().trim();
             categoria = Tabla.contenedor.getSelectedIndex();
             boolean buscarSiguiente = true;
 
             while (buscarSiguiente) {
                 if (puntero == Tabla.tablas[categoria].getRowCount()) {
-                    //Tabla.tablas[categoria].getSelectionModel().clearSelection();
                     mensaje.setText("");
                     puntero = 0;
                     if (!encontrado) {
                         buscarSiguiente = false;
-                        JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.",JLabel.CENTER));
+                        JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.", JLabel.CENTER));
                     }
                 } else {
                     String nombre = (String) Tabla.tablas[categoria].getValueAt(puntero, 3);
@@ -151,21 +151,15 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                     }
                 }
             }
-
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == boton) {
-            buscarPorNombre();
+            buscarPorNombre();          
         }
+        System.gc();
     }
 
-//    public static void main(String[] args) {
-//        Buscador buscar = new Buscador(null, false);
-//        buscar.setVisible(true);
-//    }
 }
-
-

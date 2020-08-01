@@ -5,13 +5,13 @@ import javax.swing.ImageIcon;
 
 public class Iconos {
 
-    ImageIcon wallpaper = new ImageIcon("src/Images/FondoPrincipal.jpg");
-    ImageIcon wallpaperFormulario = new ImageIcon("src/Images/FondoFormulario.jpg");
-    ImageIcon iconoRefrescar = new ImageIcon("src/Images/refresh.png");
-    ImageIcon iconoCheck = new ImageIcon("src/Images/check.png");
-    ImageIcon iconoBuscar = new ImageIcon("src/Images/searchGrande.png");
-    ImageIcon iconoBuscarChico = new ImageIcon("src/Images/search.png");
-    ImageIcon iconoSanidad = new ImageIcon("src/Images/Sanidad.png");
+    private ImageIcon wallpaper = new ImageIcon("src/Images/FondoPrincipal.jpg");
+    private ImageIcon wallpaperFormulario = new ImageIcon("src/Images/FondoFormulario.jpg");
+    private ImageIcon iconoRefrescar = new ImageIcon("src/Images/refresh.png");
+    private ImageIcon iconoCheck = new ImageIcon("src/Images/check.png");
+    private ImageIcon iconoBuscar = new ImageIcon("src/Images/searchGrande.png");
+    private ImageIcon iconoBuscarChico = new ImageIcon("src/Images/search.png");
+    private ImageIcon iconoSanidad = new ImageIcon("src/Images/Sanidad.png");
         
 
     public ImageIcon getWallpaper() {

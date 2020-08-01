@@ -26,7 +26,7 @@ public class Tabla extends JFrame implements ActionListener {
 
     public static JLabel resumen[];
 
-    public static JMenu menuFiltrar,menuRef,menuBuscar;
+    public static JMenu menuFiltrar, menuRef, menuBuscar;
     public static JMenu menuFiltroPPS;
     public static JMenu menuFiltroAptitud;
     public static JMenu menuPatologias;
@@ -45,14 +45,22 @@ public class Tabla extends JFrame implements ActionListener {
     public static JMenuItem[] itemsDestinos;
     //
     public static JMenuItem[] itemsOrdenar;
-    
-    
-    private JMenuItem itemRef,itemBuscar;
 
-    private ImageIcon check = new Iconos().getIconoCheck();
+    private JMenuItem itemRef, itemBuscar;
+
+    private Iconos iconos = new Iconos();
+    
+    //DECLARACION DE LOS OBJETOS PARA LOS JFRAMES
+    
+    private Formulario formulario = new Formulario(this, true);
+    private Buscador buscador = new Buscador(this, false);
+    private Referencias referencia = new Referencias(this, true);
 
     public Tabla() {
+        Componentes();
+    }
 
+    private void Componentes() {
         //PROPIEDADES DEL FRAME PRINCIPAL
         setTitle("Carta de Situacion - Seccion Sanidad RI-1");
         setLayout(null);
@@ -61,21 +69,24 @@ public class Tabla extends JFrame implements ActionListener {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setIconImage(new Iconos().getIconoSanidad().getImage());
+        setIconImage(iconos.getIconoSanidad().getImage());
+        //OBJETOS---------------------------------------------------------------
+        Utilidades utilidad = new Utilidades();
+        Arreglos arreglo = new Arreglos();
         //----------------------------------------------------------------------
         //PESTAÑAS DE LAS TABLAS
         UIManager.put("TabbedPane.selected", new Color(50, 205, 50));
         contenedor = new JTabbedPane();
         contenedor.setBounds(0, 0, 1485, 460);
-        contenedor.setFont(new Utilidades().fuentePestañas());
+        contenedor.setFont(utilidad.fuentePestañas());
         add(contenedor);
         String categorias[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
-        String nombreColumnas[] = new Arreglos().columnasTabla();
-        int tamañoColumnas[] = new Arreglos().tamañoColumnas();
-        scrolls = new JScrollPane[new Arreglos().getCategoriasLength()];         
-        tablas = new JTable[new Arreglos().getCategoriasLength()];
+        String nombreColumnas[] = arreglo.columnasTabla();
+        int tamañoColumnas[] = arreglo.tamañoColumnas();
+        scrolls = new JScrollPane[arreglo.getCategoriasLength()];
+        tablas = new JTable[arreglo.getCategoriasLength()];
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         // ciclos para crear las distintas tablas a la vez
@@ -90,8 +101,8 @@ public class Tabla extends JFrame implements ActionListener {
             // PROPIEDADES de la tabla
             tablas[i] = new JTable(model);
             tablas[i].setGridColor(Color.black);
-            tablas[i].setBackground(new Utilidades().colorTabla());
-            tablas[i].setFont(new Utilidades().fuenteTabla());
+            tablas[i].setBackground(utilidad.colorTabla());
+            tablas[i].setFont(utilidad.fuenteTabla());
             //eventos al presionar teclas en las tablas
             tablas[i].getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
             tablas[i].getActionMap().put("Enter", new AbstractAction() {
@@ -99,8 +110,11 @@ public class Tabla extends JFrame implements ActionListener {
                 public void actionPerformed(ActionEvent ae) {
                     int categoria = contenedor.getSelectedIndex();
                     int puntero = tablas[categoria].getSelectedRow();
-                    int id = ID[categoria][puntero];
-                    modificarFormulario(id, puntero);
+                    if (puntero != -1) {
+                        int id = ID[categoria][puntero];
+                        modificarFormulario(id, puntero);
+                        System.gc();
+                    }
                 }
             });
             //eventos al clikear la tabla          
@@ -113,13 +127,14 @@ public class Tabla extends JFrame implements ActionListener {
                         int puntero = tablas[categoria].rowAtPoint(e.getPoint());
                         int id = ID[categoria][puntero];
                         modificarFormulario(id, puntero);
+                        System.gc();
                     }
                 }
             });
             //header de la tabla
             JTableHeader header = tablas[i].getTableHeader();
             header.setFont(new Font("Tahoma", 1, 12));
-            header.setBackground(new Utilidades().colorTabla());
+            header.setBackground(utilidad.colorTabla());
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) tablas[i].getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
@@ -140,14 +155,14 @@ public class Tabla extends JFrame implements ActionListener {
             }
             //PROPIEDADES del Scroll y agregarlo al contenedor
             scrolls[i] = new JScrollPane(tablas[i]);
-            scrolls[i].getViewport().setBackground(new Utilidades().colorTabla());
+            scrolls[i].getViewport().setBackground(utilidad.colorTabla());
             contenedor.addTab(categorias[i], scrolls[i]);
 
         }
         // BOTONES (por ahora solo uno)
         Agregar = new JButton("Nuevo +");
         Agregar.setBounds(10, 500, 100, 30);
-        Agregar.setFont(new Utilidades().fuenteBoton());
+        Agregar.setFont(utilidad.fuenteBoton());
         Agregar.setVisible(true);
         Agregar.addActionListener(this);
         add(Agregar);
@@ -160,7 +175,7 @@ public class Tabla extends JFrame implements ActionListener {
         menuBar.add(menuFiltrar);
         //ITEM LISTA COMPLETA
         itemListaCompleta = new JMenuItem("Lista Completa");
-        itemListaCompleta.setIcon(new Iconos().getIconoRefrescar());
+        itemListaCompleta.setIcon(iconos.getIconoRefrescar());
         itemListaCompleta.addActionListener(this);
         menuFiltrar.add(itemListaCompleta);
         JPopupMenu.Separator separador1 = new JPopupMenu.Separator();
@@ -173,7 +188,7 @@ public class Tabla extends JFrame implements ActionListener {
         // Programa Peso Saludable
         menuFiltroPPS = new JMenu("Programa Peso Saludable");
         menuFiltrar.add(menuFiltroPPS);
-        String[] PPSs = new Arreglos().PPS();
+        String[] PPSs = arreglo.PPS();
         PPSs[0] = "Todos";
         itemsPPS = new JMenuItem[PPSs.length];
         for (int i = 0; i < itemsPPS.length; i++) {
@@ -184,7 +199,7 @@ public class Tabla extends JFrame implements ActionListener {
         //Aptitud
         menuFiltroAptitud = new JMenu("Aptitud");
         menuFiltrar.add(menuFiltroAptitud);
-        String[] aptitudes = new Arreglos().Aptitud();
+        String[] aptitudes = arreglo.Aptitud();
         aptitudes[0] = "Todos";
         itemsAptitud = new JMenuItem[aptitudes.length];
         for (int i = 0; i < itemsAptitud.length; i++) {
@@ -195,7 +210,7 @@ public class Tabla extends JFrame implements ActionListener {
         //Patologias
         menuPatologias = new JMenu("Patologias");
         menuFiltrar.add(menuPatologias);
-        String[] patologias = new Arreglos().patologias();
+        String[] patologias = arreglo.patologias();
         itemsPatologias = new JMenuItem[patologias.length];
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (i == itemsPatologias.length - 1) {
@@ -215,7 +230,7 @@ public class Tabla extends JFrame implements ActionListener {
         //Destinos
         menuDestinos = new JMenu("Mostrar por destino");
         menuFiltrar.add(menuDestinos);
-        String[] destinos = new Arreglos().Destinos();
+        String[] destinos = arreglo.Destinos();
         destinos[0] = "Todos";
         itemsDestinos = new JMenuItem[destinos.length];
         for (int i = 0; i < itemsDestinos.length; i++) {
@@ -228,7 +243,7 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenamiento de la tabla
         menuOrdenar = new JMenu("Ordenar por...");
         menuFiltrar.add(menuOrdenar);
-        String[] ordenamiento = new Arreglos().ordenTabla();
+        String[] ordenamiento = arreglo.ordenTabla();
         itemsOrdenar = new JMenuItem[ordenamiento.length];
         for (int i = 0; i < itemsOrdenar.length; i++) {
             itemsOrdenar[i] = new JMenuItem(ordenamiento[i]);
@@ -255,7 +270,7 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < resumen.length; i++) {
             resumen[i] = new JLabel("");
             resumen[i].setBounds(15 + width, contenedor.getHeight(), 150, 40);
-            resumen[i].setFont(new Utilidades().fuenteLabelsResumen());
+            resumen[i].setFont(utilidad.fuenteLabelsResumen());
             width += 170;
             add(resumen[i]);
         }
@@ -265,37 +280,39 @@ public class Tabla extends JFrame implements ActionListener {
         fondo.setBounds(0, 0, this.getWidth(), this.getHeight());
         fondo.setVisible(true);
         add(fondo);
-        ImageIcon imagen = new Iconos().getWallpaper();
+        ImageIcon imagen = iconos.getWallpaper();
         Icon wallpaper = new ImageIcon(imagen.getImage().getScaledInstance(fondo.getWidth(),
                 fondo.getHeight(), Image.SCALE_DEFAULT));
         fondo.setIcon(wallpaper);
         //----------------------------------------------------------------------
         //TABLA LLENA AL ARRANCAR EL PROGRAMA
         Actualizar(0, 0, 0);
-        // FIN DEL CONSTRUCTOR--------------------------------------------------
+
+        System.gc();
     }
+
     //-------------------------------------------------------------------------------------------------
     //-----------------------------EVENTO BOTONES------------------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
+        
         //BOTON AGREGAR
         if (e.getSource() == Agregar) {
-            Formulario abrir = new Formulario(this, true);
-            abrir.comboBox[0].setSelectedIndex(contenedor.getSelectedIndex());
-            abrir.setVisible(true);
+            formulario.comboBox[0].setSelectedIndex(contenedor.getSelectedIndex());
+            formulario.setVisible(true);
         }
         //----------------------BARRA MENU--------------------------------------
         //MENU FILTRAR--------------------------------
         //Lista completa
         if (e.getSource() == itemListaCompleta) {
             Actualizar(0, 0, 0);
-            new Iconos().eliminarChecks();
+            iconos.eliminarChecks();
         }
         // anexo vencido
         if (e.getSource() == itemAnexoVencido) {
             Actualizar(1, Filtros.filtroDestinos, Filtros.ordenamiento);
-            new Iconos().eliminarChecksFiltros();
-            itemAnexoVencido.setIcon(check);
+            iconos.eliminarChecksFiltros();
+            itemAnexoVencido.setIcon(iconos.getIconoCheck());
         }
         // programa peso saludable
         for (int i = 0; i < itemsPPS.length; i++) {
@@ -306,9 +323,9 @@ public class Tabla extends JFrame implements ActionListener {
                 } else {
                     Actualizar(0, Filtros.filtroDestinos, Filtros.ordenamiento);
                 }
-                new Iconos().eliminarChecksFiltros();
-                menuFiltroPPS.setIcon(check);
-                itemsPPS[i].setIcon(check);
+                iconos.eliminarChecksFiltros();
+                menuFiltroPPS.setIcon(iconos.getIconoCheck());
+                itemsPPS[i].setIcon(iconos.getIconoCheck());
             }
         }
         // aptitudes
@@ -320,9 +337,9 @@ public class Tabla extends JFrame implements ActionListener {
                 } else {
                     Actualizar(0, Filtros.filtroDestinos, Filtros.ordenamiento);
                 }
-                new Iconos().eliminarChecksFiltros();
-                menuFiltroAptitud.setIcon(check);
-                itemsAptitud[i].setIcon(check);
+                iconos.eliminarChecksFiltros();
+                menuFiltroAptitud.setIcon(iconos.getIconoCheck());
+                itemsAptitud[i].setIcon(iconos.getIconoCheck());
             }
         }
         // patologias
@@ -335,57 +352,56 @@ public class Tabla extends JFrame implements ActionListener {
                 } else {
                     Actualizar(5, Filtros.filtroDestinos, Filtros.ordenamiento);
                 }
-                new Iconos().eliminarChecksFiltros();
-                menuPatologias.setIcon(check);
-                itemsPatologias[i].setIcon(check);
+                iconos.eliminarChecksFiltros();
+                menuPatologias.setIcon(iconos.getIconoCheck());
+                itemsPatologias[i].setIcon(iconos.getIconoCheck());
             }
         }
         // observaciones 
         if (e.getSource() == itemObservaciones) {
             Actualizar(6, Filtros.filtroDestinos, Filtros.ordenamiento);
-            new Iconos().eliminarChecksFiltros();
-            itemObservaciones.setIcon(check);
+            iconos.eliminarChecksFiltros();
+            itemObservaciones.setIcon(iconos.getIconoCheck());
         }
         // destinos
         for (int i = 0; i < itemsDestinos.length; i++) {
             if (e.getSource() == itemsDestinos[i]) {
                 Actualizar(Filtros.filtro, i, Filtros.ordenamiento);
-                new Iconos().eliminarChecksDestino();
-                menuDestinos.setIcon(check);
-                itemsDestinos[i].setIcon(check);
+                iconos.eliminarChecksDestino();
+                menuDestinos.setIcon(iconos.getIconoCheck());
+                itemsDestinos[i].setIcon(iconos.getIconoCheck());
             }
         }
         //ordenar por
         for (int i = 0; i < itemsOrdenar.length; i++) {
             if (e.getSource() == itemsOrdenar[i]) {
                 Actualizar(Filtros.filtro, Filtros.filtroDestinos, i);
-                new Iconos().eliminarChecksOrden();
-                menuOrdenar.setIcon(check);
-                itemsOrdenar[i].setIcon(check);
+                iconos.eliminarChecksOrden();
+                menuOrdenar.setIcon(iconos.getIconoCheck());
+                itemsOrdenar[i].setIcon(iconos.getIconoCheck());
             }
         }
         //MENU REFERENCIAS-----------------------------
         if (e.getSource() == itemRef) {
-            Referencias refer = new Referencias(this, true);
-            refer.setVisible(true);
+            referencia.setVisible(true);;
         }
 
         //MENU BUSCAR---------------------------------
         if (e.getSource() == itemBuscar) {
-            Buscador buscar = new Buscador(this, false);
-            buscar.setVisible(true);
             menuFiltrar.setEnabled(false);
             menuRef.setEnabled(false);
             menuBuscar.setEnabled(false);
+            buscador.setVisible(true);
         }
+        System.gc();
     }
 
     //----------------------------------------------------------------------------------------------------
     //------------------ MODIFICAR FORMULARIO--------------------------------------------------------------
-    private void modificarFormulario(int id, int puntero){
-        Formulario abrir = new Formulario(this, true);
-        abrir.obtenerDatos(id, puntero);
-        abrir.setVisible(true);
+    private void modificarFormulario(int id, int puntero) {
+        formulario.obtenerDatos(id, puntero);
+        formulario.setVisible(true);
+        System.gc();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -394,7 +410,10 @@ public class Tabla extends JFrame implements ActionListener {
         Filtros.filtro = filtro;
         Filtros.filtroDestinos = destino;
         Filtros.ordenamiento = orden;
-        new BaseDeDatos().Actualizar();
+        BaseDeDatos bdd = new BaseDeDatos();
+        bdd.Actualizar();
+        bdd = null;
+        System.gc();
     }
 
 }

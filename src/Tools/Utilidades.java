@@ -8,9 +8,9 @@ import java.awt.event.KeyEvent;
 
 public class Utilidades {
     
-    //COLORES
+    //COLORES      
     //tabla
-    public Color colorTabla(){
+    public Color colorTabla(){       
         return new Color(200,250,150);
     }
     //transparencia
@@ -30,6 +30,9 @@ public class Utilidades {
     }
     public Font fuenteLabelsResumen(){
         return new Font("Tahoma", 1, 14);
+    }
+    public Font fuenteHeader(){
+        return new Font("Tahoma", 1, 12);
     }
     //formulario
     public Font fuenteLabelsFormulario(){
@@ -62,6 +65,7 @@ public class Utilidades {
             if (caracter == ',') {
                 e.setKeyChar('.');
             }
+            System.gc();
         }
     };
 }

@@ -91,7 +91,7 @@ public class BaseDeDatos {
                                     fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
                                     break;
                                 case "FechaNacimiento":
-                                    fila[aux] = new Fechas().getEdad(rs.getString("FechaNacimiento"), new Utilidades().formatoFecha());
+                                    fila[aux] = new Fechas(rs.getString("FechaNacimiento"), new Utilidades().formatoFecha()).getEdad();
                                     break;
                                 default:
                                     fila[aux] = rs.getObject(i);
@@ -125,6 +125,7 @@ public class BaseDeDatos {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        System.gc();
     }
 
     //----------------------------------------------------------------------------
@@ -169,7 +170,8 @@ public class BaseDeDatos {
         mensajero[1] = mensajeroCombo;
         mensajero[2] = mensajeroDate;
         mensajero[3] = mensajeroCheck;
-
+        
+        System.gc();
         return mensajero;
     }
 
@@ -220,6 +222,7 @@ public class BaseDeDatos {
             JOptionPane.showMessageDialog(null, "Error//BDD//setInformacion//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        System.gc();
     }
 
     //-----------------------------------------------------------------------------
