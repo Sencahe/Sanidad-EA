@@ -19,7 +19,7 @@ import javax.swing.table.TableColumn;
 
 public class Tabla extends JFrame implements ActionListener {
 
-    JButton Agregar;
+    private JButton Agregar;
 
     public static JTabbedPane contenedor;
     public static JTable tablas[];
@@ -59,11 +59,11 @@ public class Tabla extends JFrame implements ActionListener {
     private Referencias referencia;
 
     public Tabla() {
-        Componentes();
         this.iconos = new Iconos();
         this.formulario = new Formulario(this, true);
         this.buscador = new Buscador(this, false);
         this.referencia = new Referencias(this, true);
+        Componentes();      
     }
 
     private void Componentes() {
