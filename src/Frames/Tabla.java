@@ -19,7 +19,7 @@ import javax.swing.table.TableColumn;
 
 public class Tabla extends JFrame implements ActionListener {
 
-    private JButton Agregar;
+    JButton Agregar;
 
     public static JTabbedPane contenedor;
     public static JTable tablas[];
@@ -63,7 +63,8 @@ public class Tabla extends JFrame implements ActionListener {
         this.formulario = new Formulario(this, true);
         this.buscador = new Buscador(this, false);
         this.referencia = new Referencias(this, true);
-        Componentes();      
+        Componentes();
+               
     }
 
     private void Componentes() {
@@ -98,8 +99,6 @@ public class Tabla extends JFrame implements ActionListener {
         String categorias[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
-        String nombreColumnas[] = arreglo.columnasTabla();
-        int tamañoColumnas[] = arreglo.tamañoColumnas();
         scrolls = new JScrollPane[arreglo.getCategoriasLength()];
         tablas = new JTable[arreglo.getCategoriasLength()];
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -153,15 +152,15 @@ public class Tabla extends JFrame implements ActionListener {
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) tablas[i].getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
-            for (String j : nombreColumnas) {
-                model.addColumn(j);
+            for (int j = 0; j < arreglo.columnasTabla().length; j++) {
+                model.addColumn(arreglo.columnasTabla()[j]);
             }
             //tamaño de las columnas
-            for (int j = 0; j < tamañoColumnas.length; j++) {
+            for (int j = 0; j < arreglo.tamañoColumnas().length; j++) {
                 TableColumn column = tablas[i].getColumnModel().getColumn(j);
-                column.setMinWidth(tamañoColumnas[j]);
-                column.setMaxWidth(tamañoColumnas[j]);
-                column.setPreferredWidth(tamañoColumnas[j]);
+                column.setMinWidth(arreglo.tamañoColumnas()[j]);
+                column.setMaxWidth(arreglo.tamañoColumnas()[j]);
+                column.setPreferredWidth(arreglo.tamañoColumnas()[j]);
 
                 //centrado del contenido de las columnas
                 if (j != 3 && j != 19) {
@@ -225,14 +224,13 @@ public class Tabla extends JFrame implements ActionListener {
         //Patologias
         menuPatologias = new JMenu("Patologias");
         menuFiltrar.add(menuPatologias);
-        String[] patologias = arreglo.patologias();
-        itemsPatologias = new JMenuItem[patologias.length];
+        itemsPatologias = new JMenuItem[arreglo.patologias().length];
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (i == itemsPatologias.length - 1) {
                 JPopupMenu.Separator separadorPatologias = new JPopupMenu.Separator();
                 menuPatologias.add(separadorPatologias);
             }
-            itemsPatologias[i] = new JMenuItem(patologias[i]);
+            itemsPatologias[i] = new JMenuItem(arreglo.patologias()[i]);
             itemsPatologias[i].addActionListener(this);
             menuPatologias.add(itemsPatologias[i]);
         }
@@ -258,10 +256,9 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenamiento de la tabla
         menuOrdenar = new JMenu("Ordenar por...");
         menuFiltrar.add(menuOrdenar);
-        String[] ordenamiento = arreglo.ordenTabla();
-        itemsOrdenar = new JMenuItem[ordenamiento.length];
+        itemsOrdenar = new JMenuItem[arreglo.ordenTabla().length];
         for (int i = 0; i < itemsOrdenar.length; i++) {
-            itemsOrdenar[i] = new JMenuItem(ordenamiento[i]);
+            itemsOrdenar[i] = new JMenuItem(arreglo.ordenTabla()[i]);
             itemsOrdenar[i].addActionListener(this);
             menuOrdenar.add(itemsOrdenar[i]);
         }
@@ -283,7 +280,7 @@ public class Tabla extends JFrame implements ActionListener {
         resumen = new JLabel[tablas.length + 1];
         int width = 0;
         for (int i = 0; i < resumen.length; i++) {
-            resumen[i] = new JLabel("");
+            resumen[i] = new JLabel();
             resumen[i].setBounds(15 + width, contenedor.getHeight() + 10, 150, 40);
             resumen[i].setFont(utilidad.fuenteLabelsResumen());
             width += 170;

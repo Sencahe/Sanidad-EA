@@ -87,7 +87,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
-            textField[i].setFont(new Utilidades().fuenteTextFields());
+            textField[i].setFont(utilidad.fuenteTextFields());
             if (i == 0 || i == 1) {
                 TextPrompt holder = new TextPrompt("Campo obligatorio", textField[i]);
                 holder.setFont(utilidad.fuenteHolders());
@@ -172,9 +172,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[9].setBounds(130, 200, 70, 20);
         labels[9].setText("Aptitud");
         comboBox[3].setBounds(130, 225, 80, 20);
-        String aptitud[] = arreglo.Aptitud();
-        for (String i : aptitud) {
-            comboBox[3].addItem(i);
+        for (int i = 0; i < arreglo.Aptitud().length; i++) {
+            comboBox[3].addItem(arreglo.Aptitud()[i]);
         }
         //Peso TEXT 4
         labels[10].setBounds(15, 250, 70, 20);
@@ -193,8 +192,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[13].setText("Programa Peso Saludable");
         comboBox[4].setBounds(250, 275, 130, 20);
         String PPS[] = arreglo.PPS();
-        for (String i : PPS) {
-            comboBox[4].addItem(i);
+        for (int i = 0; i < arreglo.PPS().length; i++) {
+            comboBox[4].addItem(arreglo.PPS()[i]);
         }
         //BOTON CALCULAR IMC
         calcularIMC = new JButton("Calcular IMC");
@@ -206,10 +205,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[14].setText("Observaciones");
         textField[7].setBounds(15, 370, 265, 20);
         //CheckBoxes D 0 - H 1 - A 2 - T 3 - ACT 4 - INF 5
-        String[] columnChecks = arreglo.checkBox();
         int X = 15;
         for (int i = 0; i < checkBox.length; i++) {
-            checkBox[i] = new JCheckBox(columnChecks[i]);
+            checkBox[i] = new JCheckBox(arreglo.checkBox()[i]);
             checkBox[i].setBounds(X, 405, 46, 20);
             checkBox[i].setFont(utilidad.fuenteChecks());
             checkBox[i].setOpaque(false);
@@ -280,6 +278,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             if (Validar()) {
                 BaseDeDatos base = new BaseDeDatos();
                 base.setInformacion(enviarDatos(), 0);
+                base.setConection();
                 base.Actualizar();
                 base = null;
                 Vaciar();
@@ -293,6 +292,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 if (Validar()) {
                     BaseDeDatos base = new BaseDeDatos();
                     base.setInformacion(enviarDatos(), id);
+                    base.setConection();
                     base.Actualizar();
                     base = null;
                     Tabla.tablas[Tabla.contenedor.getSelectedIndex()].setRowSelectionInterval(puntero, puntero);
@@ -308,6 +308,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             if (opcion == JOptionPane.YES_OPTION) {
                 BaseDeDatos base = new BaseDeDatos();
                 base.Eliminar(id);
+                base.setConection();
                 base.Actualizar();
                 base = null;
                 Vaciar();
@@ -363,37 +364,31 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 }
             }
         }
-
+        datos = null;
     }
 
     //---------------------------------------------------------
     //-----------------METODO ENVIAR DATOS---------------------
     private String[] enviarDatos() {
-        String[] text = new String[textField.length];
-        String[] combo = new String[comboBox.length];
-        String[] fechas = new String[dateChooser.length];
-        String[] check = new String[checkBox.length];
+        int comboIndex = textField.length;
+        int dateIndex = comboIndex + comboBox.length;
+        int checkIndex = dateIndex + dateChooser.length;
         int total = textField.length + comboBox.length + dateChooser.length + checkBox.length;
+        String mensajero[] = new String[total];
 
         for (int i = 0; i < textField.length; i++) {
-            text[i] = i == 0 ? textField[i].getText().toUpperCase().trim() : textField[i].getText().trim();
+            mensajero[i] = i == 0 ? textField[i].getText().toUpperCase().trim() : textField[i].getText().trim();
         }
         for (int i = 0; i < comboBox.length; i++) {
-            combo[i] = i == 0 || i == 1 ? String.valueOf(comboBox[i].getSelectedIndex()) : String.valueOf(comboBox[i].getSelectedItem());
+            mensajero[comboIndex + i] = i == 0 || i == 1 ? String.valueOf(comboBox[i].getSelectedIndex()) : String.valueOf(comboBox[i].getSelectedItem());
         }
         for (int i = 0; i < dateChooser.length; i++) {
-            fechas[i] = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
+            mensajero[dateIndex + i] = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
         }
         for (int i = 0; i < checkBox.length; i++) {
-            check[i] = checkBox[i].isSelected() ? "X" : "";
+            mensajero[checkIndex + i] = checkBox[i].isSelected() ? "X" : "";
         }
-
-        String[] mensajero = new String[total];
-        System.arraycopy(text, 0, mensajero, 0, text.length);
-        System.arraycopy(combo, 0, mensajero, text.length, combo.length);
-        System.arraycopy(fechas, 0, mensajero, text.length + combo.length, fechas.length);
-        System.arraycopy(check, 0, mensajero, text.length + combo.length + fechas.length, check.length);
-        
+              
         return mensajero;
     }
 

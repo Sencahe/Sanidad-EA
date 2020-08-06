@@ -13,6 +13,7 @@ public class Filtros {
     public static String FiltroPPS;
     public static String FiltroAptitud;
     
+
     public boolean AnexoVencido(String fecha) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate fechaUltimoAnexo = LocalDate.parse(fecha, fmt);

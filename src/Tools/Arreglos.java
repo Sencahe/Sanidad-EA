@@ -25,6 +25,9 @@ public class Arreglos {
 
         return column;
     }
+    public int columnbasBDLength(){
+        return columnasBD().length;
+    }
 
     // ARREGLO PARA LOS GRADOS SEGUN SU VALOR NUMERICO, TANTO EN LA CLASE FORMULARIO COMO EN LA CLASE BASEDEDATOS
     public String[][] grados() {
@@ -93,16 +96,12 @@ public class Arreglos {
     }
 
     public String[] todasColumnas() {
-        String[] text = textField();
-        String[] combo = comboBox();
-        String[] dateChooser = dateChooser();
-        String[] checks = checkBox();
-        int total = text.length + combo.length + dateChooser.length + checks.length;
+        int total = getTextFieldLength() + getComboBoxLength() + getDateChooserLength() + getCheckBoxLength();
         String[] todos = new String[total];
-        System.arraycopy(text, 0, todos, 0, text.length);
-        System.arraycopy(combo, 0, todos, text.length, combo.length);
-        System.arraycopy(dateChooser, 0, todos, text.length + combo.length, dateChooser.length);
-        System.arraycopy(checks, 0, todos, text.length + combo.length + dateChooser.length, checks.length);
+        System.arraycopy( textField(), 0, todos, 0, getTextFieldLength());
+        System.arraycopy(comboBox(), 0, todos, getTextFieldLength(), getComboBoxLength());
+        System.arraycopy(dateChooser(), 0, todos, getTextFieldLength() + getComboBoxLength(), getDateChooserLength());
+        System.arraycopy(checkBox(), 0, todos, getTextFieldLength() + getComboBoxLength() + getDateChooserLength(), getCheckBoxLength());
         return todos;
     }
 

@@ -1,19 +1,42 @@
 package Tools;
 
 import Frames.Tabla;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class BaseDeDatos {
-
+    
+    private Connection cn;
+    
+    public BaseDeDatos(){
+        this.cn = conectar();
+    }
+    
+    //------------------------CONECTAR------------------------------------------
+    private Connection conectar() {
+        try {
+            Connection cn = DriverManager.getConnection("jdbc:sqlite:DB.sqlite");
+            return cn;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error//Conexion//Conectar" + e 
+            + "\nContactese con el desarrolador para resolver el problema.");
+        }
+        return (null);
+    }
+    public void setConection(){
+        this.cn = conectar();
+    }
+    
     //----------------------------------------------------------------------------
     //------------------------METODO ARREGLO ID-----------------------------------
     //----------------------------------------------------------------------------
     public void totalPersonal() {
         try {
-            java.sql.Connection cn = Conexion.conectar();
             Tabla.ID = new int[new Arreglos().getCategoriasLength()][];
             PreparedStatement pst[] = new PreparedStatement[new Arreglos().getCategoriasLength()];
             for (int i = 0; i < pst.length; i++) {
@@ -22,7 +45,6 @@ public class BaseDeDatos {
                 rs.next();
                 Tabla.ID[i] = new int[rs.getInt(2)];
             }
-            cn.close();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//totalPersonal//" + e
@@ -38,11 +60,6 @@ public class BaseDeDatos {
         //OBJETOS
         Filtros filtrar = new Filtros();
         Arreglos arreglo = new Arreglos();
-        // ARREGLOS PARA PASAR VALORES NUMERICOS A SUS CORRESPONDIENTES STRINGS       
-        String grados[][] = arreglo.grados();
-        String columnasBD[] = arreglo.columnasBD();
-        String destinos[] = arreglo.Destinos();
-        String orden[] = arreglo.ordenTablaBD();
 
         // DECLARACION DE LOS Table model para colocar la informacion en la tabla
         DefaultTableModel[] tablaMain = new DefaultTableModel[Tabla.tablas.length];
@@ -56,15 +73,14 @@ public class BaseDeDatos {
         // FILTRAR POR DESTINO
         String where = "";
         if (Filtros.filtroDestinos != 0) {
-            where = " WHERE Destino = \"" + destinos[Filtros.filtroDestinos] + "\"";
+            where = " WHERE Destino = \"" + arreglo.Destinos()[Filtros.filtroDestinos] + "\"";
         }
         //ORDENAR LA TABLA 
-        String orderBy = orden[Filtros.ordenamiento];
+        String orderBy = arreglo.ordenTablaBD()[Filtros.ordenamiento];
 
         //CONEXION A BASE DE DATOS 
         try {
             //consulta a la base de datos
-            java.sql.Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement("select * from Personal" + where + orderBy);
             ResultSet rs = pst.executeQuery();
 
@@ -72,11 +88,8 @@ public class BaseDeDatos {
             int num[] = new int[4]; //arreglo para el index en ID[][] y numero de orden en las 4 tabla distintas 
             while (rs.next()) {
                 //filtrado de la informacion
-                boolean filtrado = true;
-                switch (Filtros.filtro) {
-                    case 0:
-                        filtrado = true;
-                        break;
+                boolean filtrado;
+                switch (Filtros.filtro) {                  
                     case 1:
                         filtrado = filtrar.AnexoVencido(rs.getString("Anexo27"));
                         break;
@@ -97,20 +110,21 @@ public class BaseDeDatos {
                         break;
                     default:
                         filtrado = true;
+                        break;
                 }
                 //si la informacion pasa el filtro se procede a obtener los datos
                 if (filtrado) {
                     int categoria = rs.getInt("Categoria"); //obteniendo la categoria 
                     Tabla.ID[categoria][num[categoria]] = rs.getInt("id"); //guardando el id, el index en el arreglo equivaldra al index del tabbed pane y de la fila en la tabla               
                     // Arreglo para colocar los datos en su respectiva fila segun las columnas
-                    Object fila[] = new Object[columnasBD.length + 1]; //el mas uno es para el numero de orden, el resto del length corresponde a las columnas q se les hara la peticion
+                    Object fila[] = new Object[arreglo.columnbasBDLength() + 1]; //el mas uno es para el numero de orden, el resto del length corresponde a las columnas q se les hara la peticion
                     fila[0] = ++num[categoria]; // numero de orden, este numero siempre sera +1 a su respectivo indice donde esta guardado el id del registro
                     int aux = 1; //indice inicial para el resto de los datos que iran en la fila
-                    for (String i : columnasBD) {
+                    for (String i : arreglo.columnasBD()) {
                         if (rs.getObject(i) != null) {
                             switch (i) {
                                 case "Grado":
-                                    fila[aux] = grados[categoria][rs.getInt("Grado")];
+                                    fila[aux] = arreglo.grados()[categoria][rs.getInt("Grado")];
                                     break;
                                 case "Apellido":
                                     fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
@@ -131,9 +145,9 @@ public class BaseDeDatos {
             cn.close();
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
             //obtengo el arreglo con categorias y lo hago mayusculas
-            String[] categoriasResumen = new Arreglos().Categorias();
-            for (int i = 0; i < categoriasResumen.length; i++) {
-                categoriasResumen[i] = categoriasResumen[i].toUpperCase();
+            String[] categoriasResumen = new String[arreglo.getCategoriasLength()];
+            for (int i = 0; i < arreglo.getCategoriasLength(); i++) {
+                categoriasResumen[i] = arreglo.Categorias()[i].toUpperCase();
             }
             //coloco los datos en los labels
             int total = 0;
@@ -162,37 +176,32 @@ public class BaseDeDatos {
     public String[][] getInformacion(int id) {
         Arreglos arreglo = new Arreglos();
         String[][] mensajero = new String[4][];
-        String[] textField = arreglo.textField();
-        String[] comboBox = arreglo.comboBox();
-        String[] dateChooser = arreglo.dateChooser();
-        String[] checkBox = arreglo.checkBox();
-        String[] mensajeroText = new String[textField.length];
-        String[] mensajeroCombo = new String[comboBox.length];
-        String[] mensajeroDate = new String[dateChooser.length];
-        String[] mensajeroCheck = new String[checkBox.length];
+        String[] mensajeroText = new String[arreglo.getTextFieldLength()];
+        String[] mensajeroCombo = new String[arreglo.getComboBoxLength()];
+        String[] mensajeroDate = new String[arreglo.getDateChooserLength()];
+        String[] mensajeroCheck = new String[arreglo.getCheckBoxLength()];
         try {
-            java.sql.Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement("select * from Personal where id = " + id);
             ResultSet rs = pst.executeQuery();
             //SOLICITO LOS DATOS QUE VAN A LOS TEXTFIELD
-            for (int i = 0; i < textField.length; i++) {
-                mensajeroText[i] = rs.getString(textField[i]);
+            for (int i = 0; i < mensajeroText.length; i++) {
+                mensajeroText[i] = rs.getString(arreglo.textField()[i]);
             }
             //SOLICITO LOS DATOS QUE VAN A LOS COMBO BOX
-            for (int i = 0; i < comboBox.length; i++) {
-                mensajeroCombo[i] = rs.getString(comboBox[i]);
+            for (int i = 0; i < mensajeroCombo.length; i++) {
+                mensajeroCombo[i] = rs.getString(arreglo.comboBox()[i]);
             }
             //SOLICITO LOS DATOS QUE VAN A LOS DATE CHOOSER
-            for (int i = 0; i < dateChooser.length; i++) {
-                mensajeroDate[i] = rs.getString(dateChooser[i]);
+            for (int i = 0; i < mensajeroDate.length; i++) {
+                mensajeroDate[i] = rs.getString(arreglo.dateChooser()[i]);
             }
-            for (int i = 0; i < checkBox.length; i++) {
-                mensajeroCheck[i] = rs.getString(checkBox[i]);
+            for (int i = 0; i < mensajeroCheck.length; i++) {
+                mensajeroCheck[i] = rs.getString(arreglo.checkBox()[i]);
             }
             // ENVIO LOS DATOS A LA CLASE FORMULARIO
             cn.close();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error//BDD//getInfoPorId " + e
+            JOptionPane.showMessageDialog(null, "Error//BDD//getInformacion " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
         mensajero[0] = mensajeroText;
@@ -209,7 +218,7 @@ public class BaseDeDatos {
     //------------------------METODO SET INFO--------------------------------------
     //-----------------------------------------------------------------------------
     public void setInformacion(String[] datos, int id) {
-        String statement = "";
+        String statement;
         String[] columnas = new Arreglos().todasColumnas();
 
         //Modificar registro
@@ -232,7 +241,6 @@ public class BaseDeDatos {
         }
 
         try {
-            java.sql.Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement(statement);
 
             int index = 1;
@@ -262,7 +270,6 @@ public class BaseDeDatos {
     public void Eliminar(int id) {
         int ID = id;
         try {
-            java.sql.Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement("delete from Personal where ID = " + ID);
             pst.executeUpdate();
 
@@ -273,5 +280,7 @@ public class BaseDeDatos {
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
     }
+    
+    
 
 }

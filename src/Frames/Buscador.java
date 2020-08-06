@@ -124,6 +124,7 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
             buscar = texto.getText().toLowerCase().trim();
             categoria = Tabla.contenedor.getSelectedIndex();
             boolean buscarSiguiente = true;
+            String nombre;
 
             while (buscarSiguiente) {
                 if (puntero == Tabla.tablas[categoria].getRowCount()) {
@@ -134,10 +135,8 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                         JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.", JLabel.CENTER));
                     }
                 } else {
-                    String nombre = (String) Tabla.tablas[categoria].getValueAt(puntero, 3);
-                    nombre = nombre.toLowerCase();
-                    int buscando = nombre.indexOf(buscar);
-                    if (buscando != -1) {
+                    nombre = ((String) Tabla.tablas[categoria].getValueAt(puntero, 3)).toLowerCase();
+                    if (nombre.contains(buscar)) {
                         Tabla.scrolls[categoria].getVerticalScrollBar().setValue(puntero * 10);
                         Tabla.tablas[categoria].setRowSelectionInterval(puntero, puntero);
                         mensaje.setText((String) Tabla.tablas[categoria].getValueAt(puntero, 3));
