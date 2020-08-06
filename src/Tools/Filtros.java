@@ -6,12 +6,20 @@ import java.time.format.DateTimeFormatter;
 
 public class Filtros {
 
-    public static int filtro = 0;
-    public static int filtroDestinos = 0;
-    public static int ordenamiento = 0;
-    public static String columPatologia = "";
+    public static int filtro;
+    public static int filtroDestinos;
+    public static int ordenamiento;
+    public static String columPatologia;
     public static String FiltroPPS;
     public static String FiltroAptitud;
+    
+    public Filtros(){
+        this.filtro = 0;
+        this.filtroDestinos = 0;
+        this.ordenamiento = 0;
+        this.columPatologia = "";      
+    }
+    
 
     public boolean AnexoVencido(String fecha) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -23,15 +31,24 @@ public class Filtros {
     }
 
     public boolean FiltroPPS(String pps) {
-        return FiltroPPS.equals(pps);
+        if(pps != null){
+          return FiltroPPS.equals(pps);  
+        } else {
+            return false;
+        }
+        
     }
 
     public boolean FiltroAptitud(String apt) {
-        return FiltroAptitud.equals(apt);
+        if(apt != null){
+            return FiltroAptitud.equals(apt);
+        } else {
+            return false;
+        }
+            
     }
 
-    public boolean FiltroPatologias(String ptg) {
-        return ptg.equals("X");
-    }
+   
+   
 
 }

@@ -93,6 +93,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 holder.setFont(utilidad.fuenteHolders());
                 holder.setForeground(Color.GRAY);
             }
+            
             if (i >= 3 && i <= 6) {
                 textField[i].addKeyListener(utilidad.bloquearLetras);
             }
@@ -230,6 +231,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 wallpaper.getHeight(), Image.SCALE_DEFAULT));
         wallpaper.setIcon(fondo);
       
+        utilidad = null;
+        arreglo = null;
         System.gc();
     }
 
@@ -324,7 +327,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
         this.id = id;
         this.puntero = puntero;
-        String[][] datos = new BaseDeDatos().getInfoPorID(id);
+        String[][] datos = new BaseDeDatos().getInformacion(id);
 
         for (int i = 0; i < datos.length; i++) {
             for (int j = 0; j < datos[i].length; j++) {
@@ -343,8 +346,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                     }
                     //agrego datos a dateChooser
                     if (i == 2) {
-                        try {
-                            //Formato         fecha en si
+                        try {                                 
                             Date fecha = new SimpleDateFormat(new Utilidades().formatoFecha()).parse(datos[i][j]);
                             dateChooser[j].setDate(fecha);
                         } catch (ParseException ex) {
@@ -391,8 +393,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         System.arraycopy(combo, 0, mensajero, text.length, combo.length);
         System.arraycopy(fechas, 0, mensajero, text.length + combo.length, fechas.length);
         System.arraycopy(check, 0, mensajero, text.length + combo.length + fechas.length, check.length);
-
-
+        
         return mensajero;
     }
 
@@ -424,7 +425,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             if (!"".equals(fecha)) {
                 if (!new Fechas(fecha, new Utilidades().formatoFecha()).fechaValida()) {
                     labels[labelIndex].setForeground(Color.red);
-                    String mensaje = "<center><html>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
+                    String mensaje = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
                             + "<br>Si no conoce la fecha puede dejar el campo vacio.</center></html>";
                     JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
                     return false;
@@ -454,6 +455,10 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     }
 
     public void Vaciar() {
+        id = 0;
+        Agregar.setVisible(true);
+        Modificar.setVisible(false);
+        Eliminar.setVisible(false);
         for (JTextField i : textField) {
             i.setText("");
         }

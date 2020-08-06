@@ -6,8 +6,10 @@ import Tools.Filtros;
 import Tools.Iconos;
 import Tools.Utilidades;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -48,38 +50,51 @@ public class Tabla extends JFrame implements ActionListener {
 
     private JMenuItem itemRef, itemBuscar;
 
-    private Iconos iconos = new Iconos();
-    
+    //Declaracion de iconos para los menuItems
+    private Iconos iconos;
+
     //DECLARACION DE LOS OBJETOS PARA LOS JFRAMES
-    
-    private Formulario formulario = new Formulario(this, true);
-    private Buscador buscador = new Buscador(this, false);
-    private Referencias referencia = new Referencias(this, true);
+    private Formulario formulario;
+    private Buscador buscador;
+    private Referencias referencia;
 
     public Tabla() {
         Componentes();
+        this.iconos = new Iconos();
+        this.formulario = new Formulario(this, true);
+        this.buscador = new Buscador(this, false);
+        this.referencia = new Referencias(this, true);
     }
 
     private void Componentes() {
-        //PROPIEDADES DEL FRAME PRINCIPAL
-        setTitle("Carta de Situacion - Seccion Sanidad RI-1");
-        setLayout(null);
-        setSize(1500, 600);
-        setResizable(false);
-        setVisible(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setIconImage(iconos.getIconoSanidad().getImage());
         //OBJETOS---------------------------------------------------------------
         Utilidades utilidad = new Utilidades();
         Arreglos arreglo = new Arreglos();
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();       
+        //PROPIEDADES DEL FRAME PRINCIPAL        
+        setTitle("Carta de Situacion - Seccion Sanidad RI-1");
+        int x = (int) (pantalla.getWidth() < 1525 ? pantalla.getWidth(): 1525);
+        int y = (int) (pantalla.getHeight()< 650 ? pantalla.getHeight(): 650);
+        setSize(x, y);
+        setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setIconImage(iconos.getIconoSanidad().getImage());
+        
+        JPanel container = new JPanel();
+        container.setPreferredSize(new Dimension(1505, 580));
+        container.setLayout(null);
+        JScrollPane scrollContainer = new JScrollPane(container);       
+        scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         //----------------------------------------------------------------------
         //PESTAÑAS DE LAS TABLAS
         UIManager.put("TabbedPane.selected", new Color(50, 205, 50));
         contenedor = new JTabbedPane();
-        contenedor.setBounds(0, 0, 1485, 460);
+        contenedor.setBounds(10, 10, 1485, 460);
         contenedor.setFont(utilidad.fuentePestañas());
-        add(contenedor);
+        container.add(contenedor);
         String categorias[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
@@ -161,11 +176,11 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // BOTONES (por ahora solo uno)
         Agregar = new JButton("Nuevo +");
-        Agregar.setBounds(10, 500, 100, 30);
+        Agregar.setBounds(10, 510, 100, 30);
         Agregar.setFont(utilidad.fuenteBoton());
         Agregar.setVisible(true);
         Agregar.addActionListener(this);
-        add(Agregar);
+        container.add(Agregar);
         //----------------------------------------------------------------------
         // BARRA MENU----------------------------------------------------------        
         JMenuBar menuBar = new JMenuBar();
@@ -269,25 +284,30 @@ public class Tabla extends JFrame implements ActionListener {
         int width = 0;
         for (int i = 0; i < resumen.length; i++) {
             resumen[i] = new JLabel("");
-            resumen[i].setBounds(15 + width, contenedor.getHeight(), 150, 40);
+            resumen[i].setBounds(15 + width, contenedor.getHeight() + 10, 150, 40);
             resumen[i].setFont(utilidad.fuenteLabelsResumen());
             width += 170;
-            add(resumen[i]);
+            container.add(resumen[i]);
         }
         //----------------------------------------------------------------------
         // WALLPAPER DE LA APP
         JLabel fondo = new JLabel();
-        fondo.setBounds(0, 0, this.getWidth(), this.getHeight());
+        fondo.setBounds(0, 0, 1525, 650);
         fondo.setVisible(true);
-        add(fondo);
+        container.add(fondo);
         ImageIcon imagen = iconos.getWallpaper();
         Icon wallpaper = new ImageIcon(imagen.getImage().getScaledInstance(fondo.getWidth(),
-                fondo.getHeight(), Image.SCALE_DEFAULT));
+                 fondo.getHeight(), Image.SCALE_DEFAULT));
         fondo.setIcon(wallpaper);
         //----------------------------------------------------------------------
-        //TABLA LLENA AL ARRANCAR EL PROGRAMA
+        //FINALIZACION DE LOS COMPONENTES
+        this.getContentPane().add(scrollContainer);
+        
         Actualizar(0, 0, 0);
 
+        utilidad = null;
+        pantalla = null;
+        arreglo = null;
         System.gc();
     }
 
@@ -295,7 +315,7 @@ public class Tabla extends JFrame implements ActionListener {
     //-----------------------------EVENTO BOTONES------------------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+
         //BOTON AGREGAR
         if (e.getSource() == Agregar) {
             formulario.comboBox[0].setSelectedIndex(contenedor.getSelectedIndex());

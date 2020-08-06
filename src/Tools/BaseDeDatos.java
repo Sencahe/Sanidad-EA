@@ -35,11 +35,14 @@ public class BaseDeDatos {
     //----------------------------------------------------------------------------
     public void Actualizar() {
         totalPersonal();
+        //OBJETOS
+        Filtros filtrar = new Filtros();
+        Arreglos arreglo = new Arreglos();
         // ARREGLOS PARA PASAR VALORES NUMERICOS A SUS CORRESPONDIENTES STRINGS       
-        String grados[][] = new Arreglos().grados();
-        String columnasBD[] = new Arreglos().columnasBD();
-        String destinos[] = new Arreglos().Destinos();
-        String orden[] = new Arreglos().ordenTablaBD();
+        String grados[][] = arreglo.grados();
+        String columnasBD[] = arreglo.columnasBD();
+        String destinos[] = arreglo.Destinos();
+        String orden[] = arreglo.ordenTablaBD();
 
         // DECLARACION DE LOS Table model para colocar la informacion en la tabla
         DefaultTableModel[] tablaMain = new DefaultTableModel[Tabla.tablas.length];
@@ -58,8 +61,9 @@ public class BaseDeDatos {
         //ORDENAR LA TABLA 
         String orderBy = orden[Filtros.ordenamiento];
 
-        //CONEXION A BASE DE DATOS Y POSTERIOR CONSULTA
+        //CONEXION A BASE DE DATOS 
         try {
+            //consulta a la base de datos
             java.sql.Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement("select * from Personal" + where + orderBy);
             ResultSet rs = pst.executeQuery();
@@ -67,14 +71,35 @@ public class BaseDeDatos {
             //llenado de la tabla
             int num[] = new int[4]; //arreglo para el index en ID[][] y numero de orden en las 4 tabla distintas 
             while (rs.next()) {
-                if (Filtros.filtro == 0
-                        || (Filtros.filtro == 1 && rs.getString("Anexo27") != null) && new Filtros().AnexoVencido(rs.getString("Anexo27"))
-                        || (Filtros.filtro == 2 && rs.getString("PPS") != null) && new Filtros().FiltroPPS(rs.getString("PPS"))
-                        || (Filtros.filtro == 3 && rs.getString("Aptitud") != null) && new Filtros().FiltroAptitud(rs.getString("Aptitud"))
-                        || (Filtros.filtro == 4 && rs.getString(Filtros.columPatologia) != null)
-                        || (Filtros.filtro == 5 && (rs.getString("Act") != null || rs.getString("Inf") != null))
-                        || (Filtros.filtro == 6 && rs.getString("Observaciones") != null)) {
-
+                //filtrado de la informacion
+                boolean filtrado = true;
+                switch (Filtros.filtro) {
+                    case 0:
+                        filtrado = true;
+                        break;
+                    case 1:
+                        filtrado = filtrar.AnexoVencido(rs.getString("Anexo27"));
+                        break;
+                    case 2:
+                        filtrado = filtrar.FiltroPPS(rs.getString("PPS"));
+                        break;
+                    case 3:
+                        filtrado = filtrar.FiltroAptitud(rs.getString("Aptitud"));
+                        break;
+                    case 4:
+                        filtrado = rs.getString(Filtros.columPatologia) != null;
+                        break;
+                    case 5:
+                        filtrado = (rs.getString("Act") != null || rs.getString("Inf") != null);
+                        break;
+                    case 6:
+                        filtrado = (rs.getString("Act") != null || rs.getString("Inf") != null);
+                        break;
+                    default:
+                        filtrado = true;
+                }
+                //si la informacion pasa el filtro se procede a obtener los datos
+                if (filtrado) {
                     int categoria = rs.getInt("Categoria"); //obteniendo la categoria 
                     Tabla.ID[categoria][num[categoria]] = rs.getInt("id"); //guardando el id, el index en el arreglo equivaldra al index del tabbed pane y de la fila en la tabla               
                     // Arreglo para colocar los datos en su respectiva fila segun las columnas
@@ -125,18 +150,22 @@ public class BaseDeDatos {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        
+        arreglo = null;
+        filtrar = null;
         System.gc();
     }
 
     //----------------------------------------------------------------------------
-    //------------------------METODO GETINFO--------------------------------------
+    //------------------------METODO GETINFORMACION--------------------------------------
     //----------------------------------------------------------------------------
-    public String[][] getInfoPorID(int id) {
+    public String[][] getInformacion(int id) {
+        Arreglos arreglo = new Arreglos();
         String[][] mensajero = new String[4][];
-        String[] textField = new Arreglos().textField();
-        String[] comboBox = new Arreglos().comboBox();
-        String[] dateChooser = new Arreglos().dateChooser();
-        String[] checkBox = new Arreglos().checkBox();
+        String[] textField = arreglo.textField();
+        String[] comboBox = arreglo.comboBox();
+        String[] dateChooser = arreglo.dateChooser();
+        String[] checkBox = arreglo.checkBox();
         String[] mensajeroText = new String[textField.length];
         String[] mensajeroCombo = new String[comboBox.length];
         String[] mensajeroDate = new String[dateChooser.length];
@@ -170,7 +199,8 @@ public class BaseDeDatos {
         mensajero[1] = mensajeroCombo;
         mensajero[2] = mensajeroDate;
         mensajero[3] = mensajeroCheck;
-        
+
+        arreglo = null;
         System.gc();
         return mensajero;
     }
@@ -180,24 +210,24 @@ public class BaseDeDatos {
     //-----------------------------------------------------------------------------
     public void setInformacion(String[] datos, int id) {
         String statement = "";
-        String[] arrays = new Arreglos().todasColumnas();
+        String[] columnas = new Arreglos().todasColumnas();
 
         //Modificar registro
         if (id != 0) {
             statement = "update Personal set ";
-            for (int i = 0; i < arrays.length; i++) {
-                statement += i == arrays.length - 1 ? arrays[i] + " = ? " : arrays[i] + " = ?, ";
+            for (int i = 0; i < columnas.length; i++) {
+                statement += i == columnas.length - 1 ? columnas[i] + " = ? " : columnas[i] + " = ?, ";
             }
             statement += "where id = " + id;
             // Aregar nuevo registro
         } else {
             statement = "insert into Personal (";
-            for (int i = 0; i < arrays.length; i++) {
-                statement += i != arrays.length - 1 ? arrays[i] + ", " : arrays[i] + ") ";
+            for (int i = 0; i < columnas.length; i++) {
+                statement += i != columnas.length - 1 ? columnas[i] + ", " : columnas[i] + ") ";
             }
             statement += "values(";
-            for (int i = 0; i < arrays.length; i++) {
-                statement += i != arrays.length - 1 ? "?," : "?)";
+            for (int i = 0; i < columnas.length; i++) {
+                statement += i != columnas.length - 1 ? "?," : "?)";
             }
         }
 
@@ -222,6 +252,7 @@ public class BaseDeDatos {
             JOptionPane.showMessageDialog(null, "Error//BDD//setInformacion//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        columnas = null;
         System.gc();
     }
 
