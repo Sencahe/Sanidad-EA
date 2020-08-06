@@ -13,14 +13,6 @@ public class Filtros {
     public static String FiltroPPS;
     public static String FiltroAptitud;
     
-    public Filtros(){
-        this.filtro = 0;
-        this.filtroDestinos = 0;
-        this.ordenamiento = 0;
-        this.columPatologia = "";      
-    }
-    
-
     public boolean AnexoVencido(String fecha) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate fechaUltimoAnexo = LocalDate.parse(fecha, fmt);
