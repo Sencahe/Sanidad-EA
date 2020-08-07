@@ -77,13 +77,13 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         add(boton);
         // Label----------------------
         mensaje = new JLabel();
-        mensaje.setFont(new Font("Tahoma", 1, 11));
+        mensaje.setFont(Main.utilidad.fuenteMsgBuscador());
         mensaje.setBounds(100, 100, 250, 40);
         add(mensaje);
         // otro label
         JLabel label = new JLabel("Ingrese palabra para buscar por Apellido y Nombre");
         label.setBounds(30 + 70, 15, 300, 30);
-        label.setFont(new Font("Tahoma", 0, 11));
+        label.setFont(Main.utilidad.fuenteRsltBuscador());
         add(label);
         // Icono Buscar-----------------------------
         JLabel png = new JLabel();

@@ -4,6 +4,7 @@ package mytools.database;
 import mytools.Arreglos;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
+import windows.Main;
 
 public class Emisor extends BaseDeDatos{
     
@@ -15,7 +16,7 @@ public class Emisor extends BaseDeDatos{
        
     public void setInformacion(String[] datos) {
         String statement;
-        String[] columnas = new Arreglos().todasColumnas();
+        String[] columnas = Main.arreglo.todasColumnas();
 
         //Modificar registro
         if (id != 0) {

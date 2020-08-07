@@ -20,7 +20,7 @@ public class Referencias extends javax.swing.JDialog {
         setTitle("Referencias");
         setIconImage(Tabla.iconos.getIconoSanidad().getImage());
         //LABELS CON REFERENCIAS
-        Font font = new Font("Tahoma", 1, 13);
+        Font font = Main.utilidad.fuenteLabelsRef();
         int width = 250;
         int heigt = 30;
         int x = 15;

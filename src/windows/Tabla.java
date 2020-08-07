@@ -66,13 +66,10 @@ public class Tabla extends JFrame implements ActionListener {
                
     }
 
-    private void Componentes() {
-        //OBJETOS---------------------------------------------------------------
-        Utilidades utilidad = new Utilidades();
-        Arreglos arreglo = new Arreglos();
-        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();       
+    private void Componentes() {              
         //PROPIEDADES DEL FRAME PRINCIPAL        
         setTitle("Carta de Situacion - Seccion Sanidad RI-1");
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) (pantalla.getWidth() < 1525 ? pantalla.getWidth(): 1525);
         int y = (int) (pantalla.getHeight()< 650 ? pantalla.getHeight(): 650);
         setSize(x, y);
@@ -93,13 +90,13 @@ public class Tabla extends JFrame implements ActionListener {
         UIManager.put("TabbedPane.selected", new Color(50, 205, 50));
         contenedor = new JTabbedPane();
         contenedor.setBounds(10, 10, 1485, 460);
-        contenedor.setFont(utilidad.fuentePestañas());
+        contenedor.setFont(Main.utilidad.fuentePestañas());
         container.add(contenedor);
         String categorias[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
-        scrolls = new JScrollPane[arreglo.getCategoriasLength()];
-        tablas = new JTable[arreglo.getCategoriasLength()];
+        scrolls = new JScrollPane[Main.arreglo.getCategoriasLength()];
+        tablas = new JTable[Main.arreglo.getCategoriasLength()];
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         // ciclos para crear las distintas tablas a la vez
@@ -114,8 +111,8 @@ public class Tabla extends JFrame implements ActionListener {
             // PROPIEDADES de la tabla
             tablas[i] = new JTable(model);
             tablas[i].setGridColor(Color.black);
-            tablas[i].setBackground(utilidad.colorTabla());
-            tablas[i].setFont(utilidad.fuenteTabla());
+            tablas[i].setBackground(Main.utilidad.colorTabla());
+            tablas[i].setFont(Main.utilidad.fuenteTabla());
             //eventos al presionar teclas en las tablas
             tablas[i].getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
             tablas[i].getActionMap().put("Enter", new AbstractAction() {
@@ -146,19 +143,19 @@ public class Tabla extends JFrame implements ActionListener {
             });
             //header de la tabla
             JTableHeader header = tablas[i].getTableHeader();
-            header.setFont(new Font("Tahoma", 1, 12));
-            header.setBackground(utilidad.colorTabla());
+            header.setFont(Main.utilidad.fuenteHeader());
+            header.setBackground(Main.utilidad.colorTabla());
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) tablas[i].getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
-            for (int j = 0; j < arreglo.columnasTabla().length; j++) {
-                model.addColumn(arreglo.columnasTabla()[j]);                
+            for (int j = 0; j < Main.arreglo.columnasTabla().length; j++) {
+                model.addColumn(Main.arreglo.columnasTabla()[j]);                
             }
             //tamaño de las columnas
-            for (int j = 0; j < arreglo.tamañoColumnas().length; j++) {
-                tablas[i].getColumnModel().getColumn(j).setMinWidth(arreglo.tamañoColumnas()[j]);
-                tablas[i].getColumnModel().getColumn(j).setMaxWidth(arreglo.tamañoColumnas()[j]);
-                tablas[i].getColumnModel().getColumn(j).setPreferredWidth(arreglo.tamañoColumnas()[j]);
+            for (int j = 0; j < Main.arreglo.tamañoColumnas().length; j++) {
+                tablas[i].getColumnModel().getColumn(j).setMinWidth(Main.arreglo.tamañoColumnas()[j]);
+                tablas[i].getColumnModel().getColumn(j).setMaxWidth(Main.arreglo.tamañoColumnas()[j]);
+                tablas[i].getColumnModel().getColumn(j).setPreferredWidth(Main.arreglo.tamañoColumnas()[j]);
                 //centrado del contenido de las columnas
                 if (j != 3 && j != 19) {
                     tablas[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
@@ -170,14 +167,14 @@ public class Tabla extends JFrame implements ActionListener {
             }
             //PROPIEDADES del Scroll y agregarlo al contenedor
             scrolls[i] = new JScrollPane(tablas[i]);
-            scrolls[i].getViewport().setBackground(utilidad.colorTabla());
+            scrolls[i].getViewport().setBackground(Main.utilidad.colorTabla());
             contenedor.addTab(categorias[i], scrolls[i]);
             model = null;
         }
         // BOTONES (por ahora solo uno)
         Agregar = new JButton("Nuevo +");
         Agregar.setBounds(10, 510, 100, 30);
-        Agregar.setFont(utilidad.fuenteBoton());
+        Agregar.setFont(Main.utilidad.fuenteBoton());
         Agregar.setVisible(true);
         Agregar.addActionListener(this);
         container.add(Agregar);
@@ -203,7 +200,7 @@ public class Tabla extends JFrame implements ActionListener {
         // Programa Peso Saludable
         menuFiltroPPS = new JMenu("Programa Peso Saludable");
         menuFiltrar.add(menuFiltroPPS);
-        String[] PPSs = arreglo.PPS();
+        String[] PPSs = Main.arreglo.PPS();
         PPSs[0] = "Todos";
         itemsPPS = new JMenuItem[PPSs.length];
         for (int i = 0; i < itemsPPS.length; i++) {
@@ -214,7 +211,7 @@ public class Tabla extends JFrame implements ActionListener {
         //Aptitud
         menuFiltroAptitud = new JMenu("Aptitud");
         menuFiltrar.add(menuFiltroAptitud);
-        String[] aptitudes = arreglo.Aptitud();
+        String[] aptitudes = Main.arreglo.Aptitud();
         aptitudes[0] = "Todos";
         itemsAptitud = new JMenuItem[aptitudes.length];
         for (int i = 0; i < itemsAptitud.length; i++) {
@@ -225,13 +222,13 @@ public class Tabla extends JFrame implements ActionListener {
         //Patologias
         menuPatologias = new JMenu("Patologias");
         menuFiltrar.add(menuPatologias);
-        itemsPatologias = new JMenuItem[arreglo.patologias().length];
+        itemsPatologias = new JMenuItem[Main.arreglo.patologias().length];
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (i == itemsPatologias.length - 1) {
                 JPopupMenu.Separator separadorPatologias = new JPopupMenu.Separator();
                 menuPatologias.add(separadorPatologias);
             }
-            itemsPatologias[i] = new JMenuItem(arreglo.patologias()[i]);
+            itemsPatologias[i] = new JMenuItem(Main.arreglo.patologias()[i]);
             itemsPatologias[i].addActionListener(this);
             menuPatologias.add(itemsPatologias[i]);
         }
@@ -244,7 +241,7 @@ public class Tabla extends JFrame implements ActionListener {
         //Destinos
         menuDestinos = new JMenu("Mostrar por destino");
         menuFiltrar.add(menuDestinos);
-        String[] destinos = arreglo.Destinos();
+        String[] destinos = Main.arreglo.Destinos();
         destinos[0] = "Todos";
         itemsDestinos = new JMenuItem[destinos.length];
         for (int i = 0; i < itemsDestinos.length; i++) {
@@ -257,9 +254,9 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenamiento de la tabla
         menuOrdenar = new JMenu("Ordenar por...");
         menuFiltrar.add(menuOrdenar);
-        itemsOrdenar = new JMenuItem[arreglo.ordenTabla().length];
+        itemsOrdenar = new JMenuItem[Main.arreglo.ordenTabla().length];
         for (int i = 0; i < itemsOrdenar.length; i++) {
-            itemsOrdenar[i] = new JMenuItem(arreglo.ordenTabla()[i]);
+            itemsOrdenar[i] = new JMenuItem(Main.arreglo.ordenTabla()[i]);
             itemsOrdenar[i].addActionListener(this);
             menuOrdenar.add(itemsOrdenar[i]);
         }
@@ -283,7 +280,7 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < resumen.length; i++) {
             resumen[i] = new JLabel();
             resumen[i].setBounds(15 + width, contenedor.getHeight() + 10, 150, 40);
-            resumen[i].setFont(utilidad.fuenteLabelsResumen());
+            resumen[i].setFont(Main.utilidad.fuenteLabelsResumen());
             width += 170;
             container.add(resumen[i]);
         }
@@ -302,11 +299,8 @@ public class Tabla extends JFrame implements ActionListener {
         this.getContentPane().add(scrollContainer);
         
         Actualizar(0, 0, 0);
-
-        utilidad = null;
+        
         pantalla = null;
-        arreglo = null;
-        System.gc();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -393,7 +387,7 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenar por
         for (int i = 0; i < itemsOrdenar.length; i++) {
             if (e.getSource() == itemsOrdenar[i]) {
-                Actualizar(Filtros.filtro, Filtros.ordenamiento, i);
+                Actualizar(Filtros.filtro, Filtros.filtroDestinos, i);
                 iconos.eliminarChecksOrden();
                 menuOrdenar.setIcon(iconos.getIconoCheck());
                 itemsOrdenar[i].setIcon(iconos.getIconoCheck());
@@ -411,7 +405,7 @@ public class Tabla extends JFrame implements ActionListener {
             menuBuscar.setEnabled(false);
             buscador.setVisible(true);
         }
-        System.gc();
+        //System.gc();
     }
 
     //----------------------------------------------------------------------------------------------------
@@ -431,7 +425,11 @@ public class Tabla extends JFrame implements ActionListener {
         BaseDeDatos bdd = new BaseDeDatos();
         bdd.Actualizar();
         bdd = null;
-        System.gc();
+        //System.gc();
+    }
+    
+    public static DefaultTableModel getTableModel(int cat){
+        return (DefaultTableModel) tablas[cat].getModel(); 
     }
 
 }

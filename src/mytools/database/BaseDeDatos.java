@@ -10,8 +10,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import windows.Main;
 
 public class BaseDeDatos {
     
@@ -44,35 +46,35 @@ public class BaseDeDatos {
     //----------------------------------------------------------------------------
     public void Actualizar() {       
         //OBJETOS auxiliares
-        Filtros filtrar = new Filtros();
-        Arreglos arreglo = new Arreglos();
-
-        // DECLARACION DE LOS Table model para colocar la informacion en la tabla
-        DefaultTableModel[] tablaMain = new DefaultTableModel[Tabla.tablas.length];
-        for (int i = 0; i < tablaMain.length; i++) {
-            tablaMain[i] = (DefaultTableModel) Tabla.tablas[i].getModel();
+        Filtros filtrar = null;
+        if(Filtros.filtro >= 1 && Filtros.filtro <= 3){
+            filtrar = new Filtros();
         }
         //VACIADO DE LA TABLA ACTUAL
-        for (DefaultTableModel i : tablaMain) {
-            i.setRowCount(0);
+        for (int i = 0; i < 4; i++) {
+            Tabla.getTableModel(i).setRowCount(0);
         }
-        // FILTRAR POR DESTINO
+        // MOSTRAR POR DESTINOS
         String where = "";
         if (Filtros.filtroDestinos != 0) {
-            where = " WHERE Destino = \"" + arreglo.Destinos()[Filtros.filtroDestinos] + "\"";
+            where = " WHERE Destino = \"" + Main.arreglo.Destinos()[Filtros.filtroDestinos] + "\"";
         }
         //ORDENAR LA TABLA 
-        String orderBy = arreglo.ordenTablaBD()[Filtros.ordenamiento];
+        String orderBy = Main.arreglo.ordenTablaBD()[Filtros.ordenamiento];
 
-        //CONEXION A BASE DE DATOS 
+        //CONSULTA A BASE DE DATOS 
         try {
             //consulta a la base de datos
             PreparedStatement pst = cn.prepareStatement("select * from Personal" + where + orderBy);
             ResultSet rs = pst.executeQuery();
 
             //llenado de la tabla
-            int num[] = new int[4]; //arreglo para el numero de orden en las 4 tabla distintas 
+            int num[] = new int[Main.arreglo.getCategoriasLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
+            int categoria;
+            int aux;
+            Object[] fila = new Object[Main.arreglo.columnbasBDLength() + 1];
             boolean filtrado;
+            
             while (rs.next()) {
                 //filtrado de la informacion                
                 switch (Filtros.filtro) {                  
@@ -100,16 +102,14 @@ public class BaseDeDatos {
                 }
                 //si la informacion pasa el filtro se procede a obtener los datos
                 if (filtrado) {
-                    int categoria = rs.getInt("Categoria"); //obteniendo la categoria                    
-                    // Arreglo para colocar los datos en su respectiva fila segun las columnas
-                    Object fila[] = new Object[arreglo.columnbasBDLength() + 1]; 
-                    fila[0] = ++num[categoria]; 
-                    int aux = 1; //indice inicial para el resto de los datos que iran en la fila
-                    for (String i : arreglo.columnasBD()) {
+                    categoria = rs.getInt("Categoria"); //obteniendo la categoria                                                           
+                    fila[0] = ++num[categoria]; // Arreglo para colocar los datos en su respectiva fila segun las columnas 
+                    aux = 1; //indice inicial para el resto de los datos que iran en la fila
+                    for (String i : Main.arreglo.columnasBD()) {
                         if (rs.getObject(i) != null) {
                             switch (i) {
                                 case "Grado":
-                                    fila[aux] = arreglo.grados()[categoria][rs.getInt("Grado")];
+                                    fila[aux] = Main.arreglo.grados()[categoria][rs.getInt("Grado")];
                                     break;
                                 case "Apellido":
                                     fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
@@ -124,17 +124,18 @@ public class BaseDeDatos {
                         }
                         aux++;
                     }
-                    tablaMain[categoria].addRow(fila); //agrego la fila a la tabla segun su categoria
-                    fila = null;
+                    Tabla.getTableModel(categoria).addRow(fila);                  
+                    Arrays.fill(fila,null);
                 }
             }
+            fila = null;
             num = null;
             cn.close();
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
             //obtengo el arreglo con categorias y lo hago mayusculas
-            String[] categoriasResumen = new String[arreglo.getCategoriasLength()];
-            for (int i = 0; i < arreglo.getCategoriasLength(); i++) {
-                categoriasResumen[i] = arreglo.Categorias()[i].toUpperCase();
+            String[] categoriasResumen = new String[Main.arreglo.getCategoriasLength()];
+            for (int i = 0; i < Main.arreglo.getCategoriasLength(); i++) {
+                categoriasResumen[i] = Main.arreglo.Categorias()[i].toUpperCase();
             }
             //coloco los datos en los labels
             int total = 0;
@@ -153,10 +154,8 @@ public class BaseDeDatos {
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
         
-        arreglo = null;
         filtrar = null;
-        tablaMain = null;
-        System.gc();
+        //System.gc();
     }
 
 }
