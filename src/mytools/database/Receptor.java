@@ -19,28 +19,29 @@ public class Receptor extends BaseDeDatos{
     }
     
     public String[][] getInformacion() {
+        Arreglos arreglo = new Arreglos();
         String[][] mensajero = new String[4][];
-        String[] mensajeroText = new String[Main.arreglo.getTextFieldLength()];
-        String[] mensajeroCombo = new String[Main.arreglo.getComboBoxLength()];
-        String[] mensajeroDate = new String[Main.arreglo.getDateChooserLength()];
-        String[] mensajeroCheck = new String[Main.arreglo.getCheckBoxLength()];
+        String[] mensajeroText = new String[arreglo.getTextFieldLength()];
+        String[] mensajeroCombo = new String[arreglo.getComboBoxLength()];
+        String[] mensajeroDate = new String[arreglo.getDateChooserLength()];
+        String[] mensajeroCheck = new String[arreglo.getCheckBoxLength()];
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("select * from Personal where id = " + this.id);
             ResultSet rs = pst.executeQuery();
             //SOLICITO LOS DATOS QUE VAN A LOS TEXTFIELD
             for (int i = 0; i < mensajeroText.length; i++) {
-                mensajeroText[i] = rs.getString(Main.arreglo.textField()[i]);
+                mensajeroText[i] = rs.getString(arreglo.getTextField()[i]);
             }
             //SOLICITO LOS DATOS QUE VAN A LOS COMBO BOX
             for (int i = 0; i < mensajeroCombo.length; i++) {
-                mensajeroCombo[i] = rs.getString(Main.arreglo.comboBox()[i]);
+                mensajeroCombo[i] = rs.getString(arreglo.getComboBox()[i]);
             }
             //SOLICITO LOS DATOS QUE VAN A LOS DATE CHOOSER
             for (int i = 0; i < mensajeroDate.length; i++) {
-                mensajeroDate[i] = rs.getString(Main.arreglo.dateChooser()[i]);
+                mensajeroDate[i] = rs.getString(arreglo.getDateChooser()[i]);
             }
             for (int i = 0; i < mensajeroCheck.length; i++) {
-                mensajeroCheck[i] = rs.getString(Main.arreglo.checkBox()[i]);
+                mensajeroCheck[i] = rs.getString(arreglo.getCheckBox()[i]);
             }
             
             super.getConnection().close();
@@ -53,9 +54,14 @@ public class Receptor extends BaseDeDatos{
         mensajero[1] = mensajeroCombo;
         mensajero[2] = mensajeroDate;
         mensajero[3] = mensajeroCheck;
-
-        System.gc();
+        arreglo = null;
+        mensajeroText = null;
+        mensajeroCombo = null;
+        mensajeroDate = null;
+        mensajeroCheck = null;
+        super.nullConnection();
         return mensajero;
+        
     }
     
 }

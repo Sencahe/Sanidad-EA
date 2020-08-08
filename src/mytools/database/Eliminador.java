@@ -24,7 +24,6 @@ public class Eliminador extends BaseDeDatos{
             JOptionPane.showMessageDialog(null, "Error//BDD//Eliminar//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
-        super.Actualizar();
     }
     
 }

@@ -15,8 +15,9 @@ public class Emisor extends BaseDeDatos{
     }
        
     public void setInformacion(String[] datos) {
+        Arreglos arreglo = new Arreglos();
         String statement;
-        String[] columnas = Main.arreglo.todasColumnas();
+        String[] columnas = arreglo.getTodasColumnas();
 
         //Modificar registro
         if (id != 0) {
@@ -41,9 +42,9 @@ public class Emisor extends BaseDeDatos{
             PreparedStatement pst = super.getConnection().prepareStatement(statement);
 
             int index = 1;
-            for (String dato : datos) {
-                if (!"".equals(dato)) {
-                    pst.setObject(index, dato);
+            for (int i = 0; i < datos.length; i++) {
+                if (!"".equals(datos[i])) {
+                    pst.setObject(index, datos[i]);
                 } else {
                     pst.setObject(index, null);
                 }
@@ -51,13 +52,14 @@ public class Emisor extends BaseDeDatos{
             }
             pst.executeUpdate();
             
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//setInformacion//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        arreglo = null;
         columnas = null;
-        super.Actualizar();
-        System.gc();
+        
     }
 
 }

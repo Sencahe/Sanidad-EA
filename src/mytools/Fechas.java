@@ -6,28 +6,27 @@ import java.time.format.DateTimeFormatter;
 
 public class Fechas {
     
-    private String fecha;
-    private String formatoFecha;
     
-    public Fechas(String fecha, String formatoFecha){
-        this.fecha = fecha;
-        this.formatoFecha = formatoFecha;
+    private DateTimeFormatter fmt;
+    private LocalDate fechaNac;
+    private LocalDate fechaHoy;
+    private Period periodo;
+    
+    public Fechas(String formatoFecha){
+        this.fmt = DateTimeFormatter.ofPattern(formatoFecha);
+        this.fechaHoy = LocalDate.now();
     }
 
-    public String getEdad() {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern(formatoFecha);
-        LocalDate fechaNac = LocalDate.parse(fecha, fmt);
-        LocalDate hoy = LocalDate.now();
-        Period periodo = Period.between(fechaNac, hoy);
+    public String getEdad(String fecha) {        
+        this.fechaNac = LocalDate.parse(fecha, fmt);       
+        this.periodo = Period.between(fechaNac, fechaHoy);
         String edad = String.valueOf(periodo.getYears());       
-
         return edad;
     }
     
-    public boolean fechaValida(){
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern(formatoFecha);
+    public boolean fechaValida(String fecha){       
         try {
-            fmt.parse(fecha);            
+            this.fmt.parse(fecha);            
             return true;
         } catch (Exception e) {
   

@@ -103,7 +103,6 @@ public class Utilidades {
             if (caracter == ',') {
                 e.setKeyChar('.');
             }
-            System.gc();
         }
     };
 }

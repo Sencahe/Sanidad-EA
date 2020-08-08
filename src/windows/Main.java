@@ -1,14 +1,9 @@
 package windows;
 
-import mytools.Arreglos;
-import mytools.Utilidades;
-
-
 
 public class Main {
-    
-    public static Utilidades utilidad = new Utilidades();
-    public static Arreglos arreglo = new Arreglos();
+       
+ 
     
     public static void main(String[] args) {
         //LOOK AND FEEL
@@ -29,8 +24,8 @@ public class Main {
             java.util.logging.Logger.getLogger(Tabla.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //ARRANQUE DEL PROGRAMA
+        new Main();
         Tabla start = new Tabla();
-        utilidad = null;
         System.gc();
         start.setVisible(true);
         
