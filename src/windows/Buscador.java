@@ -1,22 +1,25 @@
 package windows;
 
-import mytools.Arreglos;
 import mytools.Iconos;
-import java.awt.Font;
-import java.awt.Image;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Utilidades;
+import java.awt.Color;
+import java.awt.Dimension;
 
 public class Buscador extends javax.swing.JDialog implements ActionListener {
 
@@ -33,7 +36,10 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
     public Buscador(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         this.buscar = "";
+        this.categoria = -1;
+        this.encontrado = false;
         Componentes();
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 Tabla.habilitarMenuBuscar();
@@ -42,11 +48,12 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                 puntero = 0;
                 buscar = "";
                 encontrado = false;
+                categoria = -1;
                 mensaje.setText("");
+                setTitle("Buscar");
                 dispose();
             }
         });
-
     }
 
     private void Componentes() {
@@ -54,11 +61,29 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
         // FRAME DEL BUSCADOR
-        setLayout(null);
         setSize(400, 175);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Buscar");
+        JPanel container = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics grphcs) {
+                super.paintComponent(grphcs);
+                Graphics2D g2d = (Graphics2D) grphcs;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(200, 170,
+                        getBackground().brighter().brighter(), 0, 200,
+                        getBackground().darker().darker());
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        container.setBackground(utilidad.getColorFondo());
+        Dimension dimension = new Dimension(400, 175);
+        container.setPreferredSize(dimension);
+        container.setLayout(null);
+        dimension = null;
         //Text FIELD-------------------
         texto = new JTextField();
         texto.setBounds(100, 45, 250, 25);
@@ -79,13 +104,13 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         add(boton);
         // Label con mensaje resultado----------------------
         mensaje = new JLabel();
-        mensaje.setFont(utilidad.fuenteMsgBuscador());
+        mensaje.setFont(utilidad.getFuenteMsgBuscador());
         mensaje.setBounds(100, 100, 250, 40);
         add(mensaje);
         // label informativo
         JLabel label = new JLabel("Ingrese palabra para buscar por Apellido y Nombre");
         label.setBounds(30 + 70, 15, 300, 30);
-        label.setFont(utilidad.fuenteRsltBuscador());
+        label.setFont(utilidad.getFuenteRsltBuscador());
         add(label);
         label = null;
         // Icono Buscar-----------------------------
@@ -97,15 +122,8 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         png = null;
         //Icono frame
         setIconImage(iconos.getIconoSearchChico().getImage());
-        //wallpaper
-        JLabel wallpaper = new JLabel();
-        wallpaper.setBounds(0, 0, this.getWidth(), this.getHeight());
-        add(wallpaper);
-        Icon fondo = new ImageIcon((iconos.getWallpaperFormulario()).getImage().getScaledInstance(wallpaper.getWidth(),
-                wallpaper.getHeight(), Image.SCALE_DEFAULT));
-        wallpaper.setIcon(fondo);
-        fondo = null;
-        wallpaper = null;
+
+        this.getContentPane().add(container);
         iconos = null;
         utilidad = null;
     }
@@ -125,9 +143,8 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
             if (categoria != Tabla.getContenedor().getSelectedIndex()) {
                 puntero = 0;
                 encontrado = false;
-                setTitle("Buscando en " + Tabla.getContenedor().getSelectedComponent().getName().trim());
+                setTitle("Buscando en " + Tabla.getContenedor().getTitleAt(Tabla.getContenedor().getSelectedIndex()).trim());
             }
-            
 
             buscar = texto.getText().toLowerCase().trim();
             categoria = Tabla.getContenedor().getSelectedIndex();
@@ -144,7 +161,7 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                 } else {
                     nombre = ((String) Tabla.getTablas(categoria).getValueAt(puntero, 3)).toLowerCase();
                     if (nombre.contains(buscar)) {
-                        Tabla.getScroll(categoria).getVerticalScrollBar().setValue(puntero * 10);
+                        Tabla.getScroll(categoria).getVerticalScrollBar().setValue(puntero * 16);
                         Tabla.getTablas(categoria).setRowSelectionInterval(puntero, puntero);
                         mensaje.setText((String) Tabla.getTablas(categoria).getValueAt(puntero, 3));
                         buscarSiguiente = false;
@@ -162,8 +179,9 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == boton) {
             buscarPorNombre();
+            System.gc();
         }
-        System.gc();
+
     }
 
 }

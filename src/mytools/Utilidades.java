@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class Utilidades {
     
-    private final Color colorTabla, transparencia;
+    private final Color colorTabla, colorFondo,transparencia;
     
     private final Font fuentePestañas, fuenteTabla, fuenteBoton, fuenteLabelsResumen, fuenteHeader;
     
@@ -18,8 +18,9 @@ public class Utilidades {
     private final Font fuenteLabelsRef;
     
     public Utilidades(){
-        this.colorTabla = new Color(200,250,150);
+        this.colorTabla = new Color(255,255,255);
         this.transparencia = new Color(255,255,255,1);
+        this.colorFondo = new Color(20,180,20);
         this.fuentePestañas = new Font ("Tahoma", 1, 16);
         this.fuenteTabla = new Font("Tahoma", 0, 13);
         this.fuenteBoton = new Font("Tahoma", 1, 13);
@@ -37,59 +38,62 @@ public class Utilidades {
     
     //COLORES      
     //tabla
-    public Color colorTabla(){       
+    public Color getColorTabla(){       
         return colorTabla;
     }
     //transparencia
-    public Color transparencia(){
+    public Color getTransparencia(){
         return transparencia;
+    }
+    public Color getColorFondo(){
+        return colorFondo;
     }
     //FUENTES
     //tabla
-    public Font fuentePestañas(){
+    public Font getFuentePestañas(){
         return fuentePestañas;
     }
-    public Font fuenteTabla(){
+    public Font getFuenteTabla(){
         return fuenteTabla;
     }
-    public Font fuenteBoton(){
+    public Font getFuenteBoton(){
         return fuenteBoton;
     }
-    public Font fuenteLabelsResumen(){
+    public Font getFuenteLabelsResumen(){
         return fuenteLabelsResumen;
     }
-    public Font fuenteHeader(){
+    public Font getFuenteHeader(){
         return fuenteHeader;
     }
     //formulario
-    public Font fuenteLabelsFormulario(){
+    public Font getFuenteLabelsFormulario(){
         return fuenteLabelsFormulario;
     }
-    public Font fuenteTextFields(){
+    public Font getFuenteTextFields(){
         return fuenteTextFields;
     }
-    public Font fuenteHolders(){
+    public Font getFuenteHolders(){
         return fuenteHolders;
     }
-    public Font fuenteChecks(){
+    public Font getFuenteChecks(){
         return fuenteChecks;
     }
-    public Font fuenteLabelGrande(){
+    public Font getFuenteLabelGrande(){
         return fuenteLabelGrande;
     }
     //FORMATO FECHA
-    public String formatoFecha(){
+    public String getFormatoFecha(){
         return "dd/MM/yyyy";
     }
     //Buscador
-    public Font fuenteMsgBuscador(){
+    public Font getFuenteMsgBuscador(){
         return fuenteLabelBuscador;
     }
-    public Font fuenteRsltBuscador(){
+    public Font getFuenteRsltBuscador(){
         return fuenteLabelResultado;
     }
     //Referencias
-    public Font fuenteLabelsRef(){
+    public Font getFuenteLabelsRef(){
         return fuenteLabelsRef;
     }  
     //OTROS

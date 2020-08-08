@@ -4,7 +4,6 @@ import windows.Tabla;
 import mytools.Arreglos;
 import mytools.Fechas;
 import mytools.Filtros;
-import mytools.Utilidades;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,8 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import windows.Main;
+
 
 public class BaseDeDatos {
     
@@ -51,9 +49,9 @@ public class BaseDeDatos {
         //OBJETOS auxiliares
         Arreglos arreglo = new Arreglos();
         Fechas edad = new Fechas("dd/MM/yyyy");
-        Filtros filtrar = null;
-        if(Filtros.filtro >= 1 && Filtros.filtro <= 3){
-            filtrar = new Filtros();
+        Filtros filtered = null;
+        if(Filtros.getFilter() >= 1 && Filtros.getFilter() <= 3){
+            filtered = new Filtros();
         }
         //VACIADO DE LA TABLA ACTUAL
         for (int i = 0; i < 4; i++) {
@@ -61,11 +59,11 @@ public class BaseDeDatos {
         }
         // MOSTRAR POR DESTINOS
         String where = "";
-        if (Filtros.filtroDestinos != 0) {
-            where = " WHERE Destino = \"" + arreglo.getDestinos()[Filtros.filtroDestinos] + "\"";
+        if (Filtros.getShowByDestino() != 0) {            
+            where = " WHERE Destino = \"" + arreglo.getDestinos()[Filtros.getShowByDestino()] + "\"";
         }
         //ORDENAR LA TABLA 
-        String orderBy = arreglo.getOrdenTablaBD()[Filtros.ordenamiento];
+        String orderBy = arreglo.getOrdenTablaBD()[Filtros.getOrder()];
 
         //CONSULTA A BASE DE DATOS 
         try {
@@ -78,22 +76,24 @@ public class BaseDeDatos {
             int categoria;
             int aux;
             Object[] fila = new Object[arreglo.getColumnbasBDLength() + 1];
+            String[] columnas = arreglo.getColumnasBD();
             boolean filtrado;
+            
             
             while (rs.next()) {
                 //filtrado de la informacion                
-                switch (Filtros.filtro) {                  
+                switch (Filtros.getFilter()) {                  
                     case 1:
-                        filtrado = filtrar.AnexoVencido(rs.getString("Anexo27"));
+                        filtrado = filtered.expiredAnexo(rs.getString("Anexo27"));
                         break;
                     case 2:
-                        filtrado = filtrar.FiltroPPS(rs.getString("PPS"));
+                        filtrado = filtered.PPSFilter(rs.getString("PPS"));
                         break;
                     case 3:
-                        filtrado = filtrar.FiltroAptitud(rs.getString("Aptitud"));
+                        filtrado = filtered.aptitudFilter(rs.getString("Aptitud"));
                         break;
                     case 4:
-                        filtrado = rs.getString(Filtros.columPatologia) != null;
+                        filtrado = rs.getString(Filtros.getPatologiaColumn()) != null;
                         break;
                     case 5:
                         filtrado = rs.getString("Act") != null || rs.getString("Inf") != null;
@@ -110,7 +110,7 @@ public class BaseDeDatos {
                     categoria = rs.getInt("Categoria"); //obteniendo la categoria                                                           
                     fila[0] = ++num[categoria];
                     aux = 1; //indice inicial para el resto de los datos que iran en la fila
-                    for (String i : arreglo.getColumnasBD()) {
+                    for (String i : columnas) {
                         if (rs.getObject(i) != null) {
                             switch (i) {
                                 case "Grado":
@@ -133,34 +133,32 @@ public class BaseDeDatos {
                     Arrays.fill(fila,null);
                 }
             }
-            fila = null;
-            num = null;
             cn.close();
             cn = null;
+            fila = null;
+            num = null;
+            columnas = null;            
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
-            //obtengo el arreglo con categorias y lo hago mayusculas
-            String[] categoriasResumen = new String[arreglo.getCategoriasLength()];
-            for (int i = 0; i < arreglo.getCategoriasLength(); i++) {
-                categoriasResumen[i] = arreglo.getCategorias()[i].toUpperCase();
-            }
-            //coloco los datos en los labels
+            String[] categorias = arreglo.getCategorias();
+            int cantTabla;
             int total = 0;
-            for (int i = 0; i < arreglo.getCategoriasLength(); i++) {
-                if (i != arreglo.getCategoriasLength() - 1) {
-                    Tabla.getResumen(i).setText(categoriasResumen[i] + ":  " + Tabla.getTablas(i).getRowCount());
+            for (int i = 0; i < categorias.length + 1; i++) {
+                if (i != categorias.length) {
+                    cantTabla =  Tabla.getTablas(i).getRowCount();
+                    Tabla.getResumen(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
                     total += Tabla.getTablas(i).getRowCount();
                 } else {
                     Tabla.getResumen(i).setText("TOTAL:  " + total);
                 }
             }
-            categoriasResumen = null;
-            //FIN DEL METODO ACTUALIZAR
+            categorias = null;           
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        //FIN DEL METODO ACTUALIZAR------------------------
         arreglo = null;
-        filtrar = null;
+        filtered = null;
         edad = null;
     }
 

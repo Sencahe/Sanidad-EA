@@ -9,19 +9,22 @@ import mytools.TextPrompt;
 import mytools.Utilidades;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
-import java.awt.Image;
+import java.awt.Dimension;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Arreglos;
 import mytools.Iconos;
@@ -50,6 +53,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 System.gc();
             }
         });
+        
     }
 
     private void Componentes() {
@@ -58,27 +62,46 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         Iconos iconos = new Iconos();
         Arreglos arreglo = new Arreglos();
         //PROPIEDADES DEL FRAME        
-        setLayout(null);
         setSize(500, 510);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Nuevo Registro");
         setIconImage(iconos.getIconoSanidad().getImage());
+        JPanel container = new JPanel() {            
+            @Override
+            protected void paintComponent(Graphics grphcs) {
+                super.paintComponent(grphcs);
+                Graphics2D g2d = (Graphics2D) grphcs;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(50,500,
+                        getBackground().brighter(),200, 170,
+                        getBackground().darker());
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+
+            }
+        };
+        container.setBackground(utilidad.getColorFondo());
+        Dimension dimension = new Dimension(480, 500);
+        container.setPreferredSize(dimension);
+        container.setLayout(null);
+        dimension = null;
         //BOTONES PRINCIPALES 
         Agregar = new JButton("Agregar");
         Agregar.setBounds(385, 365, 85, 30);
         Agregar.addActionListener(this);
-        add(Agregar);
+        container.add(Agregar);
         Modificar = new JButton("Guardar");
         Modificar.setBounds(385, 365, 85, 30);
         Modificar.addActionListener(this);
         Modificar.setVisible(false);
-        add(Modificar);
+        container.add(Modificar);
         Eliminar = new JButton("Eliminar");
         Eliminar.setBounds(385, 400, 85, 30);
         Eliminar.addActionListener(this);
         Eliminar.setVisible(false);
-        add(Eliminar);
+        container.add(Eliminar);
         // DECLARACION DE COMPONENTES DEL FRAME MAS ALGUNAS PROPIEDADES
         textField = new JTextField[arreglo.getTextFieldLength()];
         comboBox = new JComboBox[arreglo.getComboBoxLength()];
@@ -88,10 +111,10 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
-            textField[i].setFont(utilidad.fuenteTextFields());
+            textField[i].setFont(utilidad.getFuenteTextFields());
             if (i == 0 || i == 1) {
                 TextPrompt holder = new TextPrompt("Campo obligatorio", textField[i]);
-                holder.setFont(utilidad.fuenteHolders());
+                holder.setFont(utilidad.getFuenteHolders());
                 holder.setForeground(Color.GRAY);
                 holder = null;
             }
@@ -102,27 +125,28 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             if (i >= 4 && i <= 6) {
                 textField[i].setDocument(new JTextFieldLimit(5));
             }
-            add(textField[i]);
+            container.add(textField[i]);
         }
         //propiedades combo box
         for (int i = 0; i < comboBox.length; i++) {
             comboBox[i] = new JComboBox();
-            add(comboBox[i]);
+            container.add(comboBox[i]);
         }
         //propiedades dateChooser
         for (int i = 0; i < dateChooser.length; i++) {
             dateChooser[i] = new JDateChooser();
             dateChooser[i].setForeground(Color.black);
-            dateChooser[i].setFont(utilidad.fuenteTextFields());
-            dateChooser[i].setDateFormatString(utilidad.formatoFecha());
-            add(dateChooser[i]);
+            dateChooser[i].setFont(utilidad.getFuenteTextFields());
+            dateChooser[i].setDateFormatString(utilidad.getFormatoFecha());
+            container.add(dateChooser[i]);
         }
         //propiedades labels
         for (int i = 0; i < labels.length; i++) {
             labels[i] = new JLabel();
-            labels[i].setFont(utilidad.fuenteLabelsFormulario());
-            add(labels[i]);
+            labels[i].setFont(utilidad.getFuenteLabelsFormulario());
+            container.add(labels[i]);
         }
+        
         //UBICACION DE LOS COMPONENTES Y PROPIEDADES PARTICULARES DE CADA UNO
         //Categoria COMBO 0
         labels[0].setBounds(15, 10, 60, 20);
@@ -131,7 +155,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         comboBox[0].addActionListener(this);
         for (int i = 0; i < arreglo.getCategoriasLength(); i++) {
             comboBox[0].addItem(arreglo.getCategorias()[i]);
-        }      
+        }
         //Grado COMBO 1
         labels[1].setBounds(15, 45, 60, 20);
         labels[1].setText("Grado");
@@ -199,7 +223,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         calcularIMC = new JButton("Calcular IMC");
         calcularIMC.setBounds(30, 305, 110, 30);
         calcularIMC.addActionListener(this);
-        add(calcularIMC);
+        container.add(calcularIMC);
         //Observaciones TEXTFIELD 7
         labels[14].setBounds(15, 345, 90, 20);
         labels[14].setText("Observaciones");
@@ -209,31 +233,23 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         for (int i = 0; i < checkBox.length; i++) {
             checkBox[i] = new JCheckBox(arreglo.getCheckBox()[i]);
             checkBox[i].setBounds(X, 405, 46, 20);
-            checkBox[i].setFont(utilidad.fuenteChecks());
+            checkBox[i].setFont(utilidad.getFuenteChecks());
             checkBox[i].setOpaque(false);
-            checkBox[i].setBackground(utilidad.transparencia());
-            add(checkBox[i]);
+            checkBox[i].setBackground(utilidad.getTransparencia());
+            container.add(checkBox[i]);
             X += 44;
         }
         //LABEL ULTIMO ANEXO 27
         JLabel ultA27 = new JLabel("<HTML><U>Ultimo Anexo 27</U></HTML>");
-        ultA27.setFont(utilidad.fuenteLabelGrande());
+        ultA27.setFont(utilidad.getFuenteLabelGrande());
         ultA27.setBounds(15, 165, 130, 30);
-        add(ultA27);
-        ultA27 = null;
-        //WALPAPER
-        JLabel wallpaper = new JLabel();
-        wallpaper.setBounds(0, 0, this.getWidth(), this.getHeight());
-        add(wallpaper);
-        Icon fondo = new ImageIcon((iconos.getWallpaperFormulario()).getImage().getScaledInstance(wallpaper.getWidth(),
-                wallpaper.getHeight(), Image.SCALE_DEFAULT));
-        wallpaper.setIcon(fondo);    
-        //Elimino la referencia a todos los objetos que ya no seran utilizados
-        fondo = null;
-        wallpaper = null;
+        container.add(ultA27);
+        ultA27 = null;      
+        //Elimino la referencia a todos los objetos que ya no seran utilizados        
         utilidad = null;
         iconos = null;
         arreglo = null;
+        this.getContentPane().add(container);
     }
 
     //------------------------------------------------------
@@ -291,15 +307,17 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         }
         //EVENTO BOTON MODIFICAR
         if (e.getSource() == Modificar) {
-            int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea guardar los cambios?", "Guardar Cambios", JOptionPane.YES_NO_OPTION);
+            int opcion = JOptionPane.showConfirmDialog(null,
+                    "¿Esta seguro que desea guardar los cambios?",
+                    "Guardar Cambios", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_NO_OPTION) {
                 if (Validar()) {
                     dispose();
                     Emisor enviar = new Emisor(id);
                     enviar.setInformacion(enviarDatos());
                     enviar.Actualizar();
-                    Tabla.getTablas(Tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);
                     enviar = null;
+                    Tabla.getTablas(Tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);                   
                     Vaciar();
                     System.gc();
                 }
@@ -307,7 +325,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         }
         //EVENTO BOTON ELIMINAR
         if (e.getSource() == Eliminar) {
-            int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar esta informacion?", "Eliminar informacion", JOptionPane.YES_NO_OPTION);
+            int opcion = JOptionPane.showConfirmDialog(null, 
+                    "¿Esta seguro que desea eliminar esta informacion?", 
+                    "Eliminar informacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 dispose();
                 Eliminador eliminar = new Eliminador(id);
@@ -514,7 +534,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         return datos;
     }
 
-    public void setCategoria(int index){
+    public void setCategoria(int index) {
         this.comboBox[0].setSelectedIndex(index);
     }
+    
 }

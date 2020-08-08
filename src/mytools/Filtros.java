@@ -6,14 +6,15 @@ import java.time.format.DateTimeFormatter;
 
 public class Filtros {
 
-    public static int filtro;
-    public static int filtroDestinos;
-    public static int ordenamiento;
-    public static String columPatologia;
-    public static String filtroPPS;
-    public static String filtroAptitud;
+    private static int filter;
+    private static int showByDestino;
+    private static int order;
+    
+    private static String patologiaColumn;
+    private static String PPSColumn;
+    private static String AptitudColumn;
 
-    public boolean AnexoVencido(String fecha) {
+    public boolean expiredAnexo(String fecha) {
         if (fecha != null) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate fechaUltimoAnexo = LocalDate.parse(fecha, fmt);
@@ -26,22 +27,59 @@ public class Filtros {
         }
     }
 
-    public boolean FiltroPPS(String pps) {
+    public boolean PPSFilter(String pps) {
         if (pps != null) {
-            return filtroPPS.equals(pps);
+            return PPSColumn.equals(pps);
         } else {
             return false;
         }
 
     }
 
-    public boolean FiltroAptitud(String apt) {
+    public boolean aptitudFilter(String apt) {
         if (apt != null) {
-            return filtroAptitud.equals(apt);
+            return AptitudColumn.equals(apt);
         } else {
             return false;
         }
-
     }
-
+    //------------------------------------------------------------
+    //SETTERS Y GETTERS
+    public static int getFilter(){
+        return Filtros.filter;
+    }
+    public static void setFilter(int filter){
+        Filtros.filter = filter;
+    }
+    public static int getShowByDestino(){
+        return Filtros.showByDestino;
+    }
+    public static void setShowByDestino(int destino){
+        Filtros.showByDestino = destino;
+    }
+    public static int getOrder(){
+        return Filtros.order;
+    }
+    public static void setOrder(int order){
+        Filtros.order = order;
+    }
+    //-----------
+    public static String getPatologiaColumn(){
+        return Filtros.patologiaColumn;
+    }
+    public static void setPatologiaColumn(String patologia){
+        Filtros.patologiaColumn = patologia;
+    }
+    public static String getPPSColumn(){
+        return Filtros.PPSColumn;
+    }
+    public static void setPPSColumn(String pps) {
+        Filtros.PPSColumn = pps;
+    }
+    public static String getAptitudColumn(){
+        return Filtros.AptitudColumn; 
+    }
+    public static void setAptitudColumn(String apt){
+        Filtros.AptitudColumn = apt;
+    }
 }

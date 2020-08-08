@@ -5,7 +5,10 @@ import mytools.Filtros;
 import mytools.Iconos;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import javax.swing.*;
@@ -26,22 +29,22 @@ public class Tabla extends JFrame implements ActionListener {
     private static JLabel[] resumen;
 
     private static JMenu menuFiltrar, menuRef, menuBuscar;
-    private static JMenu menuFiltroPPS;
-    private static JMenu menuFiltroAptitud;
-    private static JMenu menuPatologias;
+    private JMenu menuFiltroPPS;
+    private JMenu menuFiltroAptitud;
+    private JMenu menuPatologias;
     //
-    private static JMenu menuDestinos;
+    private JMenu menuDestinos;
     //
-    private static JMenu menuOrdenar;
+    private JMenu menuOrdenar;
 
-    private static JMenuItem itemListaCompleta;
-    private static JMenuItem itemAnexoVencido;
-    private static JMenuItem[] itemsPPS;
-    private static JMenuItem[] itemsAptitud;
-    private static JMenuItem[] itemsPatologias;
-    private static JMenuItem itemObservaciones;
+    private JMenuItem itemListaCompleta;
+    private JMenuItem itemAnexoVencido;
+    private JMenuItem[] itemsPPS;
+    private JMenuItem[] itemsAptitud;
+    private JMenuItem[] itemsPatologias;
+    private JMenuItem itemObservaciones;
     //
-    private static JMenuItem[] itemsDestinos;
+    private JMenuItem[] itemsDestinos;
     //
     private static JMenuItem[] itemsOrdenar;
 
@@ -55,11 +58,11 @@ public class Tabla extends JFrame implements ActionListener {
     private Buscador buscador;
     private Referencias referencia;
 
-    public Tabla() {       
+    public Tabla() {
         Componentes();
         this.formulario = new Formulario(this, true);
         this.buscador = new Buscador(this, false);
-        this.referencia = new Referencias(this, true);        
+        this.referencia = new Referencias(this, true);
     }
 
     private void Componentes() {
@@ -79,27 +82,43 @@ public class Tabla extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setIconImage(iconos.getIconoSanidad().getImage());
         pantalla = null;
-        JPanel container = new JPanel();
+        //jpanel para el fondo del frame
+        JPanel container = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics grphcs) {
+                super.paintComponent(grphcs);
+                Graphics2D g2d = (Graphics2D) grphcs;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(50, 500,
+                        getBackground().brighter().brighter(), 200, 170,
+                        getBackground().darker().darker());
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        container.setBackground(utilidad.getColorFondo());
         Dimension dimension = new Dimension(1505, 580);
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
+        //scrollpane para el frame
         JScrollPane scrollContainer = new JScrollPane(container);
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-       
         //----------------------------------------------------------------------
         //PESTAÑAS DE LAS TABLAS
-        UIManager.put("TabbedPane.selected", utilidad.colorTabla());
+        UIManager.put("TabbedPane.selected", utilidad.getColorTabla());
         contenedor = new JTabbedPane();
         contenedor.setBounds(10, 10, 1485, 460);
-        contenedor.setFont(utilidad.fuentePestañas());
+        contenedor.setFont(utilidad.getFuentePestañas());
         container.add(contenedor);
         String categorias[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
         scrolls = new JScrollPane[arreglo.getCategoriasLength()];
         tablas = new JTable[arreglo.getCategoriasLength()];
+        //objeto para centrar las celdas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         // ciclos para crear las distintas tablas a la vez
@@ -114,8 +133,8 @@ public class Tabla extends JFrame implements ActionListener {
             // PROPIEDADES de la tabla
             tablas[i] = new JTable(model);
             tablas[i].setGridColor(Color.black);
-            tablas[i].setBackground(utilidad.colorTabla());
-            tablas[i].setFont(utilidad.fuenteTabla());
+            tablas[i].setBackground(utilidad.getColorTabla());
+            tablas[i].setFont(utilidad.getFuenteTabla());
             //eventos al presionar teclas en las tablas
             tablas[i].getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
             tablas[i].getActionMap().put("Enter", new AbstractAction() {
@@ -146,10 +165,10 @@ public class Tabla extends JFrame implements ActionListener {
             });
             //header de la tabla
             JTableHeader header = tablas[i].getTableHeader();
-            header.setFont(utilidad.fuenteHeader());
-            header.setBackground(utilidad.colorTabla());
+            header.setFont(utilidad.getFuenteHeader());
+            header.setBackground(utilidad.getColorTabla());
             header.setReorderingAllowed(false);
-            ((DefaultTableCellRenderer) tablas[i].getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+            ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
             for (int j = 0; j < arreglo.getColumnasTabla().length; j++) {
                 model.addColumn(arreglo.getColumnasTabla()[j]);
@@ -170,19 +189,23 @@ public class Tabla extends JFrame implements ActionListener {
             }
             //PROPIEDADES del Scroll y agregarlo al contenedor
             scrolls[i] = new JScrollPane(tablas[i]);
-            scrolls[i].getViewport().setBackground(utilidad.colorTabla());
+            scrolls[i].getViewport().setBackground(utilidad.getColorTabla());
+            scrolls[i].setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             contenedor.addTab(categorias[i], scrolls[i]);
             model = null;
         }
+
+        //----------------------------------------------------------------------
         // BOTONES (por ahora solo uno)
         Agregar = new JButton("Nuevo +");
         Agregar.setBounds(10, 510, 100, 30);
-        Agregar.setFont(utilidad.fuenteBoton());
+        Agregar.setFont(utilidad.getFuenteBoton());
         Agregar.setVisible(true);
         Agregar.addActionListener(this);
         container.add(Agregar);
         //----------------------------------------------------------------------
-        
+
         // BARRA MENU----------------------------------------------------------        
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -285,21 +308,11 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < resumen.length; i++) {
             resumen[i] = new JLabel();
             resumen[i].setBounds(15 + width, contenedor.getHeight() + 10, 150, 40);
-            resumen[i].setFont(utilidad.fuenteLabelsResumen());
-            width += 170;
+            resumen[i].setFont(utilidad.getFuenteLabelsResumen());
+            width += i == 1 ? 200 : 170;
             container.add(resumen[i]);
         }
-        //----------------------------------------------------------------------
-        // WALLPAPER DE LA APP
-        JLabel fondo = new JLabel();
-        fondo.setBounds(0, 0, 1525, 650);
-        fondo.setVisible(true);
-        container.add(fondo);
-        Icon wallpaper = new ImageIcon(iconos.getWallpaper().getImage().getScaledInstance(fondo.getWidth(),
-                fondo.getHeight(), Image.SCALE_DEFAULT));
-        fondo.setIcon(wallpaper);
-        wallpaper = null;
-        fondo = null;
+        //----------------------------------------------------------------------      
         //----------------------------------------------------------------------
         //FINALIZACION DE LOS COMPONENTES
         this.getContentPane().add(scrollContainer);
@@ -323,7 +336,7 @@ public class Tabla extends JFrame implements ActionListener {
 
         }
         //----------------------BARRA MENU--------------------------------------
-        //MENU FILTRAR--------------------------------
+        //MENU FILTRAR--------------------------------FILTROS-----------------
         //Lista completa
         if (e.getSource() == itemListaCompleta) {
             Actualizar(0, 0, 0);
@@ -331,7 +344,7 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // anexo vencido
         if (e.getSource() == itemAnexoVencido) {
-            Actualizar(1, Filtros.filtroDestinos, Filtros.ordenamiento);
+            Actualizar(1, Filtros.getShowByDestino(), Filtros.getShowByDestino());
             eliminarChecksFiltros();
             itemAnexoVencido.setIcon(check);
         }
@@ -339,10 +352,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsPPS.length; i++) {
             if (e.getSource() == itemsPPS[i]) {
                 if (i != 0) {
-                    Filtros.filtroPPS = itemsPPS[i].getText();
-                    Actualizar(2, Filtros.filtroDestinos, Filtros.ordenamiento);
+                    Filtros.setPPSColumn(itemsPPS[i].getText());
+                    Actualizar(2, Filtros.getShowByDestino(), Filtros.getOrder());
                 } else {
-                    Actualizar(0, Filtros.filtroDestinos, Filtros.ordenamiento);
+                    Actualizar(0, Filtros.getShowByDestino(), Filtros.getOrder());
                 }
                 eliminarChecksFiltros();
                 menuFiltroPPS.setIcon(check);
@@ -353,10 +366,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsAptitud.length; i++) {
             if (e.getSource() == itemsAptitud[i]) {
                 if (i != 0) {
-                    Filtros.filtroAptitud = itemsAptitud[i].getText();
-                    Actualizar(3, Filtros.filtroDestinos, Filtros.ordenamiento);
+                    Filtros.setAptitudColumn(itemsAptitud[i].getText());
+                    Actualizar(3, Filtros.getShowByDestino(), Filtros.getOrder());
                 } else {
-                    Actualizar(0, Filtros.filtroDestinos, Filtros.ordenamiento);
+                    Actualizar(0, Filtros.getShowByDestino(), Filtros.getOrder());
                 }
                 eliminarChecksFiltros();
                 menuFiltroAptitud.setIcon(check);
@@ -367,10 +380,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (e.getSource() == itemsPatologias[i]) {
                 if (i != itemsPatologias.length - 1) {
-                    Filtros.columPatologia = (itemsPatologias[i].getText());
-                    Actualizar(4, Filtros.filtroDestinos, Filtros.ordenamiento);
+                    Filtros.setPatologiaColumn(itemsPatologias[i].getText());
+                    Actualizar(4, Filtros.getShowByDestino(), Filtros.getOrder());
                 } else {
-                    Actualizar(5, Filtros.filtroDestinos, Filtros.ordenamiento);
+                    Actualizar(5, Filtros.getShowByDestino(), Filtros.getOrder());
                 }
                 eliminarChecksFiltros();
                 menuPatologias.setIcon(check);
@@ -379,14 +392,14 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // observaciones 
         if (e.getSource() == itemObservaciones) {
-            Actualizar(6, Filtros.filtroDestinos, Filtros.ordenamiento);
+            Actualizar(6, Filtros.getShowByDestino(), Filtros.getOrder());
             eliminarChecksFiltros();
             itemObservaciones.setIcon(check);
         }
         // destinos
         for (int i = 0; i < itemsDestinos.length; i++) {
             if (e.getSource() == itemsDestinos[i]) {
-                Actualizar(Filtros.filtro, i, Filtros.ordenamiento);
+                Actualizar(Filtros.getFilter(), i, Filtros.getOrder());
                 eliminarChecksDestino();
                 menuDestinos.setIcon(check);
                 itemsDestinos[i].setIcon(check);
@@ -395,25 +408,26 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenar por
         for (int i = 0; i < itemsOrdenar.length; i++) {
             if (e.getSource() == itemsOrdenar[i]) {
-                Actualizar(Filtros.filtro, Filtros.filtroDestinos, i);
+                Actualizar(Filtros.getFilter(), Filtros.getShowByDestino(), i);
                 eliminarChecksOrden();
                 menuOrdenar.setIcon(check);
                 itemsOrdenar[i].setIcon(check);
             }
         }
-        //MENU REFERENCIAS-----------------------------
+        //MENU REFERENCIAS-----------------------------------------
         if (e.getSource() == itemRef) {
             referencia.setVisible(true);;
+            System.gc();
         }
 
-        //MENU BUSCAR---------------------------------
+        //MENU BUSCAR--------------------------------------------
         if (e.getSource() == itemBuscar) {
             menuFiltrar.setEnabled(false);
             menuRef.setEnabled(false);
             menuBuscar.setEnabled(false);
             buscador.setVisible(true);
+            System.gc();
         }
-        //System.gc();
     }
 
     //----------------------------------------------------------------------------------------------------
@@ -430,42 +444,44 @@ public class Tabla extends JFrame implements ActionListener {
 
     //-------------------------------------------------------------------------------------------------
     //---------------------- LLENAR TABLA--------------------------------------------------------------
-    private void Actualizar(int filtro, int destino, int ordenamiento) {
-        Filtros.filtro = filtro;
-        Filtros.filtroDestinos = destino;
-        Filtros.ordenamiento = ordenamiento;
+    private void Actualizar(int filtro, int destino, int order) {
+        Filtros.setFilter(filtro);
+        Filtros.setShowByDestino(destino);
+        Filtros.setOrder(order);
         BaseDeDatos bdd = new BaseDeDatos();
         bdd.Actualizar();
         bdd = null;
         System.gc();
     }
+    //--------------------------------------------------------------------------------------------------
+    //---------------------- CHECK ICONS ---------------------------------------------------------------
 
     public void eliminarChecksFiltros() {
         itemAnexoVencido.setIcon(null);
 
         menuFiltroPPS.setIcon(null);
-        for (int i = 0; i < Tabla.itemsPPS.length; i++) {
+        for (int i = 0; i < itemsPPS.length; i++) {
             itemsPPS[i].setIcon(null);
         }
         menuFiltroAptitud.setIcon(null);
-        for (int i = 0; i < Tabla.itemsAptitud.length; i++) {
+        for (int i = 0; i < itemsAptitud.length; i++) {
             itemsAptitud[i].setIcon(null);
         }
         menuPatologias.setIcon(null);
-        for (int i = 0; i < Tabla.itemsPatologias.length; i++) {
+        for (int i = 0; i < itemsPatologias.length; i++) {
             itemsPatologias[i].setIcon(null);
         }
         itemObservaciones.setIcon(null);
     }
 
     public void eliminarChecksDestino() {
-        for (int i = 0; i < Tabla.itemsDestinos.length; i++) {
+        for (int i = 0; i < itemsDestinos.length; i++) {
             itemsDestinos[i].setIcon(null);
         }
     }
 
     public void eliminarChecksOrden() {
-        for (int i = 0; i < Tabla.itemsOrdenar.length; i++) {
+        for (int i = 0; i < itemsOrdenar.length; i++) {
             itemsOrdenar[i].setIcon(null);
         }
     }
@@ -474,13 +490,14 @@ public class Tabla extends JFrame implements ActionListener {
         //FILTROS
         eliminarChecksFiltros();
         //DESTINOS
-        Tabla.menuDestinos.setIcon(null);
+        menuDestinos.setIcon(null);
         eliminarChecksDestino();
         //ORDEN
-        Tabla.menuOrdenar.setIcon(null);
+        menuOrdenar.setIcon(null);
         eliminarChecksOrden();
     }
 
+    //--------GETTER Y SETTERS---------------------------
     public static DefaultTableModel getTableModel(int cat) {
         return (DefaultTableModel) tablas[cat].getModel();
     }

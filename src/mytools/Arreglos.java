@@ -2,7 +2,9 @@ package mytools;
 
 public class Arreglos {
 
-
+    public Arreglos(){
+        
+    }
     //=================================================================================
     //=================================================================================
     // ARREGLOS COMO PROPIEDADES PARA LOS JTABLES DEL FRAME PRINCIPAL
@@ -18,11 +20,11 @@ public class Arreglos {
 
     public int[] getTamañoColumnas() {
         //                      Nr Grd A/S AyN Dest DNI A27 Age Kgs Alt  IMC PPS APT  D   H   A   T  Inf  Act  OBS id
-        int[] TamañoColumnas = {40, 50, 70, 240, 60, 80, 110, 40, 50, 50, 50, 105, 65, 32, 32, 32, 32, 32, 32, 260, 40};
+        int[] TamañoColumnas = {40, 50, 70, 240, 60, 80, 110, 40, 50, 50, 50, 105, 65, 32, 32, 32, 32, 32, 32, 258, 40};
         return TamañoColumnas;
     }
 
-    // ARREGLO SOBRE EL CUAL SE ITERA PARA RECUPERAR LA INFORMACION DE LA BASE DE DATOS
+    // ARREGLO SOBRE EL CUAL SE ITERA PARA RECUPERAR LA INFORMACION DE LA BASE DE DATOS A LA TABLA PRINCIPAL
     public String[] getColumnasBD() {
         String[] columnnasBD = {"Grado", "Arma", "Apellido", "Destino", "DNI", "Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
             "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};

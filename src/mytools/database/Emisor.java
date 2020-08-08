@@ -4,7 +4,6 @@ package mytools.database;
 import mytools.Arreglos;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
-import windows.Main;
 
 public class Emisor extends BaseDeDatos{
     
