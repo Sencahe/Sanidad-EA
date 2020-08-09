@@ -88,7 +88,7 @@ public class Arreglos {
 
     // ARREGLOS PARA COMUNICAR LOS COMPONENTES DE FORMULARIO CON LA CLASE BASE DE DATOS
     public String[] getTextField() {
-        String[] textField = {"Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones"};
+        String[] textField = {"Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones","Legajo","Expediente"};
         return textField;
     }
 
@@ -137,6 +137,9 @@ public class Arreglos {
     public String[] getPatologias() {
         String[] patologias = {"Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
         return patologias;
+    }
+    public int getPatologiasLength() {       
+        return getPatologias().length;
     }
 
     public String[] getOrdenTabla() {

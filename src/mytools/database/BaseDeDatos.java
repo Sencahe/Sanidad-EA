@@ -12,61 +12,67 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 
-
 public class BaseDeDatos {
-    
+
     private Connection cn;
-    
-    public BaseDeDatos(){
+
+    public BaseDeDatos() {
         this.cn = conectar();
     }
-    
+
     //------------------------CONECTAR------------------------------------------
     private Connection conectar() {
         try {
             Connection cn = DriverManager.getConnection("jdbc:sqlite:DB.sqlite");
             return cn;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error//Conexion//Conectar" + e 
-            + "\nContactese con el desarrolador para resolver el problema.");
+            JOptionPane.showMessageDialog(null, "Error//Conexion//Conectar" + e
+                    + "\nContactese con el desarrolador para resolver el problema.");
         }
         return (null);
     }
-    public void setConection(){
+
+    public void setConection() {
         this.cn = conectar();
     }
-    public Connection getConnection(){
+
+    public Connection getConnection() {
         return this.cn;
     }
-    protected void nullConnection(){
+
+    protected void nullConnection() {
         this.cn = null;
     }
-    
+
     //----------------------------------------------------------------------------
     //------------------------METODO ACTUALIZAR-----------------------------------
     //----------------------------------------------------------------------------
-    public void Actualizar() {       
+    public void Actualizar() {
         //OBJETOS auxiliares
         Arreglos arreglo = new Arreglos();
         Fechas edad = new Fechas("dd/MM/yyyy");
         Filtros filtered = null;
-        if(Filtros.getFilter() >= 1 && Filtros.getFilter() <= 3){
+        if (Filtros.filter >= 1 && Filtros.filter <= 3) {
             filtered = new Filtros();
         }
+
         //VACIADO DE LA TABLA ACTUAL
         for (int i = 0; i < 4; i++) {
             Tabla.getTableModel(i).setRowCount(0);
         }
         // MOSTRAR POR DESTINOS
         String where = "";
-        if (Filtros.getShowByDestino() != 0) {            
-            where = " WHERE Destino = \"" + arreglo.getDestinos()[Filtros.getShowByDestino()] + "\"";
+        if (Filtros.showByDestino != 0) {
+            where = " WHERE Destino = \"" + arreglo.getDestinos()[Filtros.showByDestino] + "\"";
         }
         //ORDENAR LA TABLA 
-        String orderBy = arreglo.getOrdenTablaBD()[Filtros.getOrder()];
+        String orderBy = arreglo.getOrdenTablaBD()[Filtros.order];
 
         //CONSULTA A BASE DE DATOS 
         try {
+            if (cn == null || cn.isClosed()) {
+                conectar();
+            }
             //consulta a la base de datos
             PreparedStatement pst = cn.prepareStatement("select * from Personal" + where + orderBy);
             ResultSet rs = pst.executeQuery();
@@ -78,11 +84,11 @@ public class BaseDeDatos {
             Object[] fila = new Object[arreglo.getColumnbasBDLength() + 1];
             String[] columnas = arreglo.getColumnasBD();
             boolean filtrado;
-            
-            
+
+            int filtro = Filtros.filter;
             while (rs.next()) {
                 //filtrado de la informacion                
-                switch (Filtros.getFilter()) {                  
+                switch (filtro) {
                     case 1:
                         filtrado = filtered.expiredAnexo(rs.getString("Anexo27"));
                         break;
@@ -93,7 +99,7 @@ public class BaseDeDatos {
                         filtrado = filtered.aptitudFilter(rs.getString("Aptitud"));
                         break;
                     case 4:
-                        filtrado = rs.getString(Filtros.getPatologiaColumn()) != null;
+                        filtrado = rs.getString(Filtros.patologiaColumn) != null;
                         break;
                     case 5:
                         filtrado = rs.getString("Act") != null || rs.getString("Inf") != null;
@@ -129,29 +135,29 @@ public class BaseDeDatos {
                         }
                         aux++;
                     }
-                    Tabla.getTableModel(categoria).addRow(fila);                  
-                    Arrays.fill(fila,null);
+                    Tabla.getTableModel(categoria).addRow(fila);
+                    Arrays.fill(fila, null);
                 }
             }
             cn.close();
             cn = null;
             fila = null;
             num = null;
-            columnas = null;            
+            columnas = null;
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
             String[] categorias = arreglo.getCategorias();
             int cantTabla;
             int total = 0;
             for (int i = 0; i < categorias.length + 1; i++) {
                 if (i != categorias.length) {
-                    cantTabla =  Tabla.getTablas(i).getRowCount();
+                    cantTabla = Tabla.getTablas(i).getRowCount();
                     Tabla.getResumen(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
                     total += Tabla.getTablas(i).getRowCount();
                 } else {
                     Tabla.getResumen(i).setText("TOTAL:  " + total);
                 }
             }
-            categorias = null;           
+            categorias = null;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");

@@ -62,7 +62,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         Iconos iconos = new Iconos();
         Arreglos arreglo = new Arreglos();
         //PROPIEDADES DEL FRAME        
-        setSize(500, 510);
+        setSize(500, 520);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Nuevo Registro");
@@ -107,7 +107,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         comboBox = new JComboBox[arreglo.getComboBoxLength()];
         dateChooser = new JDateChooser[arreglo.getDateChooserLength()];
         checkBox = new JCheckBox[arreglo.getCheckBoxLength()];
-        labels = new JLabel[textField.length + comboBox.length + dateChooser.length];
+        labels = new JLabel[textField.length + comboBox.length + dateChooser.length + 2];
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
@@ -228,14 +228,24 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[14].setBounds(15, 345, 90, 20);
         labels[14].setText("Observaciones");
         textField[7].setBounds(15, 370, 265, 20);
+        //Legajo TEXTFIELD 8
+        labels[15].setBounds(15, 425, 120, 20);
+        labels[15].setText("Legajo");
+        textField[8].setBounds(15, 445, 140, 20);
+        //Expediente TEXTFIELD 9
+        labels[16].setBounds(195, 425, 120, 20);
+        labels[16].setText("Nro de Expediente");
+        textField[9].setBounds(195, 445, 140, 20);
+        textField[9].setEnabled(false);
         //CheckBoxes D 0 - H 1 - A 2 - T 3 - ACT 4 - INF 5
         int X = 15;
         for (int i = 0; i < checkBox.length; i++) {
             checkBox[i] = new JCheckBox(arreglo.getCheckBox()[i]);
-            checkBox[i].setBounds(X, 405, 46, 20);
+            checkBox[i].setBounds(X, 400, 46, 20);
             checkBox[i].setFont(utilidad.getFuenteChecks());
             checkBox[i].setOpaque(false);
             checkBox[i].setBackground(utilidad.getTransparencia());
+            checkBox[i].addActionListener(i >= 4 ? this:null);
             container.add(checkBox[i]);
             X += 44;
         }
@@ -277,6 +287,13 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             }
             arreglo = null;
         }
+        //EVENTO AL MARCAR ACT O INF
+        for (int i = 4; i < checkBox.length; i++) {
+            if(e.getSource() == checkBox[i]){
+                boolean enabled =  checkBox[4].isSelected() || checkBox[5].isSelected();
+                textField[9].setEnabled(enabled);
+            }
+        }
         //EVENTO BOTON CALCULAR IMC
         if (e.getSource() == calcularIMC) {
             for (int i = 0; i < 2; i++) {
@@ -317,7 +334,10 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                     enviar.setInformacion(enviarDatos());
                     enviar.Actualizar();
                     enviar = null;
-                    Tabla.getTablas(Tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);                   
+                    try {
+                     Tabla.getTablas(Tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);     
+                    } catch (Exception ex) {
+                    }                                     
                     Vaciar();
                     System.gc();
                 }
@@ -375,12 +395,17 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                     //agrego datos a checkbox
                     if (i == 3) {
                         if ("X".equals(datos[i][j])) {
-                            checkBox[j].setSelected(true);
+                            checkBox[j].setSelected(true);                         
                         }
                     }
                 }
             }
         }
+        boolean enabled  = checkBox[4].isSelected() || checkBox[5].isSelected();       
+        textField[9].setEnabled(enabled);
+
+       
+        
         obtener = null;
         datos = null;
     }
@@ -388,12 +413,19 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     //---------------------------------------------------------
     //-----------------METODO ENVIAR DATOS---------------------
     private String[] enviarDatos() {
+               
         int comboIndex = textField.length;
         int dateIndex = comboIndex + comboBox.length;
         int checkIndex = dateIndex + dateChooser.length;
         int total = textField.length + comboBox.length + dateChooser.length + checkBox.length;
         String mensajero[] = new String[total];
-
+        
+        //comprobando check de act e inf para el campo expediente
+        boolean enabled  = checkBox[4].isSelected() || checkBox[5].isSelected();
+        if(!enabled){
+            textField[9].setText("");
+        } 
+        //llenando el arreglo mensajero para enviar a la base de datos
         for (int i = 0; i < textField.length; i++) {
             mensajero[i] = i == 0 ? textField[i].getText().toUpperCase().trim() : textField[i].getText().trim();
         }
@@ -498,6 +530,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[12].setForeground(Color.black);
         textField[4].setForeground(Color.black);
         textField[5].setForeground(Color.black);
+        textField[9].setEnabled(false);
     }
 
     //------------------------------------------------------
@@ -536,6 +569,10 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     public void setCategoria(int index) {
         this.comboBox[0].setSelectedIndex(index);
+    }
+    
+    public static void main(String[] args) {
+        new Formulario(null,false).setVisible(true);
     }
     
 }
