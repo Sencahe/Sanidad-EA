@@ -463,12 +463,12 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         }
         //VALIDAR LA FECHA
         labelIndex = 7;
+        Fechas validar = new Fechas("dd/MM/yyyy");
         for (int i = 0; i < 2; i++) {
             labels[7].setForeground(Color.black);
             labels[8].setForeground(Color.black);
             String fecha = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
-            if (!"".equals(fecha)) {
-                Fechas validar = new Fechas("dd/MM/yyyy");
+            if (!"".equals(fecha)) {                
                 if (!validar.fechaValida(fecha)) {
                     labels[labelIndex].setForeground(Color.red);
                     String mensaje = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
@@ -476,11 +476,11 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                     JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
                     validar = null;
                     return false;
-                }
-                validar = null;
+                }               
             }
             labelIndex++;
         }
+        validar = null;
         //VALIDAR PESO, ALTURA E IMC
         labelIndex = 10;
         for (int i = 4; i < 4 + 3; i++) {
@@ -569,10 +569,6 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     public void setCategoria(int index) {
         this.comboBox[0].setSelectedIndex(index);
-    }
-    
-    public static void main(String[] args) {
-        new Formulario(null,false).setVisible(true);
-    }
+    }    
     
 }

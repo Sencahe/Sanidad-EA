@@ -18,8 +18,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Utilidades;
-import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.JRadioButton;
+import javax.swing.JRadioButtonMenuItem;
 
 public class Buscador extends javax.swing.JDialog implements ActionListener {
 
@@ -101,7 +102,7 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         boton = new JButton("Buscar");
         boton.setBounds(100, 80, 90, 30);
         boton.addActionListener(this);
-        add(boton);
+        add(boton);        
         // Label con mensaje resultado----------------------
         mensaje = new JLabel();
         mensaje.setFont(utilidad.getFuenteMsgBuscador());

@@ -15,39 +15,41 @@ public class Emisor extends BaseDeDatos{
        
     public void setInformacion(String[] datos) {
         Arreglos arreglo = new Arreglos();
-        String statement;
+        StringBuffer statement = new StringBuffer();
         String[] columnas = arreglo.getTodasColumnas();
-
+        int iteracion = columnas.length;
         //Modificar registro
         if (id != 0) {
-            statement = "update Personal set ";
-            for (int i = 0; i < columnas.length; i++) {
-                statement += i == columnas.length - 1 ? columnas[i] + " = ? " : columnas[i] + " = ?, ";
+            statement.append("update Personal set ") ;
+            for (int i = 0; i < iteracion; i++) {
+                statement.append( columnas[i]);
+                statement.append(i == iteracion - 1 ? " = ? " : " = ?, ");
             }
-            statement += "where id = " + this.id;
+            statement.append("where id = ");
+            statement.append(this.id);
             // Aregar nuevo registro
         } else {
-            statement = "insert into Personal (";
-            for (int i = 0; i < columnas.length; i++) {
-                statement += i != columnas.length - 1 ? columnas[i] + ", " : columnas[i] + ") ";
+            statement.append("insert into Personal (");
+            for (int i = 0; i < iteracion; i++) {
+                statement.append(columnas[i]);
+                statement.append(i != iteracion - 1 ? ", " : ") ");
             }
-            statement += "values(";
-            for (int i = 0; i < columnas.length; i++) {
-                statement += i != columnas.length - 1 ? "?," : "?)";
+            statement.append("values(");
+            for (int i = 0; i < iteracion; i++) {
+                statement.append(i != iteracion - 1 ? "?," : "?)");
             }
         }
 
         try {
-            PreparedStatement pst = super.getConnection().prepareStatement(statement);
+            PreparedStatement pst = super.getConnection().prepareStatement(statement.toString());
 
-            int index = 1;
+
             for (int i = 0; i < datos.length; i++) {
                 if (!"".equals(datos[i])) {
-                    pst.setObject(index, datos[i]);
+                    pst.setObject(i+1, datos[i]);
                 } else {
-                    pst.setObject(index, null);
+                    pst.setObject(i+1, null);
                 }
-                index++;
             }
             pst.executeUpdate();
             
@@ -58,6 +60,7 @@ public class Emisor extends BaseDeDatos{
         }
         arreglo = null;
         columnas = null;
+        statement = null;
         
     }
 

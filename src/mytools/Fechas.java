@@ -18,11 +18,10 @@ public class Fechas {
     }
     
     //metodo para obtener la edad a partir de la fecha pasada como parametro
-    public String getEdad(String fecha) {        
+    public int getEdad(String fecha) {        
         this.fechaNac = LocalDate.parse(fecha, fmt);       
-        this.periodo = Period.between(fechaNac, fechaHoy);
-        String edad = String.valueOf(periodo.getYears());       
-        return edad;
+        this.periodo = Period.between(fechaNac, fechaHoy);       
+        return (periodo.getYears());
     }
     //metodo para validar la fecha
     public boolean fechaValida(String fecha){       
@@ -32,5 +31,12 @@ public class Fechas {
         } catch (Exception e) {  
             return false;
         }
+    }
+    
+    public String getYearAgo(){
+        LocalDate yearAgo = LocalDate.now().minusYears(1);
+        String yearago = String.valueOf(yearAgo);
+        yearago = yearago.substring(0,4) + yearago.substring(5, 7) + yearago.substring(8, 10);
+        return yearago;
     }
 }

@@ -1,7 +1,6 @@
 package windows;
 
 import mytools.database.BaseDeDatos;
-import mytools.Filtros;
 import mytools.Iconos;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -82,7 +81,7 @@ public class Tabla extends JFrame implements ActionListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setIconImage(iconos.getIconoSanidad().getImage());
-        pantalla = null;
+        pantalla = null;        
         //jpanel para el fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -346,7 +345,7 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // anexo vencido
         if (e.getSource() == itemAnexoVencido) {
-            Actualizar(1, Filtros.showByDestino, Filtros.order);
+            Actualizar(1, BaseDeDatos.showByDestino, BaseDeDatos.order);
             eliminarChecksFiltros();
             itemAnexoVencido.setIcon(check);
         }
@@ -354,10 +353,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsPPS.length; i++) {
             if (e.getSource() == itemsPPS[i]) {
                 if (i != 0) {
-                    Filtros.PPSColumn = itemsPPS[i].getText();
-                    Actualizar(2, Filtros.showByDestino, Filtros.order);
+                    BaseDeDatos.PPSFilter = itemsPPS[i].getText();
+                    Actualizar(2, BaseDeDatos.showByDestino, BaseDeDatos.order);
                 } else {
-                    Actualizar(0, Filtros.showByDestino, Filtros.order);
+                    Actualizar(0, BaseDeDatos.showByDestino, BaseDeDatos.order);
                 }
                 eliminarChecksFiltros();
                 menuFiltroPPS.setIcon(check);
@@ -368,10 +367,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsAptitud.length; i++) {
             if (e.getSource() == itemsAptitud[i]) {
                 if (i != 0) {
-                    Filtros.aptitudColumn = itemsAptitud[i].getText();
-                    Actualizar(3, Filtros.showByDestino, Filtros.order);
+                    BaseDeDatos.aptitudFilter = itemsAptitud[i].getText();
+                    Actualizar(3, BaseDeDatos.showByDestino, BaseDeDatos.order);
                 } else {
-                    Actualizar(0, Filtros.showByDestino, Filtros.order);
+                    Actualizar(0, BaseDeDatos.showByDestino, BaseDeDatos.order);
                 }
                 eliminarChecksFiltros();
                 menuFiltroAptitud.setIcon(check);
@@ -382,10 +381,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (e.getSource() == itemsPatologias[i]) {
                 if (i != itemsPatologias.length - 1) {
-                    Filtros.patologiaColumn = patologias[i];
-                    Actualizar(4, Filtros.showByDestino, Filtros.order);
+                    BaseDeDatos.patologiaColumn = patologias[i];
+                    Actualizar(4, BaseDeDatos.showByDestino, BaseDeDatos.order);
                 } else {
-                    Actualizar(5, Filtros.showByDestino, Filtros.order);
+                    Actualizar(5, BaseDeDatos.showByDestino, BaseDeDatos.order);
                 }
                 eliminarChecksFiltros();
                 menuPatologias.setIcon(check);
@@ -394,14 +393,14 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // observaciones 
         if (e.getSource() == itemObservaciones) {
-            Actualizar(6, Filtros.showByDestino, Filtros.order);
+            Actualizar(6, BaseDeDatos.showByDestino, BaseDeDatos.order);
             eliminarChecksFiltros();
             itemObservaciones.setIcon(check);
         }
         // destinos
         for (int i = 0; i < itemsDestinos.length; i++) {
             if (e.getSource() == itemsDestinos[i]) {
-                Actualizar(Filtros.filter, i, Filtros.order);
+                Actualizar(BaseDeDatos.filter, i, BaseDeDatos.order);
                 eliminarChecksDestino();
                 menuDestinos.setIcon(check);
                 itemsDestinos[i].setIcon(check);
@@ -410,7 +409,7 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenar por
         for (int i = 0; i < itemsOrdenar.length; i++) {
             if (e.getSource() == itemsOrdenar[i]) {
-                Actualizar(Filtros.filter, Filtros.showByDestino, i);
+                Actualizar(BaseDeDatos.filter, BaseDeDatos.showByDestino, i);
                 eliminarChecksOrden();
                 menuOrdenar.setIcon(check);
                 itemsOrdenar[i].setIcon(check);
@@ -447,9 +446,9 @@ public class Tabla extends JFrame implements ActionListener {
     //-------------------------------------------------------------------------------------------------
     //---------------------- LLENAR TABLA--------------------------------------------------------------
     private void Actualizar(int filtro, int destino, int order) {
-        Filtros.filter = filtro;
-        Filtros.showByDestino = destino;
-        Filtros.order = order;
+        BaseDeDatos.filter = filtro;
+        BaseDeDatos.showByDestino = destino;
+        BaseDeDatos.order = order;
         BaseDeDatos bdd = new BaseDeDatos();
         bdd.Actualizar();
         bdd = null;

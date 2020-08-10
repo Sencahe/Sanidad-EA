@@ -3,7 +3,6 @@ package mytools.database;
 import windows.Tabla;
 import mytools.Arreglos;
 import mytools.Fechas;
-import mytools.Filtros;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +12,14 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 public class BaseDeDatos {
+
+    public static int filter;
+    public static int showByDestino;
+    public static int order;
+
+    public static String PPSFilter;
+    public static String aptitudFilter;
+    public static String patologiaColumn;
 
     private Connection cn;
 
@@ -50,23 +57,39 @@ public class BaseDeDatos {
     public void Actualizar() {
         //OBJETOS auxiliares
         Arreglos arreglo = new Arreglos();
-        Fechas edad = new Fechas("dd/MM/yyyy");
-        Filtros filtered = null;
-        if (Filtros.filter >= 1 && Filtros.filter <= 3) {
-            filtered = new Filtros();
-        }
-
+        Fechas fecha = new Fechas("dd/MM/yyyy");
         //VACIADO DE LA TABLA ACTUAL
         for (int i = 0; i < 4; i++) {
             Tabla.getTableModel(i).setRowCount(0);
         }
-        // MOSTRAR POR DESTINOS
-        String where = "";
-        if (Filtros.showByDestino != 0) {
-            where = " WHERE Destino = \"" + arreglo.getDestinos()[Filtros.showByDestino] + "\"";
+        //FILTRAR TABLA           
+        String statement = "select * from Personal";
+        switch (filter) {
+            case 1:
+                statement += " WHERE (SUBSTR(Anexo27,7,4)||SUBSTR(Anexo27,4,2)||SUBSTR(Anexo27,1,2)) <= " + "\"" + fecha.getYearAgo() + "\"";
+                break;
+            case 2:
+                statement += " WHERE PPS = \"" + PPSFilter + "\"";
+                break;
+            case 3:
+                statement += " WHERE Aptitud = \"" + aptitudFilter + "\"";
+                break;
+            case 4:
+                statement += " WHERE \"" + patologiaColumn + "\" = \"X\"";
+                break;
+            case 5:
+                statement += " WHERE (Act IS NOT NULL OR Inf IS NOT NULL)";
+                break;
+            case 6:
+                statement += " WHERE Observaciones IS NOT NULL";
+        }
+        // MOSTRAR POR DESTINOS            
+        if (showByDestino != 0) {
+            statement += filter > 0 ? " AND" : " WHERE";
+            statement += " Destino = \"" + arreglo.getDestinos()[showByDestino] + "\"";
         }
         //ORDENAR LA TABLA 
-        String orderBy = arreglo.getOrdenTablaBD()[Filtros.order];
+        statement += arreglo.getOrdenTablaBD()[order];
 
         //CONSULTA A BASE DE DATOS 
         try {
@@ -74,70 +97,40 @@ public class BaseDeDatos {
                 conectar();
             }
             //consulta a la base de datos
-            PreparedStatement pst = cn.prepareStatement("select * from Personal" + where + orderBy);
+            PreparedStatement pst = cn.prepareStatement(statement);
             ResultSet rs = pst.executeQuery();
-
             //llenado de la tabla
             int num[] = new int[arreglo.getCategoriasLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
             int categoria;
             int aux;
             Object[] fila = new Object[arreglo.getColumnbasBDLength() + 1];
             String[] columnas = arreglo.getColumnasBD();
-            boolean filtrado;
 
-            int filtro = Filtros.filter;
             while (rs.next()) {
-                //filtrado de la informacion                
-                switch (filtro) {
-                    case 1:
-                        filtrado = filtered.expiredAnexo(rs.getString("Anexo27"));
-                        break;
-                    case 2:
-                        filtrado = filtered.PPSFilter(rs.getString("PPS"));
-                        break;
-                    case 3:
-                        filtrado = filtered.aptitudFilter(rs.getString("Aptitud"));
-                        break;
-                    case 4:
-                        filtrado = rs.getString(Filtros.patologiaColumn) != null;
-                        break;
-                    case 5:
-                        filtrado = rs.getString("Act") != null || rs.getString("Inf") != null;
-                        break;
-                    case 6:
-                        filtrado = rs.getString("Observaciones") != null;
-                        break;
-                    default:
-                        filtrado = true;
-                        break;
-                }
-                //si la informacion pasa el filtro se procede a obtener los datos
-                if (filtrado) {
-                    categoria = rs.getInt("Categoria"); //obteniendo la categoria                                                           
-                    fila[0] = ++num[categoria];
-                    aux = 1; //indice inicial para el resto de los datos que iran en la fila
-                    for (String i : columnas) {
-                        if (rs.getObject(i) != null) {
-                            switch (i) {
-                                case "Grado":
-                                    fila[aux] = arreglo.getGrados()[categoria][rs.getInt("Grado")];
-                                    break;
-                                case "Apellido":
-                                    fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
-                                    break;
-                                case "FechaNacimiento":
-                                    fila[aux] = edad.getEdad(rs.getString("FechaNacimiento"));
-                                    break;
-                                default:
-                                    fila[aux] = rs.getObject(i);
-                                    break;
-                            }
+                categoria = rs.getInt("Categoria"); //obteniendo la categoria                                                           
+                fila[0] = ++num[categoria];
+                aux = 1; //indice inicial para el resto de los datos que iran en la fila
+                for (String i : columnas) {
+                    if (rs.getObject(i) != null) {
+                        switch (i) {
+                            case "Grado":
+                                fila[aux] = arreglo.getGrados()[categoria][rs.getInt("Grado")];
+                                break;
+                            case "Apellido":
+                                fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
+                                break;
+                            case "FechaNacimiento":
+                                fila[aux] = fecha.getEdad(rs.getString("FechaNacimiento"));
+                                break;
+                            default:
+                                fila[aux] = rs.getObject(i);
+                                break;
                         }
-                        aux++;
                     }
-                    Tabla.getTableModel(categoria).addRow(fila);
-                    Arrays.fill(fila, null);
+                    aux++;
                 }
+                Tabla.getTableModel(categoria).addRow(fila);
+                Arrays.fill(fila, null);
             }
             cn.close();
             cn = null;
@@ -164,8 +157,6 @@ public class BaseDeDatos {
         }
         //FIN DEL METODO ACTUALIZAR------------------------
         arreglo = null;
-        filtered = null;
-        edad = null;
+        fecha = null;
     }
-
 }
