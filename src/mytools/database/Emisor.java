@@ -16,9 +16,8 @@ public class Emisor extends BaseDeDatos {
     }
 
     public void setInformacion(Formulario formulario) {
-        Arreglos arreglo = new Arreglos();
         StringBuffer statement = new StringBuffer();
-        String[] columnas = arreglo.getTodasColumnas();
+        String[] columnas = Arreglos.getFormularioBD();
         int iteracion = columnas.length;
 
         //Modificar registro
@@ -47,9 +46,10 @@ public class Emisor extends BaseDeDatos {
             PreparedStatement pst = super.getConnection().prepareStatement(statement.toString());
 
             int index = 1;
-            String emisor = "";
+            String emisor;
             int numEmisor;
             
+            //Se envian los datos de los textField
             for (int i = 0; i < formulario.getTextFieldLength(); i++) {
                 if (i == 0) {
                     emisor = formulario.getTextField(i).getText().toUpperCase().trim();
@@ -58,7 +58,7 @@ public class Emisor extends BaseDeDatos {
                 }
                 pst.setObject(index++, !emisor.equals("") ? emisor:null);
             }
-            
+            //Se envian los datos de los comboBox
             for (int i = 0; i < formulario.getComboBoxLength(); i++) {
                 if(i < 2){
                     numEmisor = formulario.getComboBox(i).getSelectedIndex();
@@ -70,28 +70,24 @@ public class Emisor extends BaseDeDatos {
                 }
                              
             }
+            //Se envian los datos de los dateChooser
             for (int i = 0; i < formulario.getDateChooserLength(); i++) {
                 emisor = ((JTextField) formulario.getDateChooser(i).getDateEditor().getUiComponent()).getText();
-                pst.setString(index++,emisor);
+                pst.setString(index++,!emisor.equals("") ? emisor:null);
             }
+            //Se envian los datos de los checkBox
             for (int i = 0; i < formulario.getCheckBoxLength(); i++) {
-                pst.setString(index ++, formulario.getCheckBox(i).isSelected() ? "X":null);
+                pst.setString(index++, formulario.getCheckBox(i).isSelected() ? "X":null);
             }
-
-//            for (int i = 0; i < iteracion; i++) {           
-//                if (!"".equals(datos[i])) {
-//                    pst.setObject(i+1, datos[i]);
-//                } else {
-//                    pst.setObject(i+1, null);
-//                }
-//            }
+            //Se envian los flags
+            pst.setInt(index++, formulario.getParteDeEnfermo() ? 1:0);
             pst.executeUpdate();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//setInformacion//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
-        arreglo = null;
+
         columnas = null;
         statement = null;
 

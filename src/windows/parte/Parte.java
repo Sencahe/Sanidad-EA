@@ -27,13 +27,12 @@ public class Parte extends JFrame implements ActionListener {
 
     public Parte(Tabla tabla) {
         //this.formParte = tabla.getFormParte();
-        
         componentes();      
     }
 
     private void componentes() {
         //OBJETOS AUXILIARES
-        Arreglos arreglo = new Arreglos();
+        
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
         //-----PROPIEDADES DEL FRAME-----------------
@@ -95,16 +94,16 @@ public class Parte extends JFrame implements ActionListener {
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
-            for (int j = 0; j < arreglo.getColumnasParteLength(); j++) {
-                model.addColumn(arreglo.getColumnasParte()[j]);
+            for (int j = 0; j < Arreglos.getColumnasParteLength(); j++) {
+                model.addColumn(Arreglos.getColumnasParte(j));
             }
             Object[] asd = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico", "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
             model.addRow(asd);
             //tamaño de las columnas
-            for (int j = 0; j < arreglo.getColumnasParteLength(); j++) {
-                tablas[i].getColumnModel().getColumn(j).setMinWidth(arreglo.getTamañoColumnParte()[j]);
-                tablas[i].getColumnModel().getColumn(j).setMaxWidth(arreglo.getTamañoColumnParte()[j]);
-                tablas[i].getColumnModel().getColumn(j).setPreferredWidth(arreglo.getTamañoColumnParte()[j]);
+            for (int j = 0; j < Arreglos.getColumnasParteLength(); j++) {
+                tablas[i].getColumnModel().getColumn(j).setMinWidth(Arreglos.getTamañoColumnParte(j));
+                tablas[i].getColumnModel().getColumn(j).setMaxWidth(Arreglos.getTamañoColumnParte(j));
+                tablas[i].getColumnModel().getColumn(j).setPreferredWidth(Arreglos.getTamañoColumnParte(j));
                 //centrado del contenido de las columnas
                 if (j != 2 && j != 9) {
                     tablas[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);

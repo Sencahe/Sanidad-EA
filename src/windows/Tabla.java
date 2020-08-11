@@ -44,26 +44,25 @@ public class Tabla extends JFrame implements ActionListener {
     private JMenuItem[] itemsPPS;
     private JMenuItem[] itemsAptitud;
     private JMenuItem[] itemsPatologias;
-    private String[] patologias;
     private JMenuItem itemObservaciones;
     //
     private JMenuItem[] itemsDestinos;
     //
-    private static JMenuItem[] itemsOrdenar;
+    private JMenuItem[] itemsOrdenar;
 
     private JMenuItem itemRef, itemBuscar;
 
     //Declaracion de iconos para los menuItems
     private ImageIcon check;
-    
-    //FILTROS DE LA TABLA
-    private  int filter;
-    private  int showByDestino;
-    private  int order;
 
-    private  String PPSFilter;
-    private  String aptitudFilter;
-    private  String patologiaColumn;
+    //FILTROS DE LA TABLA
+    private int filter;
+    private int showByDestino;
+    private int order;
+
+    private String PPSFilter;
+    private String aptitudFilter;
+    private String patologiaColumn;
 
     //DECLARACION DE LOS OBJETOS PARA LOS JFRAMES
     private final Formulario formulario;
@@ -73,23 +72,21 @@ public class Tabla extends JFrame implements ActionListener {
     private final FormularioParte formParte;
 
     public Tabla() {
-        Componentes();
-   
+
         this.parte = new Parte(this);
         this.formParte = new FormularioParte(parte, true);
-        
-        this.formulario = new Formulario(this, true, this,formParte);
+
+        this.formulario = new Formulario(this, true, this, formParte);
         this.buscador = new Buscador(this, false, this);
         this.referencia = new Referencias(this, true);
-    }
 
-    
+        Componentes();
+    }
 
     private void Componentes() {
         //------------------------------------------
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
-        Arreglos arreglo = new Arreglos();
         check = iconos.getIconoCheck();
         //PROPIEDADES DEL FRAME PRINCIPAL        
         setTitle("Carta de Situacion - Seccion Sanidad RI-1");
@@ -101,7 +98,7 @@ public class Tabla extends JFrame implements ActionListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setIconImage(iconos.getIconoSanidad().getImage());
-        pantalla = null;        
+        pantalla = null;
         //jpanel para el fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -136,8 +133,8 @@ public class Tabla extends JFrame implements ActionListener {
         String categorias[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
-        scrolls = new JScrollPane[arreglo.getCategoriasLength()];
-        tablas = new JTable[arreglo.getCategoriasLength()];
+        scrolls = new JScrollPane[Arreglos.getCategoriasLength()];
+        tablas = new JTable[Arreglos.getCategoriasLength()];
         //objeto para centrar las celdas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -190,14 +187,14 @@ public class Tabla extends JFrame implements ActionListener {
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
-            for (int j = 0; j < arreglo.getColumnasTablaLength(); j++) {
-                model.addColumn(arreglo.getColumnasTabla()[j]);
+            for (int j = 0; j < Arreglos.getColumnasTablaLength(); j++) {
+                model.addColumn(Arreglos.getColumnasTabla(j));
             }
             //tamaño de las columnas
-            for (int j = 0; j < arreglo.getColumnasTablaLength(); j++) {
-                tablas[i].getColumnModel().getColumn(j).setMinWidth(arreglo.getTamañoColumnas()[j]);
-                tablas[i].getColumnModel().getColumn(j).setMaxWidth(arreglo.getTamañoColumnas()[j]);
-                tablas[i].getColumnModel().getColumn(j).setPreferredWidth(arreglo.getTamañoColumnas()[j]);
+            for (int j = 0; j < Arreglos.getColumnasTablaLength(); j++) {
+                tablas[i].getColumnModel().getColumn(j).setMinWidth(Arreglos.getTamañoColumnas(j));
+                tablas[i].getColumnModel().getColumn(j).setMaxWidth(Arreglos.getTamañoColumnas(j));
+                tablas[i].getColumnModel().getColumn(j).setPreferredWidth(Arreglos.getTamañoColumnas(j));
                 //centrado del contenido de las columnas
                 if (j != 3 && j != 19) {
                     tablas[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
@@ -253,9 +250,9 @@ public class Tabla extends JFrame implements ActionListener {
         // Programa Peso Saludable
         menuFiltroPPS = new JMenu("Programa Peso Saludable");
         menuFiltrar.add(menuFiltroPPS);
-        itemsPPS = new JMenuItem[arreglo.getPPSLength()];
+        itemsPPS = new JMenuItem[Arreglos.getPPSLength()];
         for (int i = 0; i < itemsPPS.length; i++) {
-            itemsPPS[i] = new JMenuItem(arreglo.getPPS()[i]);
+            itemsPPS[i] = new JMenuItem(Arreglos.getPPS(i));
             itemsPPS[i].addActionListener(this);
             menuFiltroPPS.add(itemsPPS[i]);
         }
@@ -263,9 +260,9 @@ public class Tabla extends JFrame implements ActionListener {
         //Aptitud
         menuFiltroAptitud = new JMenu("Aptitud");
         menuFiltrar.add(menuFiltroAptitud);
-        itemsAptitud = new JMenuItem[arreglo.getAptitudLength()];
+        itemsAptitud = new JMenuItem[Arreglos.getAptitudLength()];
         for (int i = 0; i < itemsAptitud.length; i++) {
-            itemsAptitud[i] = new JMenuItem(arreglo.getAptitud()[i]);
+            itemsAptitud[i] = new JMenuItem(Arreglos.getAptitud(i));
             itemsAptitud[i].addActionListener(this);
             menuFiltroAptitud.add(itemsAptitud[i]);
         }
@@ -273,18 +270,17 @@ public class Tabla extends JFrame implements ActionListener {
         //Patologias
         menuPatologias = new JMenu("Patologias");
         menuFiltrar.add(menuPatologias);
-        itemsPatologias = new JMenuItem[arreglo.getPatologiasLength()];
+        itemsPatologias = new JMenuItem[Arreglos.getPatologiasLength()];
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (i == itemsPatologias.length - 1) {
                 JPopupMenu.Separator separadorPatologias = new JPopupMenu.Separator();
                 menuPatologias.add(separadorPatologias);
                 separadorPatologias = null;
             }
-            itemsPatologias[i] = new JMenuItem(arreglo.getPatologias()[i]);
+            itemsPatologias[i] = new JMenuItem(Arreglos.getPatologias(i));
             itemsPatologias[i].addActionListener(this);
             menuPatologias.add(itemsPatologias[i]);
         }
-        patologias = arreglo.getCheckBox();
         //Observaciones
         itemObservaciones = new JMenuItem("Observaciones");
         itemObservaciones.addActionListener(this);
@@ -295,9 +291,9 @@ public class Tabla extends JFrame implements ActionListener {
         //Destinos
         menuDestinos = new JMenu("Mostrar por destino");
         menuFiltrar.add(menuDestinos);
-        itemsDestinos = new JMenuItem[arreglo.getDestinosLength()];
+        itemsDestinos = new JMenuItem[Arreglos.getDestinosLength()];
         for (int i = 0; i < itemsDestinos.length; i++) {
-            itemsDestinos[i] = new JMenuItem(arreglo.getDestinos()[i]);
+            itemsDestinos[i] = new JMenuItem(Arreglos.getDestinos(i));
             itemsDestinos[i].addActionListener(this);
             menuDestinos.add(itemsDestinos[i]);
         }
@@ -308,9 +304,9 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenamiento de la tabla
         menuOrdenar = new JMenu("Ordenar por...");
         menuFiltrar.add(menuOrdenar);
-        itemsOrdenar = new JMenuItem[arreglo.getOrdenTabla().length];
+        itemsOrdenar = new JMenuItem[Arreglos.getOrdenTabla().length];
         for (int i = 0; i < itemsOrdenar.length; i++) {
-            itemsOrdenar[i] = new JMenuItem(arreglo.getOrdenTabla()[i]);
+            itemsOrdenar[i] = new JMenuItem(Arreglos.getOrdenTabla(i));
             itemsOrdenar[i].addActionListener(this);
             menuOrdenar.add(itemsOrdenar[i]);
         }
@@ -346,8 +342,8 @@ public class Tabla extends JFrame implements ActionListener {
         scrollContainer = null;
         container = null;
         utilidad = null;
-        arreglo = null;
         iconos = null;
+
         Actualizar(0, 0, 0);
 
     }
@@ -361,7 +357,7 @@ public class Tabla extends JFrame implements ActionListener {
         if (e.getSource() == Agregar) {
             abrirFormulario(contenedor.getSelectedIndex());
         }
-        if(e.getSource() == gc){
+        if (e.getSource() == gc) {
             System.gc();
         }
         //----------------------BARRA MENU--------------------------------------
@@ -408,11 +404,13 @@ public class Tabla extends JFrame implements ActionListener {
         // patologias
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (e.getSource() == itemsPatologias[i]) {
-                if (i != itemsPatologias.length - 1) {
-                    patologiaColumn = patologias[i];
+                if (i < itemsPatologias.length - 1 && i != 0) {
+                    patologiaColumn = Arreglos.getCheckBox(i);
                     Actualizar(4, showByDestino, order);
-                } else {
+                } else if (i != 0){
                     Actualizar(5, showByDestino, order);
+                } else {
+                    Actualizar(0,showByDestino,order);
                 }
                 eliminarChecksFiltros();
                 menuPatologias.setIcon(check);
@@ -450,7 +448,7 @@ public class Tabla extends JFrame implements ActionListener {
         }
 
         //MENU BUSCAR--------------------------------------------
-        if (e.getSource() == itemBuscar) {      
+        if (e.getSource() == itemBuscar) {
             buscador.setVisible(true);
             System.gc();
         }
@@ -482,7 +480,7 @@ public class Tabla extends JFrame implements ActionListener {
     //--------------------------------------------------------------------------------------------------
     //---------------------- CHECK ICONS ---------------------------------------------------------------
 
-    public void eliminarChecksFiltros() {
+    private void eliminarChecksFiltros() {
         itemAnexoVencido.setIcon(null);
 
         menuFiltroPPS.setIcon(null);
@@ -500,19 +498,19 @@ public class Tabla extends JFrame implements ActionListener {
         itemObservaciones.setIcon(null);
     }
 
-    public void eliminarChecksDestino() {
+    private void eliminarChecksDestino() {
         for (int i = 0; i < itemsDestinos.length; i++) {
             itemsDestinos[i].setIcon(null);
         }
     }
 
-    public void eliminarChecksOrden() {
+    private void eliminarChecksOrden() {
         for (int i = 0; i < itemsOrdenar.length; i++) {
             itemsOrdenar[i].setIcon(null);
         }
     }
 
-    public void eliminarChecks() {
+    private void eliminarChecks() {
         //FILTROS
         eliminarChecksFiltros();
         //DESTINOS
@@ -547,8 +545,8 @@ public class Tabla extends JFrame implements ActionListener {
     public String getPatologiaColumn() {
         return patologiaColumn;
     }
-    
-    public int getShowByDestino(){
+
+    public int getShowByDestino() {
         return showByDestino;
     }
 
@@ -571,8 +569,8 @@ public class Tabla extends JFrame implements ActionListener {
     public JTabbedPane getContenedor() {
         return contenedor;
     }
-    
-   public FormularioParte getFormParte() {
+
+    public FormularioParte getFormParte() {
         return formParte;
     }
 

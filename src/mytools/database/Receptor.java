@@ -17,18 +17,17 @@ public class Receptor extends BaseDeDatos {
     }
 
     public void getInformacion(Formulario formulario) {
-        Arreglos arreglo = new Arreglos();
         
-        String[] text = arreglo.getTextField();
-        String[] combo = arreglo.getComboBox();
-        String[] date = arreglo.getDateChooser();
-        String[] check = arreglo.getCheckBox();
+        String[] text = Arreglos.getTextField();
+        String[] combo = Arreglos.getComboBox();
+        String[] date = Arreglos.getDateChooser();
+        String[] check = Arreglos.getCheckBox();
         
         String receptor;        
 
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("select * from Personal where id = " + this.id);
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = pst.executeQuery();            
             //SOLICITO LOS DATOS QUE VAN A LOS TEXTFIELD
             for (int i = 0; i < text.length; i++) {
                 receptor = rs.getString(text[i]);
@@ -51,11 +50,13 @@ public class Receptor extends BaseDeDatos {
             //SOLICITO LOS DATOS QUE VAN A LOS CHECK BOX
             for (int i = 0; i < check.length; i++) {
                 formulario.getCheckBox(i).setSelected((rs.getString(check[i]) != null));
-            }
-            
+            }            
             boolean enabled  = formulario.getCheckBox(4).isSelected() || formulario.getCheckBox(5).isSelected();       
             formulario.getTextField(9).setEnabled(enabled);
+            //SOLICITO VALORES FLAG 
+            formulario.setParteDeEnfermo(1 == rs.getInt("Parte"));
             
+                       
             //fin de la solicitud a la base de datos
             super.getConnection().close();
         } catch (Exception e) {
@@ -64,8 +65,6 @@ public class Receptor extends BaseDeDatos {
         }
 
         super.nullConnection();
-
-        arreglo = null; 
         
     }
 

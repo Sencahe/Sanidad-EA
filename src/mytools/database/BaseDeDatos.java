@@ -49,9 +49,8 @@ public class BaseDeDatos {
     //---------------------------------------------------------------------------
     public void Actualizar(Tabla tabla) {
         //OBJETOS auxiliares----------------------------------------------------
-        Arreglos arreglo = new Arreglos();
         Fechas fecha = new Fechas("dd/MM/yyyy");
-        String grados[][] = arreglo.getGrados();
+        String grados[][] = Arreglos.getGrados();
         int filter = tabla.getFilter();
         //VACIADO DE LA TABLA ACTUAL--------------------------------------------
         for (int i = 0; i < 4; i++) {
@@ -90,11 +89,11 @@ public class BaseDeDatos {
         // MOSTRAR POR DESTINOS-------------------------------------------------        
         if (tabla.getShowByDestino() != 0) {
             statement.append(filter > 0 ? " AND Destino = \"" : " WHERE Destino = \"");
-            statement.append(arreglo.getDestinos()[tabla.getShowByDestino()]);
+            statement.append(Arreglos.getDestinos(tabla.getShowByDestino()));
             statement.append("\"");
         }
         //ORDENAR LA TABLA------------------------------------------------------ 
-        statement.append( arreglo.getOrdenTablaBD()[tabla.getOrder()]);
+        statement.append( Arreglos.getOrdenTablaBD(tabla.getOrder()));
 
         //CONSULTA A BASE DE DATOS---------------------------------------------- 
         
@@ -109,12 +108,12 @@ public class BaseDeDatos {
             ResultSet rs = pst.executeQuery();
             
             //llenado de la tabla
-            int num[] = new int[arreglo.getCategoriasLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
+            int num[] = new int[Arreglos.getCategoriasLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
             int categoria;
             int aux;
             
-            Object[] fila = new Object[arreglo.getColumnbasBDLength() + 1];
-            String[] columnas = arreglo.getColumnasBD();
+            Object[] fila = new Object[Arreglos.getColumnasBDLength() + 1];
+            String[] columnas = Arreglos.getColumnasBD();
 
             while (rs.next()) {
                 categoria = rs.getInt("Categoria"); //obteniendo la categoria                                                           
@@ -130,7 +129,7 @@ public class BaseDeDatos {
                                 fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
                                 break;
                             case "FechaNacimiento":
-                                fila[aux] = fecha.getEdad(rs.getString("FechaNacimiento"));
+                                fila[aux] = fecha.getEdad(rs.getString(i));
                                 break;
                             default:
                                 fila[aux] = rs.getObject(i);
@@ -146,9 +145,8 @@ public class BaseDeDatos {
             cn = null;
             fila = null;
             num = null;
-            columnas = null;
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteoz
-            String[] categorias = arreglo.getCategorias();
+            String[] categorias = Arreglos.getCategorias();
             int cantTabla;
             int total = 0;
             
@@ -161,19 +159,15 @@ public class BaseDeDatos {
                     tabla.getResumen(i).setText("TOTAL:  " + total);
                 }
             }
-            categorias = null;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
+        
         //FIN DEL METODO ACTUALIZAR------------------------
         statement = null;
-        grados = null;
-        arreglo = null;
         fecha = null;
     }
     
-    public void Actualizar(Parte parte){
-        
-    }
+   
 }

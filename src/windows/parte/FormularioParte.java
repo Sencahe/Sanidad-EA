@@ -38,12 +38,11 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         //------------------------------
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
-        Arreglos arreglo = new Arreglos();
         //PROPIEDADES DEL FRAME        
         setSize(450, 315);
         setResizable(false);
         setLocationRelativeTo(null);
-        setTitle("Agregar Nuevo Registro");
+        setTitle("Agregar nuevo Parte de Enfermo");
         setIconImage(iconos.getIconoSanidad().getImage());
         //Fondo del frame
         JPanel container = new JPanel() {
@@ -70,12 +69,12 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         //--------------------------------------
         //COMPONENTES PRINCIPALES
         //Labels con informacion
-        grado = new JLabel("VS \"ec\"");
+        grado = new JLabel("Grado");
         grado.setBounds(15, 20, 60, 30);
         grado.setFont(utilidad.getFuenteLabelGrande());
         grado.setForeground(Color.black);
         container.add(grado);
-        nombreYApellido = new JLabel("MOULIA PEDRAZZINI Estanislao Luis Eduardo");
+        nombreYApellido = new JLabel("APELLIDO y Nombre");
         nombreYApellido.setBounds(80, 20, 350, 30);
         nombreYApellido.setFont(utilidad.getFuenteLabelGrande());
         nombreYApellido.setForeground(Color.black);
@@ -175,10 +174,11 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
     public void actionPerformed(ActionEvent e) {
 
     }
+    
+    
 
     public static void main(String[] args) {
         FormularioParte form = new FormularioParte(null, true);
-
         form.setVisible(true);
     }
 
