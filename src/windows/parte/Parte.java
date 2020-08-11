@@ -6,6 +6,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -36,7 +37,10 @@ public class Parte extends JFrame implements ActionListener {
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
         //-----PROPIEDADES DEL FRAME-----------------
-        setSize(1340, 600);
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (pantalla.getWidth() < 1340 ? pantalla.getWidth() : 1340);
+        int w = (int) (pantalla.getHeight() < 600 ? pantalla.getHeight() : 600);
+        setSize(x, w);        
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -62,6 +66,7 @@ public class Parte extends JFrame implements ActionListener {
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
+        pantalla = null;
         JScrollPane scrollContainer = new JScrollPane(container);
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

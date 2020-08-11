@@ -66,6 +66,7 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
+        
         //--------------------------------------
         //COMPONENTES PRINCIPALES
         //Labels con informacion

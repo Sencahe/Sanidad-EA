@@ -43,7 +43,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     
     private int id;
     private int puntero; //variable que sirve de referencia para la fila seleccionada al abrir el frame
+    //
     private String[][] grados;
+    
     
     private Tabla tabla;
     private FormularioParte formParte;
@@ -332,7 +334,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             if (Validar()) {
                 dispose();
                 Emisor emisor = new Emisor(0);
-                emisor.setInformacion(enviarDatos());
+                emisor.setInformacion(this);
                 emisor.Actualizar(tabla);
                 emisor = null;
                 Vaciar();
@@ -348,7 +350,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 if (Validar()) {
                     dispose();
                     Emisor enviar = new Emisor(id);
-                    enviar.setInformacion(enviarDatos());
+                    enviar.setInformacion(this);
                     enviar.Actualizar(tabla);
                     enviar = null;
                     try {
@@ -395,34 +397,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     //---------------------------------------------------------------------
     //-----------------METODO ENVIAR DATOS--------------------------------
-    private String[] enviarDatos() {
+    private void enviarDatos() {
                
-        int comboIndex = textField.length;
-        int dateIndex = comboIndex + comboBox.length;
-        int checkIndex = dateIndex + dateChooser.length;
-        int total = textField.length + comboBox.length + dateChooser.length + checkBox.length;
-        String mensajero[] = new String[total];
-        
-        //comprobando check de act e inf para el campo expediente
-        boolean enabled  = checkBox[4].isSelected() || checkBox[5].isSelected();
-        if(!enabled){
-            textField[9].setText("");
-        } 
-        //llenando el arreglo mensajero para enviar a la base de datos
-        for (int i = 0; i < textField.length; i++) {
-            mensajero[i] = i == 0 ? textField[i].getText().toUpperCase().trim() : textField[i].getText().trim();
-        }
-        for (int i = 0; i < comboBox.length; i++) {
-            mensajero[comboIndex + i] = i == 0 || i == 1 ? String.valueOf(comboBox[i].getSelectedIndex()) : String.valueOf(comboBox[i].getSelectedItem());
-        }
-        for (int i = 0; i < dateChooser.length; i++) {
-            mensajero[dateIndex + i] = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
-        }
-        for (int i = 0; i < checkBox.length; i++) {
-            mensajero[checkIndex + i] = checkBox[i].isSelected() ? "X" : "";
-        }
-
-        return mensajero;
+       
     }
 
     //------------------------------------------------------
@@ -571,4 +548,22 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     public JCheckBox getCheckBox(int index){
         return checkBox[index];
     }
+    
+    public int getTextFieldLength(){
+        return textField.length;
+    }
+    
+    public int getComboBoxLength(){
+        return comboBox.length;
+    }
+    
+    public int getDateChooserLength(){
+        return dateChooser.length;
+    }
+    
+    public int getCheckBoxLength(){
+        return checkBox.length;
+    }
+    
+    
 }
