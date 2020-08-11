@@ -19,8 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Utilidades;
 import java.awt.Dimension;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 
 public class Buscador extends javax.swing.JDialog implements ActionListener {
 
@@ -34,8 +32,11 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
     private boolean buscarSiguiente;
     private String nombre;
 
-    public Buscador(java.awt.Frame parent, boolean modal) {
+    private Tabla tabla;
+
+    public Buscador(java.awt.Frame parent, boolean modal, Tabla tabla) {
         super(parent, modal);
+        this.tabla = tabla;
         this.buscar = "";
         this.categoria = -1;
         this.encontrado = false;
@@ -43,9 +44,6 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                Tabla.habilitarMenuBuscar();
-                Tabla.habilitarMenuFiltrar();
-                Tabla.habilitarMenuRef();
                 puntero = 0;
                 buscar = "";
                 encontrado = false;
@@ -102,7 +100,7 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         boton = new JButton("Buscar");
         boton.setBounds(100, 80, 90, 30);
         boton.addActionListener(this);
-        add(boton);        
+        add(boton);
         // Label con mensaje resultado----------------------
         mensaje = new JLabel();
         mensaje.setFont(utilidad.getFuenteMsgBuscador());
@@ -141,18 +139,18 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                 encontrado = false;
             }
             //REINCIA EL PUNTERO SI SE CAMBIA LA TABLA EN LA QUE SE BUSCA
-            if (categoria != Tabla.getContenedor().getSelectedIndex()) {
+            if (categoria != tabla.getContenedor().getSelectedIndex()) {
                 puntero = 0;
                 encontrado = false;
-                setTitle("Buscando en " + Tabla.getContenedor().getTitleAt(Tabla.getContenedor().getSelectedIndex()).trim());
+                setTitle("Buscando en " + tabla.getContenedor().getTitleAt(tabla.getContenedor().getSelectedIndex()).trim());
             }
 
             buscar = texto.getText().toLowerCase().trim();
-            categoria = Tabla.getContenedor().getSelectedIndex();
+            categoria = tabla.getContenedor().getSelectedIndex();
             buscarSiguiente = true;
 
             while (buscarSiguiente) {
-                if (puntero == Tabla.getTablas(categoria).getRowCount()) {
+                if (puntero == tabla.getTablas(categoria).getRowCount()) {
                     mensaje.setText("");
                     puntero = 0;
                     if (!encontrado) {
@@ -160,11 +158,11 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
                         JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.", JLabel.CENTER));
                     }
                 } else {
-                    nombre = ((String) Tabla.getTablas(categoria).getValueAt(puntero, 3)).toLowerCase();
+                    nombre = ((String) tabla.getTablas(categoria).getValueAt(puntero, 3)).toLowerCase();
                     if (nombre.contains(buscar)) {
-                        Tabla.getScroll(categoria).getVerticalScrollBar().setValue(puntero * 16);
-                        Tabla.getTablas(categoria).setRowSelectionInterval(puntero, puntero);
-                        mensaje.setText((String) Tabla.getTablas(categoria).getValueAt(puntero, 3));
+                        tabla.getScroll(categoria).getVerticalScrollBar().setValue(puntero * 16);
+                        tabla.getTablas(categoria).setRowSelectionInterval(puntero, puntero);
+                        mensaje.setText((String) tabla.getTablas(categoria).getValueAt(puntero, 3));
                         buscarSiguiente = false;
                         encontrado = true;
                         puntero++;

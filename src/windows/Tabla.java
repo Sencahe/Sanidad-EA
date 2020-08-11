@@ -16,18 +16,21 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import mytools.Arreglos;
 import mytools.Utilidades;
+import windows.parte.FormularioParte;
+import windows.parte.Parte;
 
 public class Tabla extends JFrame implements ActionListener {
 
     private JButton Agregar;
+    private JButton gc;
 
-    private static JTabbedPane contenedor;
-    private static JTable[] tablas;
-    private static JScrollPane[] scrolls;
+    private JTabbedPane contenedor;
+    private JTable[] tablas;
+    private JScrollPane[] scrolls;
 
-    private static JLabel[] resumen;
+    private JLabel[] resumen;
 
-    private static JMenu menuFiltrar, menuRef, menuBuscar;
+    private JMenu menuFiltrar, menuRef, menuBuscar;
     private JMenu menuFiltroPPS;
     private JMenu menuFiltroAptitud;
     private JMenu menuPatologias;
@@ -52,18 +55,35 @@ public class Tabla extends JFrame implements ActionListener {
 
     //Declaracion de iconos para los menuItems
     private ImageIcon check;
+    
+    //FILTROS DE LA TABLA
+    private  int filter;
+    private  int showByDestino;
+    private  int order;
+
+    private  String PPSFilter;
+    private  String aptitudFilter;
+    private  String patologiaColumn;
 
     //DECLARACION DE LOS OBJETOS PARA LOS JFRAMES
-    private Formulario formulario;
-    private Buscador buscador;
-    private Referencias referencia;
+    private final Formulario formulario;
+    private final Buscador buscador;
+    private final Referencias referencia;
+    private final Parte parte;
+    private final FormularioParte formParte;
 
     public Tabla() {
         Componentes();
-        this.formulario = new Formulario(this, true);
-        this.buscador = new Buscador(this, false);
+   
+        this.parte = new Parte(this);
+        this.formParte = new FormularioParte(parte, true);
+        
+        this.formulario = new Formulario(this, true, this,formParte);
+        this.buscador = new Buscador(this, false, this);
         this.referencia = new Referencias(this, true);
     }
+
+    
 
     private void Componentes() {
         //------------------------------------------
@@ -170,7 +190,7 @@ public class Tabla extends JFrame implements ActionListener {
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
-            for (int j = 0; j < arreglo.getColumnasTabla().length; j++) {
+            for (int j = 0; j < arreglo.getColumnasTablaLength(); j++) {
                 model.addColumn(arreglo.getColumnasTabla()[j]);
             }
             //tamaño de las columnas
@@ -204,6 +224,12 @@ public class Tabla extends JFrame implements ActionListener {
         Agregar.setVisible(true);
         Agregar.addActionListener(this);
         container.add(Agregar);
+        gc = new JButton("GC");
+        gc.setBounds(150, 510, 100, 30);
+        gc.setFont(utilidad.getFuenteBoton());
+        gc.setVisible(true);
+        gc.addActionListener(this);
+        container.add(gc);
         //----------------------------------------------------------------------
 
         // BARRA MENU----------------------------------------------------------        
@@ -334,7 +360,9 @@ public class Tabla extends JFrame implements ActionListener {
         //BOTON AGREGAR
         if (e.getSource() == Agregar) {
             abrirFormulario(contenedor.getSelectedIndex());
-
+        }
+        if(e.getSource() == gc){
+            System.gc();
         }
         //----------------------BARRA MENU--------------------------------------
         //MENU FILTRAR--------------------------------FILTROS-----------------
@@ -345,7 +373,7 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // anexo vencido
         if (e.getSource() == itemAnexoVencido) {
-            Actualizar(1, BaseDeDatos.showByDestino, BaseDeDatos.order);
+            Actualizar(1, showByDestino, order);
             eliminarChecksFiltros();
             itemAnexoVencido.setIcon(check);
         }
@@ -353,10 +381,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsPPS.length; i++) {
             if (e.getSource() == itemsPPS[i]) {
                 if (i != 0) {
-                    BaseDeDatos.PPSFilter = itemsPPS[i].getText();
-                    Actualizar(2, BaseDeDatos.showByDestino, BaseDeDatos.order);
+                    PPSFilter = itemsPPS[i].getText();
+                    Actualizar(2, showByDestino, order);
                 } else {
-                    Actualizar(0, BaseDeDatos.showByDestino, BaseDeDatos.order);
+                    Actualizar(0, showByDestino, order);
                 }
                 eliminarChecksFiltros();
                 menuFiltroPPS.setIcon(check);
@@ -367,10 +395,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsAptitud.length; i++) {
             if (e.getSource() == itemsAptitud[i]) {
                 if (i != 0) {
-                    BaseDeDatos.aptitudFilter = itemsAptitud[i].getText();
-                    Actualizar(3, BaseDeDatos.showByDestino, BaseDeDatos.order);
+                    aptitudFilter = itemsAptitud[i].getText();
+                    Actualizar(3, showByDestino, order);
                 } else {
-                    Actualizar(0, BaseDeDatos.showByDestino, BaseDeDatos.order);
+                    Actualizar(0, showByDestino, order);
                 }
                 eliminarChecksFiltros();
                 menuFiltroAptitud.setIcon(check);
@@ -381,10 +409,10 @@ public class Tabla extends JFrame implements ActionListener {
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (e.getSource() == itemsPatologias[i]) {
                 if (i != itemsPatologias.length - 1) {
-                    BaseDeDatos.patologiaColumn = patologias[i];
-                    Actualizar(4, BaseDeDatos.showByDestino, BaseDeDatos.order);
+                    patologiaColumn = patologias[i];
+                    Actualizar(4, showByDestino, order);
                 } else {
-                    Actualizar(5, BaseDeDatos.showByDestino, BaseDeDatos.order);
+                    Actualizar(5, showByDestino, order);
                 }
                 eliminarChecksFiltros();
                 menuPatologias.setIcon(check);
@@ -393,14 +421,14 @@ public class Tabla extends JFrame implements ActionListener {
         }
         // observaciones 
         if (e.getSource() == itemObservaciones) {
-            Actualizar(6, BaseDeDatos.showByDestino, BaseDeDatos.order);
+            Actualizar(6, showByDestino, order);
             eliminarChecksFiltros();
             itemObservaciones.setIcon(check);
         }
         // destinos
         for (int i = 0; i < itemsDestinos.length; i++) {
             if (e.getSource() == itemsDestinos[i]) {
-                Actualizar(BaseDeDatos.filter, i, BaseDeDatos.order);
+                Actualizar(filter, i, order);
                 eliminarChecksDestino();
                 menuDestinos.setIcon(check);
                 itemsDestinos[i].setIcon(check);
@@ -409,7 +437,7 @@ public class Tabla extends JFrame implements ActionListener {
         //ordenar por
         for (int i = 0; i < itemsOrdenar.length; i++) {
             if (e.getSource() == itemsOrdenar[i]) {
-                Actualizar(BaseDeDatos.filter, BaseDeDatos.showByDestino, i);
+                Actualizar(filter, showByDestino, i);
                 eliminarChecksOrden();
                 menuOrdenar.setIcon(check);
                 itemsOrdenar[i].setIcon(check);
@@ -422,10 +450,7 @@ public class Tabla extends JFrame implements ActionListener {
         }
 
         //MENU BUSCAR--------------------------------------------
-        if (e.getSource() == itemBuscar) {
-            menuFiltrar.setEnabled(false);
-            menuRef.setEnabled(false);
-            menuBuscar.setEnabled(false);
+        if (e.getSource() == itemBuscar) {      
             buscador.setVisible(true);
             System.gc();
         }
@@ -446,11 +471,11 @@ public class Tabla extends JFrame implements ActionListener {
     //-------------------------------------------------------------------------------------------------
     //---------------------- LLENAR TABLA--------------------------------------------------------------
     private void Actualizar(int filtro, int destino, int order) {
-        BaseDeDatos.filter = filtro;
-        BaseDeDatos.showByDestino = destino;
-        BaseDeDatos.order = order;
+        this.filter = filtro;
+        this.showByDestino = destino;
+        this.order = order;
         BaseDeDatos bdd = new BaseDeDatos();
-        bdd.Actualizar();
+        bdd.Actualizar(this);
         bdd = null;
         System.gc();
     }
@@ -499,36 +524,56 @@ public class Tabla extends JFrame implements ActionListener {
     }
 
     //--------GETTER Y SETTERS---------------------------
-    public static DefaultTableModel getTableModel(int cat) {
+    public DefaultTableModel getTableModel(int cat) {
         return (DefaultTableModel) tablas[cat].getModel();
     }
 
-    public static JLabel getResumen(int cat) {
+    public int getFilter() {
+        return filter;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public String getPPSFilter() {
+        return PPSFilter;
+    }
+
+    public String getAptitudFilter() {
+        return aptitudFilter;
+    }
+
+    public String getPatologiaColumn() {
+        return patologiaColumn;
+    }
+    
+    public int getShowByDestino(){
+        return showByDestino;
+    }
+
+    public Buscador getBuscador() {
+        return buscador;
+    }
+
+    public JLabel getResumen(int cat) {
         return resumen[cat];
     }
 
-    public static JTable getTablas(int cat) {
+    public JTable getTablas(int cat) {
         return tablas[cat];
     }
 
-    public static JScrollPane getScroll(int cat) {
+    public JScrollPane getScroll(int cat) {
         return scrolls[cat];
     }
 
-    public static JTabbedPane getContenedor() {
+    public JTabbedPane getContenedor() {
         return contenedor;
     }
-
-    public static void habilitarMenuFiltrar() {
-        menuFiltrar.setEnabled(true);
-    }
-
-    public static void habilitarMenuBuscar() {
-        menuBuscar.setEnabled(true);
-    }
-
-    public static void habilitarMenuRef() {
-        menuRef.setEnabled(true);
+    
+   public FormularioParte getFormParte() {
+        return formParte;
     }
 
 }

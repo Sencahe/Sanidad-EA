@@ -10,6 +10,7 @@ import mytools.Utilidades;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Arreglos;
 import mytools.Iconos;
+import windows.parte.FormularioParte;
 
 public class Formulario extends javax.swing.JDialog implements ActionListener {
 
@@ -37,36 +39,49 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     private JCheckBox[] checkBox;
     private JLabel[] labels;
 
-    private JButton calcularIMC, Agregar, Eliminar, Modificar;
+    private JButton calcularIMC, Agregar, Eliminar, Modificar, Parte;
+    
     private int id;
     private int puntero; //variable que sirve de referencia para la fila seleccionada al abrir el frame
     private String[][] grados;
+    
+    private Tabla tabla;
+    private FormularioParte formParte;
 
-    public Formulario(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        Componentes();
+  
+    public Formulario(Frame parent, boolean modal, Tabla tabla, FormularioParte formParte) {
+        super(parent, modal);        
+        this.tabla = tabla;
+        this.formParte = formParte;
+        
+        Arreglos arreglo = new Arreglos();
+        grados = arreglo.getGrados();
+        
+        Componentes(arreglo);
+        
+        arreglo = null;
+        
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 Vaciar();
                 dispose();
-                System.gc();
+                System.gc();               
             }
-        });
-        
+        });        
     }
-
-    private void Componentes() {
-        //------------------------------
+   
+    private void Componentes(Arreglos arreglo) {
+        //---------------------------------------
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
-        Arreglos arreglo = new Arreglos();
-        //PROPIEDADES DEL FRAME        
-        setSize(500, 520);
+        //PROPIEDADES DEL FRAME-------------------------------------------------
+        setSize(500, 530);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Nuevo Registro");
         setIconImage(iconos.getIconoSanidad().getImage());
+        //fondo del frame
         JPanel container = new JPanel() {            
             @Override
             protected void paintComponent(Graphics grphcs) {
@@ -89,20 +104,25 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         dimension = null;
         //BOTONES PRINCIPALES 
         Agregar = new JButton("Agregar");
-        Agregar.setBounds(385, 365, 85, 30);
+        Agregar.setBounds(385, 355, 85, 30);
         Agregar.addActionListener(this);
         container.add(Agregar);
         Modificar = new JButton("Guardar");
-        Modificar.setBounds(385, 365, 85, 30);
+        Modificar.setBounds(385, 355, 85, 30);
         Modificar.addActionListener(this);
         Modificar.setVisible(false);
         container.add(Modificar);
         Eliminar = new JButton("Eliminar");
-        Eliminar.setBounds(385, 400, 85, 30);
+        Eliminar.setBounds(385, 390, 85, 30);
         Eliminar.addActionListener(this);
         Eliminar.setVisible(false);
         container.add(Eliminar);
-        // DECLARACION DE COMPONENTES DEL FRAME MAS ALGUNAS PROPIEDADES
+        Parte = new JButton("Parte Enf.");
+        Parte.setBounds(385, 440, 85, 30);
+        Parte.addActionListener(this);
+        Parte.setVisible(true);
+        container.add(Parte);
+        // DECLARACION DE COMPONENTES DEL FRAME MAS ALGUNAS PROPIEDADES---------
         textField = new JTextField[arreglo.getTextFieldLength()];
         comboBox = new JComboBox[arreglo.getComboBoxLength()];
         dateChooser = new JDateChooser[arreglo.getDateChooserLength()];
@@ -147,7 +167,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             container.add(labels[i]);
         }
         
-        //UBICACION DE LOS COMPONENTES Y PROPIEDADES PARTICULARES DE CADA UNO
+        //UBICACION DE LOS COMPONENTES Y PROPIEDADES PARTICULARES DE CADA UNO---
         //Categoria COMBO 0
         labels[0].setBounds(15, 10, 60, 20);
         labels[0].setText("Categoria");
@@ -255,22 +275,20 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         ultA27.setBounds(15, 165, 130, 30);
         container.add(ultA27);
         ultA27 = null;      
-        //Elimino la referencia a todos los objetos que ya no seran utilizados        
+        //----------------------------------------------------------------------        
         utilidad = null;
         iconos = null;
         arreglo = null;
         this.getContentPane().add(container);
     }
 
-    //------------------------------------------------------
-    //-------------------EVENTO BOTONES--------------------
-    //------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //-------------------EVENTO BOTONES-----------------------------------------
+    //--------------------------------------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
         //EVENTO AL CAMBIAR DE CATEGORIA
         if (e.getSource() == comboBox[0]) {
-            Arreglos arreglo = new Arreglos();
-            grados = arreglo.getGrados();
             comboBox[1].removeAllItems();
             int cat = comboBox[0].getSelectedIndex();
             for (String i : grados[cat]) {
@@ -285,7 +303,6 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 comboBox[2].setSelectedIndex(1);
                 comboBox[2].setEnabled(false);
             }
-            arreglo = null;
         }
         //EVENTO AL MARCAR ACT O INF
         for (int i = 4; i < checkBox.length; i++) {
@@ -316,7 +333,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 dispose();
                 Emisor emisor = new Emisor(0);
                 emisor.setInformacion(enviarDatos());
-                emisor.Actualizar();
+                emisor.Actualizar(tabla);
                 emisor = null;
                 Vaciar();
                 System.gc();
@@ -332,10 +349,10 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                     dispose();
                     Emisor enviar = new Emisor(id);
                     enviar.setInformacion(enviarDatos());
-                    enviar.Actualizar();
+                    enviar.Actualizar(tabla);
                     enviar = null;
                     try {
-                     Tabla.getTablas(Tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);     
+                     tabla.getTablas(tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);     
                     } catch (Exception ex) {
                     }                                     
                     Vaciar();
@@ -352,7 +369,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 dispose();
                 Eliminador eliminar = new Eliminador(id);
                 eliminar.Eliminar();
-                eliminar.Actualizar();
+                eliminar.Actualizar(tabla);
                 eliminar = null;
                 Vaciar();
                 System.gc();
@@ -360,8 +377,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         }
     }
 
-    //------------------------------------------------------
-    //-------------------METODO MODIFICAR--------------------    
+    //----------------------------------------------------------------------
+    //-------------------METODO MODIFICAR-----------------------------------   
     public void obtenerDatos(int id, int puntero) {
         setTitle("Modificar Informacion");
         Agregar.setVisible(false);
@@ -370,48 +387,14 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
         this.id = id;
         this.puntero = puntero;
-        Receptor obtener = new Receptor(id);
-        String[][] datos = obtener.getInformacion();
-
-        for (int i = 0; i < datos.length; i++) {
-            for (int j = 0; j < datos[i].length; j++) {
-                if (datos[i][j] != null) {
-                    // agrego datos a text field
-                    if (i == 0) {
-                        textField[j].setText(datos[i][j]);
-                    }
-                    // agrego datos a combo box
-                    if (i == 1) {
-                        if (j == 1 || j == 0) {
-                            comboBox[j].setSelectedIndex(Integer.parseInt(datos[i][j]));
-                        } else {
-                            comboBox[j].setSelectedItem(datos[i][j]);
-                        }
-                    }
-                    //agrego datos a dateChooser
-                    if (i == 2) {
-                        ((JTextField) dateChooser[j].getDateEditor().getUiComponent()).setText(datos[i][j]);
-                    }
-                    //agrego datos a checkbox
-                    if (i == 3) {
-                        if ("X".equals(datos[i][j])) {
-                            checkBox[j].setSelected(true);                         
-                        }
-                    }
-                }
-            }
-        }
-        boolean enabled  = checkBox[4].isSelected() || checkBox[5].isSelected();       
-        textField[9].setEnabled(enabled);
-
-       
         
+        Receptor obtener = new Receptor(id);
+        obtener.getInformacion(this);
         obtener = null;
-        datos = null;
     }
 
-    //---------------------------------------------------------
-    //-----------------METODO ENVIAR DATOS---------------------
+    //---------------------------------------------------------------------
+    //-----------------METODO ENVIAR DATOS--------------------------------
     private String[] enviarDatos() {
                
         int comboIndex = textField.length;
@@ -504,7 +487,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO VACIAR-----------------------
-    public void Vaciar() {
+    private void Vaciar() {
         id = 0;
         Agregar.setVisible(true);
         Modificar.setVisible(false);
@@ -535,7 +518,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO CALCULAR IMC------------------
-    public String[] calcularIMC(double peso, double altura) {
+    private String[] calcularIMC(double peso, double altura) {
         String index = "0";
         String IMCFinal;
         double IMC = peso / (altura * altura);
@@ -566,9 +549,26 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         redondear = null;
         return datos;
     }
+    
+    //---------------------SETTERS Y GETTERS----------------------------
 
     public void setCategoria(int index) {
         this.comboBox[0].setSelectedIndex(index);
     }    
     
+    public JTextField getTextField(int index){
+        return textField[index];
+    }
+    
+    public JComboBox getComboBox(int index){
+        return comboBox[index];
+    }
+    
+    public JDateChooser getDateChooser(int index){
+        return dateChooser[index];
+    }
+    
+    public JCheckBox getCheckBox(int index){
+        return checkBox[index];
+    }
 }

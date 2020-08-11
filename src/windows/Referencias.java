@@ -20,31 +20,31 @@ public class Referencias extends javax.swing.JDialog {
         Utilidades utilidad = new Utilidades();
         //---------------------------------
         //PROPIEDADES DEL FRAME
-        setSize(280, 310);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setTitle("Referencias");
-        setIconImage(iconos.getIconoSanidad().getImage());
-         JPanel container = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                Graphics2D g2d = (Graphics2D) grphcs;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(200, 170,
-                        getBackground().brighter().brighter(), 0, 200,
-                        getBackground().darker().darker());
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-        container.setBackground(utilidad.getColorFondo());
-        Dimension dimension = new Dimension(280, 310);
-        container.setPreferredSize(dimension);
-        container.setLayout(null);
-        dimension = null;
+            setSize(280, 310);
+            setResizable(false);
+            setLocationRelativeTo(null);
+            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            setTitle("Referencias");
+            setIconImage(iconos.getIconoSanidad().getImage());
+             JPanel container = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics grphcs) {
+                    super.paintComponent(grphcs);
+                    Graphics2D g2d = (Graphics2D) grphcs;
+                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
+                    GradientPaint gp = new GradientPaint(200, 170,
+                            getBackground().brighter().brighter(), 0, 200,
+                            getBackground().darker().darker());
+                    g2d.setPaint(gp);
+                    g2d.fillRect(0, 0, getWidth(), getHeight());
+                }
+            };
+            container.setBackground(utilidad.getColorFondo());
+            Dimension dimension = new Dimension(280, 310);
+            container.setPreferredSize(dimension);
+            container.setLayout(null);
+            dimension = null;
         //LABELS CON REFERENCIAS
         Font font = utilidad.getFuenteLabelsRef();
         int width = 250;

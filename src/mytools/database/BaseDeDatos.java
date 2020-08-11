@@ -1,6 +1,7 @@
 package mytools.database;
 
 import windows.Tabla;
+import windows.parte.Parte;
 import mytools.Arreglos;
 import mytools.Fechas;
 import java.sql.Connection;
@@ -11,15 +12,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 
-public class BaseDeDatos {
-
-    public static int filter;
-    public static int showByDestino;
-    public static int order;
-
-    public static String PPSFilter;
-    public static String aptitudFilter;
-    public static String patologiaColumn;
+public class BaseDeDatos {  
 
     private Connection cn;
 
@@ -51,58 +44,75 @@ public class BaseDeDatos {
         this.cn = null;
     }
 
-    //----------------------------------------------------------------------------
-    //------------------------METODO ACTUALIZAR-----------------------------------
-    //----------------------------------------------------------------------------
-    public void Actualizar() {
-        //OBJETOS auxiliares
+    //---------------------------------------------------------------------------
+    //------------------------METODO ACTUALIZAR----------------------------------
+    //---------------------------------------------------------------------------
+    public void Actualizar(Tabla tabla) {
+        //OBJETOS auxiliares----------------------------------------------------
         Arreglos arreglo = new Arreglos();
         Fechas fecha = new Fechas("dd/MM/yyyy");
-        //VACIADO DE LA TABLA ACTUAL
+        String grados[][] = arreglo.getGrados();
+        int filter = tabla.getFilter();
+        //VACIADO DE LA TABLA ACTUAL--------------------------------------------
         for (int i = 0; i < 4; i++) {
-            Tabla.getTableModel(i).setRowCount(0);
+            tabla.getTableModel(i).setRowCount(0);
         }
-        //FILTRAR TABLA           
-        String statement = "select * from Personal";
+        //FILTRAR TABLA---------------------------------------------------------           
+        StringBuffer statement = new StringBuffer("SELECT * FROM Personal");
         switch (filter) {
             case 1:
-                statement += " WHERE (SUBSTR(Anexo27,7,4)||SUBSTR(Anexo27,4,2)||SUBSTR(Anexo27,1,2)) <= " + "\"" + fecha.getYearAgo() + "\"";
+                statement.append(" WHERE (SUBSTR(Anexo27,7,4)||SUBSTR(Anexo27,4,2)||SUBSTR(Anexo27,1,2)) <= ");
+                statement.append("\"");
+                statement.append( fecha.getYearAgo());
+                statement.append("\"");
                 break;
             case 2:
-                statement += " WHERE PPS = \"" + PPSFilter + "\"";
+                statement.append(" WHERE PPS = \"");
+                statement.append(tabla.getPPSFilter());
+                statement.append("\"");
                 break;
             case 3:
-                statement += " WHERE Aptitud = \"" + aptitudFilter + "\"";
+                statement.append(" WHERE Aptitud = \"");
+                statement.append(tabla.getAptitudFilter());
+                statement.append("\"");
                 break;
             case 4:
-                statement += " WHERE \"" + patologiaColumn + "\" = \"X\"";
+                statement.append(" WHERE ");
+                statement.append(tabla.getPatologiaColumn());
+                statement.append(" IS NOT NULL");
                 break;
             case 5:
-                statement += " WHERE (Act IS NOT NULL OR Inf IS NOT NULL)";
+                 statement.append(" WHERE (Act IS NOT NULL OR Inf IS NOT NULL)");
                 break;
             case 6:
-                statement += " WHERE Observaciones IS NOT NULL";
+                 statement.append(" WHERE Observaciones IS NOT NULL");
         }
-        // MOSTRAR POR DESTINOS            
-        if (showByDestino != 0) {
-            statement += filter > 0 ? " AND" : " WHERE";
-            statement += " Destino = \"" + arreglo.getDestinos()[showByDestino] + "\"";
+        // MOSTRAR POR DESTINOS-------------------------------------------------        
+        if (tabla.getShowByDestino() != 0) {
+            statement.append(filter > 0 ? " AND Destino = \"" : " WHERE Destino = \"");
+            statement.append(arreglo.getDestinos()[tabla.getShowByDestino()]);
+            statement.append("\"");
         }
-        //ORDENAR LA TABLA 
-        statement += arreglo.getOrdenTablaBD()[order];
+        //ORDENAR LA TABLA------------------------------------------------------ 
+        statement.append( arreglo.getOrdenTablaBD()[tabla.getOrder()]);
 
-        //CONSULTA A BASE DE DATOS 
+        //CONSULTA A BASE DE DATOS---------------------------------------------- 
+        
+            //en caso de que la conexion se haya cerrado o perdido el objeto
         try {
             if (cn == null || cn.isClosed()) {
-                conectar();
+                cn = conectar();
             }
+            
             //consulta a la base de datos
-            PreparedStatement pst = cn.prepareStatement(statement);
+            PreparedStatement pst = cn.prepareStatement(statement.toString());
             ResultSet rs = pst.executeQuery();
+            
             //llenado de la tabla
             int num[] = new int[arreglo.getCategoriasLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
             int categoria;
             int aux;
+            
             Object[] fila = new Object[arreglo.getColumnbasBDLength() + 1];
             String[] columnas = arreglo.getColumnasBD();
 
@@ -114,7 +124,7 @@ public class BaseDeDatos {
                     if (rs.getObject(i) != null) {
                         switch (i) {
                             case "Grado":
-                                fila[aux] = arreglo.getGrados()[categoria][rs.getInt("Grado")];
+                                fila[aux] = grados[categoria][rs.getInt("Grado")];
                                 break;
                             case "Apellido":
                                 fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
@@ -129,7 +139,7 @@ public class BaseDeDatos {
                     }
                     aux++;
                 }
-                Tabla.getTableModel(categoria).addRow(fila);
+                tabla.getTableModel(categoria).addRow(fila);
                 Arrays.fill(fila, null);
             }
             cn.close();
@@ -137,17 +147,18 @@ public class BaseDeDatos {
             fila = null;
             num = null;
             columnas = null;
-            //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
+            //Al finalizar el llenado de la tablas se actualizan los labels con el conteoz
             String[] categorias = arreglo.getCategorias();
             int cantTabla;
             int total = 0;
+            
             for (int i = 0; i < categorias.length + 1; i++) {
                 if (i != categorias.length) {
-                    cantTabla = Tabla.getTablas(i).getRowCount();
-                    Tabla.getResumen(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
-                    total += Tabla.getTablas(i).getRowCount();
+                    cantTabla = tabla.getTablas(i).getRowCount();
+                    tabla.getResumen(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
+                    total += cantTabla;
                 } else {
-                    Tabla.getResumen(i).setText("TOTAL:  " + total);
+                    tabla.getResumen(i).setText("TOTAL:  " + total);
                 }
             }
             categorias = null;
@@ -156,7 +167,13 @@ public class BaseDeDatos {
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
         //FIN DEL METODO ACTUALIZAR------------------------
+        statement = null;
+        grados = null;
         arreglo = null;
         fecha = null;
+    }
+    
+    public void Actualizar(Parte parte){
+        
     }
 }

@@ -17,6 +17,8 @@ public class Utilidades {
     
     private final Font fuenteLabelsRef;
     
+    private final Font fuenteLabelTitulo;
+    
     public Utilidades(){
         this.colorTabla = new Color(255,255,255);
         this.transparencia = new Color(255,255,255,1);
@@ -34,6 +36,7 @@ public class Utilidades {
         this.fuenteLabelBuscador = new Font("Tahoma", 1, 11);
         this.fuenteLabelResultado = new Font("Tahoma", 0, 11);
         this.fuenteLabelsRef = fuenteBoton;
+        this.fuenteLabelTitulo = new Font("Tahoma",1,20);
     }
     
     //COLORES      
@@ -80,6 +83,9 @@ public class Utilidades {
     }
     public Font getFuenteLabelGrande(){
         return fuenteLabelGrande;
+    }
+    public Font getFuenteLabelTitulo(){
+        return fuenteLabelTitulo;
     }
     //FORMATO FECHA
     public String getFormatoFecha(){
