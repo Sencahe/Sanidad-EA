@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JTextField;
 import windows.Formulario;
+import windows.parte.FormularioParte;
 
 public class Receptor extends BaseDeDatos {
 
@@ -65,6 +66,10 @@ public class Receptor extends BaseDeDatos {
         }
 
         super.nullConnection();
+        
+    }
+    
+    public void getInformacion(FormularioParte formParte){
         
     }
 

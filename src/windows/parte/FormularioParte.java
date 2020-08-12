@@ -4,6 +4,7 @@ import com.toedter.calendar.JDateChooser;
 import database.Emisor;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,6 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,8 +25,10 @@ import mytools.Fechas;
 import mytools.Iconos;
 import mytools.Utilidades;
 import personal.Personal;
+import windows.Formulario;
+import windows.Tabla;
 
-public class FormularioParte extends javax.swing.JDialog implements ActionListener {
+public class FormularioParte extends JDialog implements ActionListener {
 
     private JLabel nombreYApellido, grado, destino;
     private JLabel labelDiagnostico, labelObservaciones, labelDesde, labelHasta, labelCie;
@@ -33,10 +37,17 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
     private JDateChooser desde, hasta;
     private JButton botonAgregar, botonModificar, botonEliminar;
 
-    Personal personal;
+    private Personal personal;
+    
+    private Parte parte;
+    private Tabla tabla;
+    private Formulario formulario;
+   
 
-    public FormularioParte(java.awt.Frame parent, boolean modal) {
+    public FormularioParte(Frame parent, boolean modal, Parte parte) {
         super(parent, modal);
+        this.parte = parte;
+
         componentes();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -187,8 +198,9 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botonAgregar) {
             if(validar()){
-                Emisor emisor = new Emisor(0);
+                Emisor emisor = new Emisor(personal.getId(), 0);
                 emisor.setInformacion(this);
+                tabla.getFormulario().setParteDeEnfermo(true);
                 JOptionPane.showMessageDialog(null, "Nuevo parte de enfermo agregado con exito.");
                 vaciar();
                 
@@ -216,8 +228,9 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         System.gc();
     }
 
-    //------------------------METODO ABRIR FORMULARIO---------------------------
-    public void abrir() {
+    //------------------------METODOS PARA NUEVO PARTE--------------------------
+    public void abrir(Formulario formulario) {
+        this.formulario = formulario;
         nombreYApellido.setText(personal.getNombreCompleto());
         grado.setText(personal.getGrado());
         destino.setText("Destino: " + personal.getDestino());
@@ -268,10 +281,36 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         return personal;
     }
 
-    //Main auxiliar para el desarollo del frame
-    public static void main(String[] args) {
-        FormularioParte form = new FormularioParte(null, true);
-        form.setVisible(true);
+    public JComboBox getTipoParte() {
+        return tipoParte;
     }
+
+    public JTextField getDiagnostico() {
+        return diagnostico;
+    }
+
+    public JTextField getObservaciones() {
+        return observaciones;
+    }
+
+    public JTextField getCie() {
+        return cie;
+    }
+
+    public JDateChooser getDesde() {
+        return desde;
+    }
+
+    public JDateChooser getHasta() {
+        return hasta;
+    }
+    
+    
+
+//    //Main auxiliar para el desarollo del frame
+//    public static void main(String[] args) {
+//        FormularioParte form = new FormularioParte(null, true);
+//        form.setVisible(true);
+//    }
 
 }

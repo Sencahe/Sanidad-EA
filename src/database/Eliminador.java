@@ -19,6 +19,8 @@ public class Eliminador extends BaseDeDatos{
             pst.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Personal eliminado del registro con exito.");
+            
+            super.getConnection().close();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Eliminar//" + e

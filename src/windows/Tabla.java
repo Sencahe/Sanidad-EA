@@ -21,8 +21,8 @@ import mytools.Iconos;
 
 public class Tabla extends JFrame implements ActionListener {
 
-    private JButton Agregar;
-    private JButton gc;
+    private JButton botonAgregar;
+    private JButton botonParte;
 
     private JTabbedPane contenedor;
     private JTable[] tablas;
@@ -73,9 +73,9 @@ public class Tabla extends JFrame implements ActionListener {
 
     public Tabla() {
 
-        this.parte = new Parte(this);
-        this.formParte = new FormularioParte(parte, true);
-
+        this.parte = new Parte(this);        
+        this.formParte = new FormularioParte(parte, true,parte);
+        
         this.formulario = new Formulario(this, true, this, formParte);
         this.buscador = new Buscador(this, false, this);
         this.referencia = new Referencias(this, true);
@@ -215,18 +215,18 @@ public class Tabla extends JFrame implements ActionListener {
 
         //----------------------------------------------------------------------
         // BOTONES (por ahora solo uno)
-        Agregar = new JButton("Nuevo +");
-        Agregar.setBounds(10, 510, 100, 30);
-        Agregar.setFont(utilidad.getFuenteBoton());
-        Agregar.setVisible(true);
-        Agregar.addActionListener(this);
-        container.add(Agregar);
-        gc = new JButton("GC");
-        gc.setBounds(150, 510, 100, 30);
-        gc.setFont(utilidad.getFuenteBoton());
-        gc.setVisible(true);
-        gc.addActionListener(this);
-        container.add(gc);
+        botonAgregar = new JButton("Nuevo +");
+        botonAgregar.setBounds(10, 510, 100, 30);
+        botonAgregar.setFont(utilidad.getFuenteBoton());
+        botonAgregar.setVisible(true);
+        botonAgregar.addActionListener(this);
+        container.add(botonAgregar);
+        botonParte = new JButton("PARTE");
+        botonParte.setBounds(150, 510, 100, 30);
+        botonParte.setFont(utilidad.getFuenteBoton());
+        botonParte.setVisible(true);
+        botonParte.addActionListener(this);
+        container.add(botonParte);
         //----------------------------------------------------------------------
 
         // BARRA MENU----------------------------------------------------------        
@@ -353,12 +353,15 @@ public class Tabla extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        //---------------------- BOTONES ---------------------------------------
         //BOTON AGREGAR
-        if (e.getSource() == Agregar) {
+        if (e.getSource() == botonAgregar) {
             abrirFormulario(contenedor.getSelectedIndex());
         }
-        if (e.getSource() == gc) {
-            System.gc();
+        //BOTON PARTE
+        if (e.getSource() == botonParte) {
+            parte.setVisible(true);
+            dispose();
         }
         //----------------------BARRA MENU--------------------------------------
         //MENU FILTRAR--------------------------------FILTROS-----------------
@@ -570,6 +573,9 @@ public class Tabla extends JFrame implements ActionListener {
         return contenedor;
     }
 
+    public Formulario getFormulario(){
+        return formulario;
+    }
     public FormularioParte getFormParte() {
         return formParte;
     }

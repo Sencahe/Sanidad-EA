@@ -10,10 +10,15 @@ import windows.parte.FormularioParte;
 
 public class Emisor extends BaseDeDatos {
 
-    private int id;
+    private int id, idParte;
+    
 
     public Emisor(int id) {
         this.id = id;
+    }
+    public Emisor(int id, int idParte){
+        this.id = id;
+        this.idParte = idParte;
     }
 
     public void setInformacion(Formulario formulario) {
@@ -84,6 +89,7 @@ public class Emisor extends BaseDeDatos {
             pst.setInt(index++, formulario.getParteDeEnfermo() ? 1:0);
             pst.executeUpdate();
 
+            super.getConnection().close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//setInformacion//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
@@ -94,7 +100,41 @@ public class Emisor extends BaseDeDatos {
     }
     
     public void setInformacion(FormularioParte formParte){
+        String statement;
         
+        
+        if(this.idParte != 0){
+            statement = "update Parte set id_personal, = ? Diagnostico, = ? Observacion, = ? Desde, = ?, Hasta = ?, "
+                    + "CIE = ?, TipoParte = ? where id = " + this.idParte;
+        } else {
+            statement = "insert into Parte (id_personal, Diagnostico, Observacion, Desde, Hasta, CIE, TipoParte)"
+                    + " values(?,?,?,?,?,?,?)";
+        }
+        
+        try {            
+            PreparedStatement pst = super.getConnection().prepareStatement(statement);
+            
+            String emisorDesde = ((JTextField)formParte.getDesde().getDateEditor().getUiComponent()).getText();
+            String emisorHasta = ((JTextField)formParte.getHasta().getDateEditor().getUiComponent()).getText();;
+            String emisorCIE = formParte.getCie().getText();
+            
+            pst.setInt(1, this.id);
+            pst.setString(2, formParte.getDiagnostico().getText());
+            pst.setString(3, formParte.getObservaciones().getText());
+            pst.setString(4,emisorDesde);
+            pst.setString(5, emisorHasta);
+            pst.setString(6, !emisorCIE.equals("") ? emisorCIE:null);
+            pst.setString(7,formParte.getTipoParte().getSelectedItem().toString());
+                       
+            pst.executeUpdate();
+            
+            pst = super.getConnection().prepareStatement("update Personal set Parte = 1 where id = " + this.id);
+
+            pst.executeUpdate();
+            
+            super.getConnection().close();
+        } catch (Exception e) {
+        }
     }
 
 }

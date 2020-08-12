@@ -96,10 +96,10 @@ public class BaseDeDatos {
         statement.append(Arreglos.getOrdenTablaBD(tabla.getOrder()));
 
         //CONSULTA A BASE DE DATOS----------------------------------------------        
-        try {            
+        try {
             if (cn == null || cn.isClosed()) {
                 cn = conectar();
-            } 
+            }
             //consulta a la base de datos
             PreparedStatement pst = cn.prepareStatement(statement.toString());
             ResultSet rs = pst.executeQuery();
@@ -165,9 +165,31 @@ public class BaseDeDatos {
         statement = null;
         fecha = null;
     }
-    
-    public void Actualizar(Parte parte){
-        
+
+    public void Actualizar(Parte parte) {
+        Fechas fecha = new Fechas("dd/MM/yyyy");
+        String grados[][] = Arreglos.getGrados();
+       
+        for (int i = 0; i < 4; i++) {
+            parte.getTableModel(i).setRowCount(0);
+        }
+
+        try {
+            if (cn == null || cn.isClosed()) {
+                cn = conectar();
+            }
+            PreparedStatement pst = cn.prepareStatement("Select * from Parte");
+            ResultSet rs = pst.executeQuery();  
+            
+            int num[] = new int[Arreglos.getCategoriasLength()];
+            Object fila[] = new Object[Arreglos.getColumnasParteLength() + 1];
+            while(rs.next()){
+                
+            }
+            
+        } catch (Exception e) {
+        }
+
     }
 
 }

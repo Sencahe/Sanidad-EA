@@ -384,7 +384,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                         + " ya cuenta con un parte de enfermo activo.");
             } else {
                 formParte.setPersonal(personal);
-                formParte.abrir();
+                formParte.abrir(this);
             }
         }
     }

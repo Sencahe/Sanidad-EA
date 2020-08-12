@@ -17,7 +17,7 @@ public class Arreglos {
     private static String[] columnasBD = {"Grado", "Arma", "Apellido", "Destino", "DNI", "Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
         "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
 
-    private static String[] columnasBDParte = {};
+    private static String[] columnasBDParte = {"id_personal","Diagnostico","Observacion","Desde","Hasta","CIE","TipoParte"};
 
     private static String[] formularioBD = {  //textField
         "Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente", 
