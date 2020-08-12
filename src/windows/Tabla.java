@@ -1,7 +1,5 @@
 package windows;
 
-import mytools.database.BaseDeDatos;
-import mytools.Iconos;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -18,6 +16,8 @@ import mytools.Arreglos;
 import mytools.Utilidades;
 import windows.parte.FormularioParte;
 import windows.parte.Parte;
+import database.BaseDeDatos;
+import mytools.Iconos;
 
 public class Tabla extends JFrame implements ActionListener {
 

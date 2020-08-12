@@ -1,6 +1,7 @@
 package windows.parte;
 
 import com.toedter.calendar.JDateChooser;
+import database.Emisor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -9,14 +10,19 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Arreglos;
+import mytools.Fechas;
 import mytools.Iconos;
 import mytools.Utilidades;
+import personal.Personal;
 
 public class FormularioParte extends javax.swing.JDialog implements ActionListener {
 
@@ -25,12 +31,19 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
     private JComboBox tipoParte;
     private JTextField diagnostico, observaciones, cie;
     private JDateChooser desde, hasta;
-    private JButton agregar, modificar, eliminar;
-    
+    private JButton botonAgregar, botonModificar, botonEliminar;
+
+    Personal personal;
 
     public FormularioParte(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         componentes();
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                vaciar();
+            }
+        });
     }
 
     private void componentes() {
@@ -65,7 +78,7 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
-        
+
         //--------------------------------------
         //COMPONENTES PRINCIPALES
         //Labels con informacion
@@ -92,7 +105,7 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         tipoParte.addItem("No paso novedad");
         tipoParte.setBounds(15, 90, 160, 20);
         container.add(tipoParte);
-        
+
         //datechooser
         labelDesde = new JLabel("Desde *");
         labelDesde.setBounds(15, 125, 200, 20);
@@ -146,25 +159,25 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
         cie.setBounds(240, 195, 150, 20);
         cie.setFont(utilidad.getFuenteTextFields());
         container.add(cie);
-        
+
         //Buttons
-        agregar = new JButton("Agregar");
-        agregar.setBounds(15, 235, 90, 30);
-        agregar.setFont(utilidad.getFuenteBoton());
-        agregar.addActionListener(this);
-        container.add(agregar);
-        modificar = new JButton("Modificar");
-        modificar.setBounds(15, 235, 90, 30);
-        modificar.setFont(utilidad.getFuenteBoton());
-        modificar.addActionListener(this);
-        modificar.setVisible(false);
-        container.add(agregar);
-        eliminar = new JButton("Eliminar");
-        eliminar.setBounds(125, 235, 90, 30);
-        eliminar.setFont(utilidad.getFuenteBoton());
-        eliminar.addActionListener(this);
-        eliminar.setVisible(false);
-        container.add(eliminar);
+        botonAgregar = new JButton("Agregar");
+        botonAgregar.setBounds(15, 235, 90, 30);
+        botonAgregar.setFont(utilidad.getFuenteBoton());
+        botonAgregar.addActionListener(this);
+        container.add(botonAgregar);
+        botonModificar = new JButton("Modificar");
+        botonModificar.setBounds(15, 235, 90, 30);
+        botonModificar.setFont(utilidad.getFuenteBoton());
+        botonModificar.addActionListener(this);
+        botonModificar.setVisible(false);
+        container.add(botonModificar);
+        botonEliminar = new JButton("Eliminar");
+        botonEliminar.setBounds(125, 235, 90, 30);
+        botonEliminar.setFont(utilidad.getFuenteBoton());
+        botonEliminar.addActionListener(this);
+        botonEliminar.setVisible(false);
+        container.add(botonEliminar);
 
         //--------------------------------------
         this.getContentPane().add(container);
@@ -172,11 +185,90 @@ public class FormularioParte extends javax.swing.JDialog implements ActionListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == botonAgregar) {
+            if(validar()){
+                Emisor emisor = new Emisor(0);
+                emisor.setInformacion(this);
+                JOptionPane.showMessageDialog(null, "Nuevo parte de enfermo agregado con exito.");
+                vaciar();
+                
+            }
+                
+            
+        }
+    }
+
+    //-------------------------METODO VACIAR------------------------------------
+    private void vaciar() {
+        personal = null;
+
+        nombreYApellido.setText("");
+        grado.setText("");
+        destino.setText("");
+
+        diagnostico.setText("");
+        observaciones.setText("");
+        cie.setText("");
+        ((JTextField) desde.getDateEditor().getUiComponent()).setText("");
+        ((JTextField) hasta.getDateEditor().getUiComponent()).setText("");
+
+        dispose();
+        System.gc();
+    }
+
+    //------------------------METODO ABRIR FORMULARIO---------------------------
+    public void abrir() {
+        nombreYApellido.setText(personal.getNombreCompleto());
+        grado.setText(personal.getGrado());
+        destino.setText("Destino: " + personal.getDestino());
+        setVisible(true);
+    }
+
+    public void obtenerDatos(int id, int puntero) {
 
     }
-    
-    
 
+    //----------------------METODO VALIDAR------------------------------------
+    private boolean validar() {
+        boolean campoDiag = diagnostico.getText().equals("");
+        boolean campoObs = observaciones.getText().equals("");
+        boolean campoDesde = ((JTextField) desde.getDateEditor().getUiComponent()).getText().equals("");
+        boolean campoHasta = ((JTextField) hasta.getDateEditor().getUiComponent()).getText().equals("");
+        if (campoDiag || campoObs || campoDesde || campoHasta) {
+            labelDiagnostico.setForeground(campoDiag ? Color.red : Color.black);
+            labelObservaciones.setForeground(campoObs ? Color.red : Color.black);
+            labelDesde.setForeground(campoDesde ? Color.red : Color.black);
+            labelHasta.setForeground(campoHasta ? Color.red : Color.black);
+            JOptionPane.showMessageDialog(null, "Debe llenar todos los campos obligatorios");
+            return false;
+        }
+        Fechas validar = new Fechas("dd/MM/yyyy");
+        String fechaDesde = ((JTextField) desde.getDateEditor().getUiComponent()).getText();
+        String fechaHasta = ((JTextField) hasta.getDateEditor().getUiComponent()).getText();
+        if (!validar.fechaValida(fechaHasta) || !validar.fechaValida(fechaDesde)) {
+            labelDesde.setForeground(campoDiag ? Color.red : Color.black);
+            labelHasta.setForeground(campoDiag ? Color.red : Color.black);
+            String mensaje = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
+                    + "<br>Si no conoce la fecha puede dejar el campo vacio.</center></html>";
+            JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
+            validar = null;
+            return false;
+        }
+
+        validar = null;
+        return true;
+    }
+
+    //----------------------SETTER Y GETTERS------------------------------------
+    public void setPersonal(Personal personal) {
+        this.personal = personal;
+    }
+
+    public Personal getPersonal() {
+        return personal;
+    }
+
+    //Main auxiliar para el desarollo del frame
     public static void main(String[] args) {
         FormularioParte form = new FormularioParte(null, true);
         form.setVisible(true);

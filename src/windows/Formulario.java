@@ -1,9 +1,9 @@
 package windows;
 
-import mytools.database.Eliminador;
-import mytools.database.Emisor;
+import database.Eliminador;
+import database.Emisor;
 import mytools.JTextFieldLimit;
-import mytools.database.Receptor;
+import database.Receptor;
 import mytools.Fechas;
 import mytools.TextPrompt;
 import mytools.Utilidades;
@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mytools.Arreglos;
 import mytools.Iconos;
+import personal.Personal;
 import windows.parte.FormularioParte;
 
 public class Formulario extends javax.swing.JDialog implements ActionListener {
@@ -48,6 +49,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     private Tabla tabla;
     private FormularioParte formParte;
+    
+    private Personal personal;
 
     public Formulario(Frame parent, boolean modal, Tabla tabla, FormularioParte formParte) {
         super(parent, modal);
@@ -272,6 +275,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         JLabel ultA27 = new JLabel("<HTML><U>Ultimo Anexo 27</U></HTML>");
         ultA27.setFont(utilidad.getFuenteLabelGrande());
         ultA27.setBounds(15, 165, 130, 30);
+        ultA27.setBackground(Color.white);
         container.add(ultA27);
         ultA27 = null;
         //----------------------------------------------------------------------        
@@ -379,7 +383,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(null, textField[0].getText() + " " + textField[1].getText()
                         + " ya cuenta con un parte de enfermo activo.");
             } else {
-                formParte.setVisible(true);
+                formParte.setPersonal(personal);
+                formParte.abrir();
             }
         }
     }
@@ -398,8 +403,17 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
         Receptor obtener = new Receptor(id);
         obtener.getInformacion(this);
+        
+        int categoria = comboBox[0].getSelectedIndex();
+        String grado = String.valueOf(comboBox[1].getSelectedItem());     
+        String destino = String.valueOf(comboBox[2].getSelectedItem());
+        String nombre = textField[0].getText() + " " + textField[1].getText();  
+              
+        personal = new Personal(this.id, categoria,grado,nombre,destino);
+        
         obtener = null;
     }
+    
 
     //------------------------------------------------------
     //-----------------METODO VALIDAR-----------------------
@@ -465,6 +479,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     //-----------------METODO VACIAR-----------------------
     private void Vaciar() {
         id = 0;
+        personal = null;
+        parteDeEnfermo = false;
+        
         botonAgregar.setVisible(true);
         botonModificar.setVisible(false);
         botonEliminar.setVisible(false);

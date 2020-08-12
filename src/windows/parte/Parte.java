@@ -31,8 +31,7 @@ public class Parte extends JFrame implements ActionListener {
     }
 
     private void componentes() {
-        //OBJETOS AUXILIARES
-        
+        //OBJETOS AUXILIARES       
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
         //-----PROPIEDADES DEL FRAME-----------------
@@ -133,9 +132,10 @@ public class Parte extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
+    //Main auxiliar para el desarollo del frame
     public static void main(String[] args) {
         Parte parte = new Parte(null);
         parte.setVisible(true);
