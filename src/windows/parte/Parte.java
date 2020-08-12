@@ -1,5 +1,6 @@
 package windows.parte;
 
+import database.BaseDeDatos;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -9,6 +10,9 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
@@ -25,13 +29,15 @@ public class Parte extends JFrame implements ActionListener {
 
     private JTable[] tablas;
     private JScrollPane[] scrolls;
-    
-    private final FormularioParte formParte;
+
+    private FormularioParte formParte;
+    private Tabla tabla;
 
     public Parte(Tabla tabla) {
+        this.tabla = tabla;
         this.formParte = tabla.getFormParte();
-        componentes();     
-        
+        componentes();
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -49,7 +55,7 @@ public class Parte extends JFrame implements ActionListener {
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) (pantalla.getWidth() < 1340 ? pantalla.getWidth() : 1340);
         int w = (int) (pantalla.getHeight() < 600 ? pantalla.getHeight() : 600);
-        setSize(x, w);        
+        setSize(x, w);
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -63,15 +69,15 @@ public class Parte extends JFrame implements ActionListener {
                 Graphics2D g2d = (Graphics2D) grphcs;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(1000, 500,
-                        getBackground().brighter(), 0, 200,
-                        getBackground().darker().darker().darker());
+                GradientPaint gp = new GradientPaint(100, 500,
+                        getBackground().brighter(), 500, 500,
+                        getBackground().darker().darker());
                 g2d.setPaint(gp);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
         Dimension dimension = new Dimension(1170, 1070);
-        container.setBackground(utilidad.getColorFondo());      
+        container.setBackground(utilidad.getColorFondo());
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
@@ -93,33 +99,75 @@ public class Parte extends JFrame implements ActionListener {
             //creacion del table model
             DefaultTableModel model = new DefaultTableModel();
             //propiedades de la tabla
-            tablas[i] = new JTable(model);
+            tablas[i] = new JTable(model) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
             tablas[i].setGridColor(Color.black);
             tablas[i].setBackground(utilidad.getColorTabla());
             tablas[i].setFont(utilidad.getFuenteTabla());
+            //eventos al presionar teclas en las tablas
+            tablas[i].getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+            tablas[i].getActionMap().put("Enter", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    for (int i = 0; i < 4; i++) {
+                        if (ae.getSource() == tablas[i]) {
+                            int puntero = tablas[i].getSelectedRow();
+                            if (puntero != -1) {
+                                int idParte = (int) tablas[i].getModel().getValueAt(puntero, 11);
+                                formParte.obtenerDatos(idParte, puntero);
+                            }
+                        }
+                    }
+                }
+            });
+            //eventos al clikear la tabla          
+            tablas[i].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (e.getClickCount() >= 2) {
+                        for (int i = 0; i < 4; i++) {
+                            if (e.getSource() == tablas[i]) {
+                                int puntero = tablas[i].getSelectedRow();
+                                int idParte = (int) tablas[i].getModel().getValueAt(puntero, 11);
+                                formParte.obtenerDatos(idParte, puntero);
+                            }
+                        }
+                    }
+                }
+            }
+            );
             //header
             JTableHeader header = tablas[i].getTableHeader();
+
             header.setFont(utilidad.getFuenteHeader());
             header.setBackground(utilidad.getColorTabla());
-            header.setReorderingAllowed(false);
+            header.setReorderingAllowed(
+                    false);
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
-            for (int j = 0; j < Arreglos.getColumnasParteLength(); j++) {
+            for (int j = 0;
+                    j < Arreglos.getColumnasParteLength();
+                    j++) {
                 model.addColumn(Arreglos.getColumnasParte(j));
             }
-            Object[] asd = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico", "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
-            model.addRow(asd);
             //tamaño de las columnas
-            for (int j = 0; j < Arreglos.getColumnasParteLength(); j++) {
+            for (int j = 0;
+                    j < Arreglos.getColumnasParteLength();
+                    j++) {
                 tablas[i].getColumnModel().getColumn(j).setMinWidth(Arreglos.getTamañoColumnParte(j));
                 tablas[i].getColumnModel().getColumn(j).setMaxWidth(Arreglos.getTamañoColumnParte(j));
                 tablas[i].getColumnModel().getColumn(j).setPreferredWidth(Arreglos.getTamañoColumnParte(j));
                 //centrado del contenido de las columnas
-                if (j != 2 && j != 9) {
+                if (j != 2 && j != 4) {
                     tablas[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
                 }
                 //ocultando la columna con el id
-                if (j == 10) {
+                if (j == 11) {
                     tablas[i].getColumnModel().removeColumn(tablas[i].getColumnModel().getColumn(j));
                 }
             }
@@ -127,34 +175,48 @@ public class Parte extends JFrame implements ActionListener {
             titulo[i] = new JLabel(tituloLabels[i]);
             titulo[i].setFont(utilidad.getFuenteLabelTitulo());
             titulo[i].setForeground(Color.black);
-            titulo[i].setBounds(30, y - 40, 400, 40);
+            titulo[i].setBounds(
+                    60, y - 40, 400, 40);
             scrolls[i] = new JScrollPane(tablas[i]);
-            scrolls[i].setBounds(15, y, 1280, 200);
+            scrolls[i].setBounds(
+                    15, y, 1280, 200);
             y += 250;
-            scrolls[i].getViewport().setBackground(utilidad.getColorTabla());
+            scrolls[i].getViewport()
+                    .setBackground(utilidad.getColorTabla());
             scrolls[i].setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
             container.add(scrolls[i]);
             container.add(titulo[i]);
         }
         //FINALIZACION DE LOS COMPONENTES
         this.getContentPane().add(scrollContainer);
+        BaseDeDatos bdd = new BaseDeDatos();
+        bdd.Actualizar(this);
+        bdd = null;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        
+    public void actionPerformed(ActionEvent e
+    ) {
+
     }
 
-    
+    //-----------------------SETTERS Y GETTERS---------------------------------
     public DefaultTableModel getTableModel(int index) {
         return (DefaultTableModel) tablas[index].getModel();
     }
-          
-    
-    //Main auxiliar para el desarollo del frame
-    public static void main(String[] args) {
-        Parte parte = new Parte(null);
-        parte.setVisible(true);
+
+    public JTable[] getTablas() {
+        return tablas;
     }
+
+    public JTable getTablas(int index) {
+        return tablas[index];
+    }
+
+    public void setFormParte(FormularioParte formParte) {
+        this.formParte = formParte;
+    }
+
 }

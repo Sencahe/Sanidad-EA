@@ -169,7 +169,8 @@ public class BaseDeDatos {
     public void Actualizar(Parte parte) {
         Fechas fecha = new Fechas("dd/MM/yyyy");
         String grados[][] = Arreglos.getGrados();
-       
+
+        //vaciado del Parte
         for (int i = 0; i < 4; i++) {
             parte.getTableModel(i).setRowCount(0);
         }
@@ -178,16 +179,70 @@ public class BaseDeDatos {
             if (cn == null || cn.isClosed()) {
                 cn = conectar();
             }
-            PreparedStatement pst = cn.prepareStatement("Select * from Parte");
-            ResultSet rs = pst.executeQuery();  
-            
+            //RECUPERO PRIMERO LOS DATOS DE LA TABLA PERSONAL PARA PODER ORDENARLOS POR GRADO
+            PreparedStatement pst = cn.prepareStatement("SELECT id, Categoria, Grado, Apellido, Nombre, Destino, Expediente "
+                    + "FROM Personal WHERE Parte = 1 ORDER BY Categoria ASC, Grado DESC, Apellido ASC, Nombre ASC");
+            ResultSet rs = pst.executeQuery();
+            PreparedStatement pst2;
+            ResultSet rs2;
+
+            //variables y objetos para recuperar la informacion y desplegarla en las tablas de Parte
             int num[] = new int[Arreglos.getCategoriasLength()];
-            Object fila[] = new Object[Arreglos.getColumnasParteLength() + 1];
-            while(rs.next()){
-                
+            Object fila[] = new Object[Arreglos.getColumnasParteLength()];
+            int categoria;
+            int tipoParte;
+            int idPersonal;
+            String cie;
+            String hasta;
+            String desde;
+            String expediente;
+
+            while (rs.next()) {
+                idPersonal = rs.getInt("id");
+                categoria = rs.getInt("Categoria");
+                //guardo en el arreglo los datos importantes de personal
+                fila[1] = grados[categoria][rs.getInt("Grado")];
+                fila[2] = rs.getString("Apellido") + " " + rs.getString("Nombre");
+                fila[3] = rs.getString("Destino");
+                //con el id de referencia selecciono de la tabla Parte para colocarlos en la tabla del frame
+                pst2 = cn.prepareStatement("SELECT * FROM Parte WHERE id_personal = " + idPersonal);
+                rs2 = pst2.executeQuery();
+
+                cie = rs2.getString("CIE");
+                hasta = rs2.getString("Hasta");
+                desde = rs2.getString("Desde");
+                expediente = rs.getString("Expediente");
+
+                fila[4] = rs2.getString("Diagnostico");
+                fila[5] = cie != null ? cie : "";
+                fila[6] = desde;
+                fila[7] = hasta;
+                fila[8] = fecha.getDias(desde);
+                fila[9] = expediente != null ?  expediente : "No";
+                fila[10] = rs2.getString("Observacion");
+                fila[11] = rs2.getInt("id");
+                tipoParte = rs2.getInt("TipoParte");
+                //si la fecha de HASTA es numero positivo, significa que NO PASO NOVEEDAD y se colocara en esa tabla
+                //sin tener que modificar su tipo de parte
+                if (fecha.getDias(hasta) > 0) {
+                    fila[0] = ++num[3];
+                    parte.getTableModel(3).addRow(fila);
+                } else {
+                    fila[0] = ++num[tipoParte];
+                    parte.getTableModel(tipoParte).addRow(fila);
+                }
+                 
+
+                Arrays.fill(fila, null);
             }
-            
+            cn.close();
+            fila = null;
+            num = null;
+            fecha = null;
+
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
+                    + "\nContactese con el desarrolador para resolver el problema.");
         }
 
     }

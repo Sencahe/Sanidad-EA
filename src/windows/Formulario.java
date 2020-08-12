@@ -42,6 +42,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     private JLabel[] labels;
 
     private JButton botonCalcularIMC, botonAgregar, botonEliminar, botonModificar, botonParte;
+    private JLabel labelParte;
 
     private int id;
     private int puntero; //variable que sirve de referencia para la fila seleccionada al abrir el frame   
@@ -115,10 +116,11 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         botonEliminar.addActionListener(this);
         botonEliminar.setVisible(false);
         container.add(botonEliminar);
-        JLabel labelParte = new JLabel("Parte de Enfermo");
+        labelParte = new JLabel("Parte de Enfermo");
         labelParte.setBounds(260,195,150,30);
         labelParte.setFont(utilidad.getFuenteLabelsFormulario());
         labelParte.setForeground(Color.black);
+        labelParte.setVisible(false);
         container.add(labelParte);
         botonParte = new JButton("Agregar");
         botonParte.setBounds(275, 220, 80, 20);
@@ -380,24 +382,27 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         //EVENTO BOTON PARTE DE ENFERMO
         if (e.getSource() == botonParte) {
             if (parteDeEnfermo) {
-                JOptionPane.showMessageDialog(null, textField[0].getText() + " " + textField[1].getText()
-                        + " ya cuenta con un parte de enfermo activo.");
+                JOptionPane.showMessageDialog(null, personal.getNombreCompleto()+ " ya cuenta con un parte de enfermo activo.");
             } else {
-                formParte.setPersonal(personal);
-                formParte.abrir(this);
+                formParte.nuevoParte(this);
             }
         }
     }
-
-    //----------------------------------------------------------------------
-    //-------------------METODO MODIFICAR-----------------------------------   
+    
+    //-------------------------------------------------------------------------
+    //-------------------METODOS PARA ABRIR FORMULARIO--------------------------
+    public void nuevoFormulario(){
+        setVisible(true);
+    }
+    
     public void obtenerDatos(int id, int puntero) {
         setTitle("Modificar Informacion");
         botonAgregar.setVisible(false);
         botonModificar.setVisible(true);
         botonEliminar.setVisible(true);
         botonParte.setVisible(true);
-
+        labelParte.setVisible(true);
+        
         this.id = id;
         this.puntero = puntero;
 
@@ -405,16 +410,17 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         obtener.getInformacion(this);
         
         int categoria = comboBox[0].getSelectedIndex();
-        String grado = String.valueOf(comboBox[1].getSelectedItem());     
+        int grado = comboBox[1].getSelectedIndex();     
         String destino = String.valueOf(comboBox[2].getSelectedItem());
         String nombre = textField[0].getText() + " " + textField[1].getText();  
               
-        personal = new Personal(this.id, categoria,grado,nombre,destino);
+        personal = new Personal(this.id,categoria,grado,nombre,destino);
+        
+        this.setVisible(true);
         
         obtener = null;
     }
     
-
     //------------------------------------------------------
     //-----------------METODO VALIDAR-----------------------
     private boolean Validar() {
@@ -486,6 +492,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         botonModificar.setVisible(false);
         botonEliminar.setVisible(false);
         botonParte.setVisible(false);
+        labelParte.setVisible(false);
+        
         for (JTextField i : textField) {
             i.setText("");
         }
@@ -587,5 +595,15 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     public boolean getParteDeEnfermo(){
         return this.parteDeEnfermo;
     }
+
+    public Personal getPersonal() {
+        return personal;
+    }
+
+    public void setPersonal(Personal personal) {
+        this.personal = personal;
+    }
+    
+    
 
 }

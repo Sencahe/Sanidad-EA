@@ -2,6 +2,7 @@ package windows.parte;
 
 import com.toedter.calendar.JDateChooser;
 import database.Emisor;
+import database.Receptor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -30,19 +31,20 @@ import windows.Tabla;
 
 public class FormularioParte extends JDialog implements ActionListener {
 
-    private JLabel nombreYApellido, grado, destino;
+    private JLabel informacion;
     private JLabel labelDiagnostico, labelObservaciones, labelDesde, labelHasta, labelCie;
     private JComboBox tipoParte;
     private JTextField diagnostico, observaciones, cie;
     private JDateChooser desde, hasta;
-    private JButton botonAgregar, botonModificar, botonEliminar;
+    private JButton botonAgregar, botonModificar, botonAlta;
+
+    private int puntero;
+    private int idParte;
 
     private Personal personal;
-    
+
     private Parte parte;
-    private Tabla tabla;
     private Formulario formulario;
-   
 
     public FormularioParte(Frame parent, boolean modal, Parte parte) {
         super(parent, modal);
@@ -93,27 +95,17 @@ public class FormularioParte extends JDialog implements ActionListener {
         //--------------------------------------
         //COMPONENTES PRINCIPALES
         //Labels con informacion
-        grado = new JLabel("Grado");
-        grado.setBounds(15, 20, 60, 30);
-        grado.setFont(utilidad.getFuenteLabelGrande());
-        grado.setForeground(Color.black);
-        container.add(grado);
-        nombreYApellido = new JLabel("APELLIDO y Nombre");
-        nombreYApellido.setBounds(80, 20, 350, 30);
-        nombreYApellido.setFont(utilidad.getFuenteLabelGrande());
-        nombreYApellido.setForeground(Color.black);
-        container.add(nombreYApellido);
-        destino = new JLabel("Destino: ");
-        destino.setBounds(15, 50, 200, 30);
-        destino.setFont(utilidad.getFuenteLabelGrande());
-        destino.setForeground(Color.black);
-        container.add(destino);
+        informacion = new JLabel();
+        informacion.setBounds(15, 15, 435, 60);
+        informacion.setFont(utilidad.getFuenteLabelGrande());
+        informacion.setForeground(Color.black);
+        container.add(informacion);
+
         //combobox
         tipoParte = new JComboBox();
         tipoParte.addItem("Parte de Enfermo");
         tipoParte.addItem("Parte de Exceptuado");
-        tipoParte.addItem("Parte de Embarazo");
-        tipoParte.addItem("No paso novedad");
+        tipoParte.addItem("Parte de Maternidad");
         tipoParte.setBounds(15, 90, 160, 20);
         container.add(tipoParte);
 
@@ -150,7 +142,6 @@ public class FormularioParte extends JDialog implements ActionListener {
         observaciones.setBounds(240, 145, 170, 20);
         observaciones.setFont(utilidad.getFuenteTextFields());
         container.add(observaciones);
-
         labelDiagnostico = new JLabel("Diagnostico *");
         labelDiagnostico.setBounds(15, 175, 200, 20);
         labelDiagnostico.setFont(utilidad.getFuenteLabelsFormulario());
@@ -174,21 +165,18 @@ public class FormularioParte extends JDialog implements ActionListener {
         //Buttons
         botonAgregar = new JButton("Agregar");
         botonAgregar.setBounds(15, 235, 90, 30);
-        botonAgregar.setFont(utilidad.getFuenteBoton());
         botonAgregar.addActionListener(this);
         container.add(botonAgregar);
         botonModificar = new JButton("Modificar");
         botonModificar.setBounds(15, 235, 90, 30);
-        botonModificar.setFont(utilidad.getFuenteBoton());
         botonModificar.addActionListener(this);
         botonModificar.setVisible(false);
         container.add(botonModificar);
-        botonEliminar = new JButton("Eliminar");
-        botonEliminar.setBounds(125, 235, 90, 30);
-        botonEliminar.setFont(utilidad.getFuenteBoton());
-        botonEliminar.addActionListener(this);
-        botonEliminar.setVisible(false);
-        container.add(botonEliminar);
+        botonAlta = new JButton("Alta");
+        botonAlta.setBounds(125, 235, 90, 30);
+        botonAlta.addActionListener(this);
+        botonAlta.setVisible(false);
+        container.add(botonAlta);
 
         //--------------------------------------
         this.getContentPane().add(container);
@@ -197,26 +185,36 @@ public class FormularioParte extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botonAgregar) {
-            if(validar()){
-                Emisor emisor = new Emisor(personal.getId(), 0);
-                emisor.setInformacion(this);
-                tabla.getFormulario().setParteDeEnfermo(true);
-                JOptionPane.showMessageDialog(null, "Nuevo parte de enfermo agregado con exito.");
-                vaciar();
-                
+            if (validar()) {
+                int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
+                        "Confirmacion", JOptionPane.YES_NO_OPTION);
+                if (opcion == JOptionPane.YES_OPTION) {
+                    Emisor emisor = new Emisor(personal.getId(), 0);
+                    emisor.setInformacion(this);
+                    formulario.setParteDeEnfermo(true);
+                    JOptionPane.showMessageDialog(null, "Nuevo parte de enfermo agregado con exito.");
+                    vaciar();
+                }
             }
-                
-            
+        }
+        if (e.getSource() == botonModificar) {
+
+        }
+
+        if (e.getSource() == botonAlta) {
+
         }
     }
 
     //-------------------------METODO VACIAR------------------------------------
     private void vaciar() {
+        botonAgregar.setVisible(true);
+        botonAlta.setVisible(false);
+        botonModificar.setVisible(false);
+
         personal = null;
 
-        nombreYApellido.setText("");
-        grado.setText("");
-        destino.setText("");
+        informacion.setText("");
 
         diagnostico.setText("");
         observaciones.setText("");
@@ -229,16 +227,30 @@ public class FormularioParte extends JDialog implements ActionListener {
     }
 
     //------------------------METODOS PARA NUEVO PARTE--------------------------
-    public void abrir(Formulario formulario) {
+    public void nuevoParte(Formulario formulario) {
         this.formulario = formulario;
-        nombreYApellido.setText(personal.getNombreCompleto());
-        grado.setText(personal.getGrado());
-        destino.setText("Destino: " + personal.getDestino());
+        this.personal = formulario.getPersonal();
+        informacion.setText(personal.toString());
+
         setVisible(true);
     }
 
-    public void obtenerDatos(int id, int puntero) {
+    //------------METODOS PARA MODIFICAR PARTES ACTUALES-----------------------
+    public void obtenerDatos(int idParte, int puntero) {
+        this.puntero = puntero;
+        this.idParte = idParte;
 
+        setTitle("Modificar Parte de Enfermo");
+        botonAgregar.setVisible(false);
+        botonAlta.setVisible(true);
+        botonModificar.setVisible(true);
+
+        Receptor receptor = new Receptor(this.idParte);
+        receptor.getInformacion(this);
+
+        informacion.setText(personal.toString());
+
+        setVisible(true);
     }
 
     //----------------------METODO VALIDAR------------------------------------
@@ -304,13 +316,5 @@ public class FormularioParte extends JDialog implements ActionListener {
     public JDateChooser getHasta() {
         return hasta;
     }
-    
-    
-
-//    //Main auxiliar para el desarollo del frame
-//    public static void main(String[] args) {
-//        FormularioParte form = new FormularioParte(null, true);
-//        form.setVisible(true);
-//    }
 
 }

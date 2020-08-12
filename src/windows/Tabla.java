@@ -64,7 +64,7 @@ public class Tabla extends JFrame implements ActionListener {
     private String aptitudFilter;
     private String patologiaColumn;
 
-    //DECLARACION DE LOS OBJETOS PARA LOS JFRAMES
+    //OBJETOS PARA LAS VENTANAS
     private final Formulario formulario;
     private final Buscador buscador;
     private final Referencias referencia;
@@ -75,6 +75,7 @@ public class Tabla extends JFrame implements ActionListener {
 
         this.parte = new Parte(this);        
         this.formParte = new FormularioParte(parte, true,parte);
+        this.parte.setFormParte(formParte);
         
         this.formulario = new Formulario(this, true, this, formParte);
         this.buscador = new Buscador(this, false, this);
@@ -161,7 +162,7 @@ public class Tabla extends JFrame implements ActionListener {
                     int puntero = tablas[categoria].getSelectedRow();
                     if (puntero != -1) {
                         int id = (int) tablas[categoria].getModel().getValueAt(puntero, 20);
-                        modificarFormulario(id, puntero);
+                        modificarPersonal(id, puntero);
                         System.gc();
                     }
                 }
@@ -175,7 +176,7 @@ public class Tabla extends JFrame implements ActionListener {
                         int categoria = contenedor.getSelectedIndex();
                         int puntero = tablas[categoria].rowAtPoint(e.getPoint());
                         int id = (int) tablas[categoria].getModel().getValueAt(puntero, 20);
-                        modificarFormulario(id, puntero);
+                        modificarPersonal(id, puntero);
                         System.gc();
                     }
                 }
@@ -216,13 +217,13 @@ public class Tabla extends JFrame implements ActionListener {
         //----------------------------------------------------------------------
         // BOTONES (por ahora solo uno)
         botonAgregar = new JButton("Nuevo +");
-        botonAgregar.setBounds(10, 510, 100, 30);
+        botonAgregar.setBounds(10, 520, 100, 30);
         botonAgregar.setFont(utilidad.getFuenteBoton());
         botonAgregar.setVisible(true);
         botonAgregar.addActionListener(this);
         container.add(botonAgregar);
         botonParte = new JButton("PARTE");
-        botonParte.setBounds(150, 510, 100, 30);
+        botonParte.setBounds(150, 520, 100, 30);
         botonParte.setFont(utilidad.getFuenteBoton());
         botonParte.setVisible(true);
         botonParte.addActionListener(this);
@@ -457,16 +458,15 @@ public class Tabla extends JFrame implements ActionListener {
         }
     }
 
-    //----------------------------------------------------------------------------------------------------
-    //------------------ MODIFICAR FORMULARIO--------------------------------------------------------------
-    private void modificarFormulario(int id, int puntero) {
+    //---------------------------------------------------------------------------
+    //---------------------------- FORMULARIO-----------------------------------
+    private void modificarPersonal(int id, int puntero) {
         formulario.obtenerDatos(id, puntero);
-        formulario.setVisible(true);
     }
 
     private void abrirFormulario(int cat) {
         formulario.setCategoria(cat);
-        formulario.setVisible(true);
+        formulario.nuevoFormulario();
     }
 
     //-------------------------------------------------------------------------------------------------

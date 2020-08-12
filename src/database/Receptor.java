@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JTextField;
+import personal.Personal;
 import windows.Formulario;
 import windows.parte.FormularioParte;
 
@@ -70,7 +71,37 @@ public class Receptor extends BaseDeDatos {
     }
     
     public void getInformacion(FormularioParte formParte){
-        
+        try {
+            // Recupero los datos del parte de enfermo para su formulario
+            PreparedStatement pst = super.getConnection().prepareStatement("select * from Parte where id = " + this.id);
+            ResultSet rs = pst.executeQuery();     
+            
+            formParte.getTipoParte().setSelectedIndex(rs.getInt("TipoParte"));
+            formParte.getDiagnostico().setText(rs.getString("Diagnostico"));
+            formParte.getObservaciones().setText(rs.getString("Observacion"));
+            formParte.getCie().setText(rs.getString("CIE") != null ? rs.getString("CIE"):"");
+            
+            ((JTextField) formParte.getDesde().getDateEditor().getUiComponent()).setText(rs.getString("Desde"));
+            ((JTextField) formParte.getHasta().getDateEditor().getUiComponent()).setText(rs.getString("Hasta"));
+            //id de la tabla con la referencia de los datos de personal
+            int id_personal = rs.getInt("id_personal");
+            //recupero los datos de personal necesarios
+            pst = super.getConnection().prepareStatement("SELECT Categoria, Grado, Apellido, Nombre, Destino FROM Personal "
+                    + " WHERE id = " + id_personal);
+            rs = pst.executeQuery();
+            
+            int categoria = rs.getInt("Categoria");
+            int grado = rs.getInt("Grado");
+            String nombre = rs.getString("Apellido") + " " + rs.getString("Nombre");
+            String destino = rs.getString("Destino") != null ? rs.getString("Destino"):"";
+            //creo el objeto personal en la clase formularioParte
+            formParte.setPersonal(new Personal(id_personal,categoria,grado,nombre,destino));
+            
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error//BDD//getInformacion " + e
+                    + "\nContactese con el desarrolador del programa para solucionar el problema.");
+        }
     }
 
 }

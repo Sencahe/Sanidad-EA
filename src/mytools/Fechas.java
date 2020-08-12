@@ -3,11 +3,12 @@ package mytools;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class Fechas {
         
     private DateTimeFormatter fmt;
-    private LocalDate fechaNac;
+    private LocalDate fecha;
     private LocalDate fechaHoy;
     private Period periodo;
     
@@ -19,9 +20,15 @@ public class Fechas {
     
     //metodo para obtener la edad a partir de la fecha pasada como parametro
     public int getEdad(String fecha) {        
-        this.fechaNac = LocalDate.parse(fecha, fmt);       
-        this.periodo = Period.between(fechaNac, fechaHoy);       
+        this.fecha = LocalDate.parse(fecha, fmt);       
+        this.periodo = Period.between(this.fecha, fechaHoy);       
         return (periodo.getYears());
+    }
+    public int getDias(String fecha){
+        this.fecha = LocalDate.parse(fecha, fmt);    
+        int days = (int) ChronoUnit.DAYS.between(this.fecha, fechaHoy);
+        this.periodo = Period.between(this.fecha, fechaHoy);     
+        return days;
     }
     //metodo para validar la fecha
     public boolean fechaValida(String fecha){       

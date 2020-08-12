@@ -124,7 +124,7 @@ public class Emisor extends BaseDeDatos {
             pst.setString(4,emisorDesde);
             pst.setString(5, emisorHasta);
             pst.setString(6, !emisorCIE.equals("") ? emisorCIE:null);
-            pst.setString(7,formParte.getTipoParte().getSelectedItem().toString());
+            pst.setInt(7,formParte.getTipoParte().getSelectedIndex());
                        
             pst.executeUpdate();
             

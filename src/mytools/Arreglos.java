@@ -3,21 +3,21 @@ package mytools;
 public class Arreglos {
 
     // ARREGLOS PARA LOS JTABLE
-    private static String[] columnasTabla = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Ult. Anexo 27",
+    private static String[] columnasTabla = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Anexo 27",
         "Edad", "Peso", "Altura", "IMC", "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
     //                                      Nr Grd A/S AyN Dest DNI A27 Age Kgs Alt  IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
     private static int[] tamañoColumnas = {40, 50, 70, 240, 60, 80, 110, 40, 50, 50, 50, 105, 65, 32, 32, 32, 32, 32, 32, 258, 40};
 
-    private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico",
+    private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
-    //                          Nro Grd  AyN Dest Diag Dsd  Hst Dias Exp  Obs id
-    private static int[] tamañoColumnasParte = {40, 50, 240, 60, 260, 100, 100, 50, 100, 260, 40};
+    //                                         Nro Grd  AyN Dest Diag cie Dsd  Hst Dias Exp  Obs id
+    private static int[] tamañoColumnasParte = {40, 50, 240, 60, 260, 50, 100, 100, 50, 110, 200, 40};
     //=================================================================================
     //ARREGLOS PARA RECUPERAR INFORMACION DE LA BASE DE DATOS A LOS JTABLE
     private static String[] columnasBD = {"Grado", "Arma", "Apellido", "Destino", "DNI", "Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
         "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
 
-    private static String[] columnasBDParte = {"id_personal","Diagnostico","Observacion","Desde","Hasta","CIE","TipoParte"};
+    private static String[] columnasBDParte = {};
 
     private static String[] formularioBD = {  //textField
         "Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente", 

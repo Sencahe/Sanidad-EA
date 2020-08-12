@@ -36,7 +36,7 @@ public class Utilidades {
         this.fuenteLabelBuscador = new Font("Tahoma", 1, 11);
         this.fuenteLabelResultado = new Font("Tahoma", 0, 11);
         this.fuenteLabelsRef = fuenteBoton;
-        this.fuenteLabelTitulo = new Font("Tahoma",1,20);
+        this.fuenteLabelTitulo = new Font("Times New Roman",1,20);
     }
     
     //COLORES      
