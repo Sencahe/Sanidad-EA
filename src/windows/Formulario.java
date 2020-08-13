@@ -20,12 +20,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import mytools.Arreglos;
 import mytools.Iconos;
@@ -37,8 +40,11 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     private JTextField[] textField;
     private JComboBox[] comboBox;
     private JDateChooser[] dateChooser;
-
     private JCheckBox[] checkBox;
+    private JRadioButton M;
+    private JRadioButton F;
+    private ButtonGroup bg;
+    
     private JLabel[] labels;
 
     private JButton botonCalcularIMC, botonAgregar, botonEliminar, botonModificar, botonParte;
@@ -131,8 +137,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         textField = new JTextField[Arreglos.getTextFieldLength()];
         comboBox = new JComboBox[Arreglos.getComboBoxLength()];
         dateChooser = new JDateChooser[Arreglos.getDateChooserLength()];
-        checkBox = new JCheckBox[Arreglos.getCheckBoxLength()];
-        labels = new JLabel[textField.length + comboBox.length + dateChooser.length + 2];
+        checkBox = new JCheckBox[Arreglos.getCheckBoxLength()];        
+        labels = new JLabel[textField.length + comboBox.length + dateChooser.length + 1];
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
@@ -171,8 +177,28 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             labels[i].setFont(utilidad.getFuenteLabelsFormulario());
             container.add(labels[i]);
         }
-
+        //RadioButtons
+        bg = new ButtonGroup();
+        M = new JRadioButton("M");
+        F = new JRadioButton("F");
         //UBICACION DE LOS COMPONENTES Y PROPIEDADES PARTICULARES DE CADA UNO---
+        //RadioButtons
+        labels[17].setText("Sexo");
+        labels[17].setBounds(285,10,30,20);
+        M.setBounds(320, 10, 40, 20);
+        M.setBackground(utilidad.getTransparencia());
+        M.setOpaque(false);
+        M.setFont(utilidad.getFuenteLabelsFormulario());
+        M.setSelected(true);
+        bg.add(M);
+        container.add(M);
+        F.setBounds(360, 10, 40, 20);
+        F.setBackground(utilidad.getTransparencia());
+        F.setOpaque(false);
+        F.setFont(utilidad.getFuenteLabelsFormulario());
+        bg.add(F);
+        container.add(F);
+        //M.setBounds();
         //Categoria COMBO 0
         labels[0].setBounds(15, 10, 60, 20);
         labels[0].setText("Categoria");
@@ -273,6 +299,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             container.add(checkBox[i]);
             X += 44;
         }
+        
         //LABEL ULTIMO ANEXO 27
         JLabel ultA27 = new JLabel("<HTML><U>Ultimo Anexo 27</U></HTML>");
         ultA27.setFont(utilidad.getFuenteLabelGrande());
@@ -413,8 +440,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         int grado = comboBox[1].getSelectedIndex();     
         String destino = String.valueOf(comboBox[2].getSelectedItem());
         String nombre = textField[0].getText() + " " + textField[1].getText();  
-              
-        personal = new Personal(this.id,categoria,grado,nombre,destino);
+        char sexo = M.isSelected() ? 'M':'F';
+                      
+        personal = new Personal(this.id,categoria,grado,nombre,destino,sexo);
         
         this.setVisible(true);
         
@@ -516,6 +544,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         textField[4].setForeground(Color.black);
         textField[5].setForeground(Color.black);
         textField[9].setEnabled(false);
+        M.setSelected(true);
     }
 
     //------------------------------------------------------
@@ -589,6 +618,28 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         return checkBox.length;
     }
 
+    public JRadioButton getM() {
+        return M;
+    }
+
+    public JRadioButton getF() {
+        return F;
+    }
+
+    public ButtonModel getMModel() {
+        return M.getModel();
+    }
+
+    public ButtonModel getFModel() {
+        return F.getModel();
+    }
+
+    public ButtonGroup getBg() {
+        return bg;
+    }
+    
+    
+
     public void setParteDeEnfermo(boolean parteDeEnfermo) {
         this.parteDeEnfermo = parteDeEnfermo;
     }
@@ -605,5 +656,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     }
     
     
+    public static void main(String[] args) {
+        Formulario form = new Formulario(null,true,null,null);
+        form.setVisible(true);
+    }
 
 }

@@ -103,9 +103,9 @@ public class FormularioParte extends JDialog implements ActionListener {
 
         //combobox
         tipoParte = new JComboBox();
-        tipoParte.addItem("Parte de Enfermo");
-        tipoParte.addItem("Parte de Exceptuado");
-        tipoParte.addItem("Parte de Maternidad");
+        tipoParte.addItem("Reposo");
+        tipoParte.addItem("Exceptuado");
+        tipoParte.addItem("Maternidad");
         tipoParte.setBounds(15, 90, 160, 20);
         container.add(tipoParte);
 
@@ -182,6 +182,8 @@ public class FormularioParte extends JDialog implements ActionListener {
         this.getContentPane().add(container);
     }
 
+    //--------------------------------------------------------------------------
+    //EVENTO BOTOENS------------------------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botonAgregar) {
@@ -204,6 +206,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         if (e.getSource() == botonAlta) {
 
         }
+
     }
 
     //-------------------------METODO VACIAR------------------------------------
@@ -211,7 +214,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         botonAgregar.setVisible(true);
         botonAlta.setVisible(false);
         botonModificar.setVisible(false);
-
+        
         personal = null;
 
         informacion.setText("");
@@ -221,6 +224,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         cie.setText("");
         ((JTextField) desde.getDateEditor().getUiComponent()).setText("");
         ((JTextField) hasta.getDateEditor().getUiComponent()).setText("");
+        tipoParte.setSelectedIndex(0);
 
         dispose();
         System.gc();
@@ -253,8 +257,12 @@ public class FormularioParte extends JDialog implements ActionListener {
         setVisible(true);
     }
 
-    //----------------------METODO VALIDAR------------------------------------
+    //----------------------METODO VALIDAR--------------------------------------
     private boolean validar() {
+        labelDiagnostico.setForeground(Color.black);
+        labelObservaciones.setForeground(Color.black);
+        labelDesde.setForeground(Color.black);
+        labelHasta.setForeground(Color.black);
         boolean campoDiag = diagnostico.getText().equals("");
         boolean campoObs = observaciones.getText().equals("");
         boolean campoDesde = ((JTextField) desde.getDateEditor().getUiComponent()).getText().equals("");
@@ -278,6 +286,12 @@ public class FormularioParte extends JDialog implements ActionListener {
             JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
             validar = null;
             return false;
+        }
+        if (personal.getSexo() == 'M') {
+            if (tipoParte.getSelectedIndex() == 2) {
+                JOptionPane.showMessageDialog(null, "No puede agregar parte de \"Maternidad\" a un Personal Masculino.");
+                return false;
+            }
         }
 
         validar = null;

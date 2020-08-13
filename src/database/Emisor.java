@@ -85,6 +85,8 @@ public class Emisor extends BaseDeDatos {
             for (int i = 0; i < formulario.getCheckBoxLength(); i++) {
                 pst.setString(index++, formulario.getCheckBox(i).isSelected() ? "X":null);
             }
+            //Se envia los datos de radiobuttons           
+            pst.setString(index++,formulario.getM().isSelected() ? "M":"F");
             //Se envian los flags
             pst.setInt(index++, formulario.getParteDeEnfermo() ? 1:0);
             pst.executeUpdate();

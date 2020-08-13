@@ -22,7 +22,7 @@ public class Utilidades {
     public Utilidades(){
         this.colorTabla = new Color(255,255,255);
         this.transparencia = new Color(255,255,255,1);
-        this.colorFondo = new Color(20,180,20);
+        this.colorFondo = new Color(20,170,20);
         this.fuentePestañas = new Font ("Tahoma", 1, 16);
         this.fuenteTabla = new Font("Tahoma", 0, 13);
         this.fuenteBoton = new Font("Tahoma", 1, 13);
