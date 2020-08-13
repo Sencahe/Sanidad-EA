@@ -115,4 +115,13 @@ public class Utilidades {
             }
         }
     };
+    public KeyAdapter soloNumeros = new KeyAdapter() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+            char caracter = e.getKeyChar();
+            if (((caracter < '0') || (caracter > '9')) ) {
+                e.consume();
+            }
+        }
+    };
 }

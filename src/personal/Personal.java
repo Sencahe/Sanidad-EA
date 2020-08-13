@@ -12,15 +12,19 @@ public class Personal {
     private String nombreCompleto;
     private String destino;
     private char sexo;
+    private int dni;
     
-    
-    public Personal(int id, int categoria, int grado, String nombreCompelto, String destino, char sexo){
+    private int diasParte;
+       
+    public Personal(int id, int categoria, int grado, String nombreCompelto, String destino,
+            char sexo,int dni){
         this.id = id;
         this.categoria = categoria;
         this.grado = grado;
         this.nombreCompleto = nombreCompelto;
         this.destino = destino;        
         this.sexo = sexo;
+        this.dni = dni;
     }
 
     public int getId() {
@@ -70,6 +74,22 @@ public class Personal {
     public void setSexo(char sexo) {
         this.sexo = sexo;
     }
+
+    public int getDni() {
+        return dni;
+    }
+
+    public void setDni(int dni) {
+        this.dni = dni;
+    }
+
+    public int getDiasParte() {
+        return diasParte;
+    }
+
+    public void setDiasParte(int diasParte) {
+        this.diasParte = diasParte;
+    }
     
     
 
@@ -77,7 +97,7 @@ public class Personal {
     @Override
     public String toString(){
         return "<html><pre>Grado: " + Arreglos.getGrados(categoria, grado) + "<br>Nombre: " + this.nombreCompleto 
-                + "<br>Destino: " + this.destino + "</pre></html>";
+                + "<br>Destino: " + this.destino + "<br>DNI: " + this.dni + "</pre></html>";
     }
     
 }

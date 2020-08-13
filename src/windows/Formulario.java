@@ -44,7 +44,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     private JRadioButton M;
     private JRadioButton F;
     private ButtonGroup bg;
-    
+
     private JLabel[] labels;
 
     private JButton botonCalcularIMC, botonAgregar, botonEliminar, botonModificar, botonParte;
@@ -56,7 +56,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     private Tabla tabla;
     private FormularioParte formParte;
-    
+
     private Personal personal;
 
     public Formulario(Frame parent, boolean modal, Tabla tabla, FormularioParte formParte) {
@@ -123,7 +123,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         botonEliminar.setVisible(false);
         container.add(botonEliminar);
         labelParte = new JLabel("Parte de Enfermo");
-        labelParte.setBounds(260,195,150,30);
+        labelParte.setBounds(260, 195, 150, 30);
         labelParte.setFont(utilidad.getFuenteLabelsFormulario());
         labelParte.setForeground(Color.black);
         labelParte.setVisible(false);
@@ -137,7 +137,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         textField = new JTextField[Arreglos.getTextFieldLength()];
         comboBox = new JComboBox[Arreglos.getComboBoxLength()];
         dateChooser = new JDateChooser[Arreglos.getDateChooserLength()];
-        checkBox = new JCheckBox[Arreglos.getCheckBoxLength()];        
+        checkBox = new JCheckBox[Arreglos.getCheckBoxLength()];
         labels = new JLabel[textField.length + comboBox.length + dateChooser.length + 1];
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
@@ -149,11 +149,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 holder.setForeground(Color.GRAY);
                 holder = null;
             }
-
-            if (i >= 3 && i <= 6) {
-                textField[i].addKeyListener(utilidad.bloquearLetras);
-            }
             if (i >= 4 && i <= 6) {
+                textField[i].addKeyListener(utilidad.bloquearLetras);
                 textField[i].setDocument(new JTextFieldLimit(5));
             }
             container.add(textField[i]);
@@ -184,7 +181,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         //UBICACION DE LOS COMPONENTES Y PROPIEDADES PARTICULARES DE CADA UNO---
         //RadioButtons
         labels[17].setText("Sexo");
-        labels[17].setBounds(285,10,30,20);
+        labels[17].setBounds(285, 10, 30, 20);
         M.setBounds(320, 10, 40, 20);
         M.setBackground(utilidad.getTransparencia());
         M.setOpaque(false);
@@ -235,6 +232,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[6].setText("DNI");
         textField[3].setBounds(240, 120, 80, 20);
         textField[3].setDocument(new JTextFieldLimit(9));
+        textField[3].addKeyListener(utilidad.soloNumeros);
         //Nacimiento DATE CHOOSER 0  
         labels[7].setBounds(335, 95, 150, 20);
         labels[7].setText("Fecha de Nacimiento");
@@ -299,7 +297,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             container.add(checkBox[i]);
             X += 44;
         }
-        
+
         //LABEL ULTIMO ANEXO 27
         JLabel ultA27 = new JLabel("<HTML><U>Ultimo Anexo 27</U></HTML>");
         ultA27.setFont(utilidad.getFuenteLabelGrande());
@@ -364,7 +362,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                 dispose();
                 Emisor emisor = new Emisor(0);
                 emisor.setInformacion(this);
-                emisor.Actualizar(tabla);
+                emisor.actualizar(tabla);
                 emisor = null;
                 Vaciar();
                 System.gc();
@@ -380,7 +378,7 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
                     dispose();
                     Emisor enviar = new Emisor(id);
                     enviar.setInformacion(this);
-                    enviar.Actualizar(tabla);
+                    enviar.actualizar(tabla);
                     enviar = null;
                     try {
                         tabla.getTablas(tabla.getContenedor().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);
@@ -399,8 +397,8 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             if (opcion == JOptionPane.YES_OPTION) {
                 dispose();
                 Eliminador eliminar = new Eliminador(id);
-                eliminar.Eliminar();
-                eliminar.Actualizar(tabla);
+                eliminar.eliminar();
+                eliminar.actualizar(tabla);
                 eliminar = null;
                 Vaciar();
                 System.gc();
@@ -409,19 +407,19 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         //EVENTO BOTON PARTE DE ENFERMO
         if (e.getSource() == botonParte) {
             if (parteDeEnfermo) {
-                JOptionPane.showMessageDialog(null, personal.getNombreCompleto()+ " ya cuenta con un parte de enfermo activo.");
+                JOptionPane.showMessageDialog(null, personal.getNombreCompleto() + " ya cuenta con un parte de enfermo activo.");
             } else {
                 formParte.nuevoParte(this);
             }
         }
     }
-    
+
     //-------------------------------------------------------------------------
     //-------------------METODOS PARA ABRIR FORMULARIO--------------------------
-    public void nuevoFormulario(){
+    public void nuevoFormulario() {
         setVisible(true);
     }
-    
+
     public void obtenerDatos(int id, int puntero) {
         setTitle("Modificar Informacion");
         botonAgregar.setVisible(false);
@@ -429,33 +427,41 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         botonEliminar.setVisible(true);
         botonParte.setVisible(true);
         labelParte.setVisible(true);
-        
+
         this.id = id;
         this.puntero = puntero;
 
         Receptor obtener = new Receptor(id);
         obtener.getInformacion(this);
-        
+
         int categoria = comboBox[0].getSelectedIndex();
-        int grado = comboBox[1].getSelectedIndex();     
+        int grado = comboBox[1].getSelectedIndex();
         String destino = String.valueOf(comboBox[2].getSelectedItem());
-        String nombre = textField[0].getText() + " " + textField[1].getText();  
-        char sexo = M.isSelected() ? 'M':'F';
-                      
-        personal = new Personal(this.id,categoria,grado,nombre,destino,sexo);
-        
+        String nombre = textField[0].getText() + " " + textField[1].getText();
+        char sexo = M.isSelected() ? 'M' : 'F';
+        int dni = !textField[3].getText().equals("") ? Integer.parseInt(textField[3].getText()):0;
+
+        personal = new Personal(this.id, categoria, grado, nombre, destino, sexo, dni);
+
         this.setVisible(true);
-        
+
         obtener = null;
     }
-    
+
     //------------------------------------------------------
     //-----------------METODO VALIDAR-----------------------
     private boolean Validar() {
         int labelIndex;
-        //VALIDAR NOMBRE Y APELLIDO
         labels[2].setForeground(Color.black);
         labels[3].setForeground(Color.black);
+        labels[6].setForeground(Color.black);
+        labels[7].setForeground(Color.black);
+        labels[8].setForeground(Color.black);
+        labels[10].setForeground(Color.black);
+        labels[11].setForeground(Color.black);
+        labels[12].setForeground(Color.black);
+
+        //VALIDAR NOMBRE Y APELLIDO        
         String campos[] = {textField[0].getText(), textField[1].getText()};
         if ("".equals(campos[0]) || "".equals(campos[1])) {
             if ("".equals(campos[0])) {
@@ -468,12 +474,19 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
             return false;
         }
+        //VALIDAR DNI
+        try {
+            int dni = Integer.parseInt(textField[3].getText());
+        } catch (Exception e) {
+            labels[6].setForeground(Color.red);
+            String mensaje = "<html><center>Numero de DNI invalido.</center></html>";
+            JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
+            return false;
+        }
         //VALIDAR LA FECHA
         labelIndex = 7;
         Fechas validar = new Fechas("dd/MM/yyyy");
         for (int i = 0; i < 2; i++) {
-            labels[7].setForeground(Color.black);
-            labels[8].setForeground(Color.black);
             String fecha = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
             if (!"".equals(fecha)) {
                 if (!validar.fechaValida(fecha)) {
@@ -491,9 +504,6 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         //VALIDAR PESO, ALTURA E IMC
         labelIndex = 10;
         for (int i = 4; i < 4 + 3; i++) {
-            labels[10].setForeground(Color.black);
-            labels[11].setForeground(Color.black);
-            labels[12].setForeground(Color.black);
             if (!"".equals(textField[i].getText())) {
                 try {
                     Double.parseDouble(textField[i].getText());
@@ -515,13 +525,13 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         id = 0;
         personal = null;
         parteDeEnfermo = false;
-        
+
         botonAgregar.setVisible(true);
         botonModificar.setVisible(false);
         botonEliminar.setVisible(false);
         botonParte.setVisible(false);
         labelParte.setVisible(false);
-        
+
         for (JTextField i : textField) {
             i.setText("");
         }
@@ -637,13 +647,12 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     public ButtonGroup getBg() {
         return bg;
     }
-    
-    
 
     public void setParteDeEnfermo(boolean parteDeEnfermo) {
         this.parteDeEnfermo = parteDeEnfermo;
     }
-    public boolean getParteDeEnfermo(){
+
+    public boolean getParteDeEnfermo() {
         return this.parteDeEnfermo;
     }
 
@@ -654,10 +663,9 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
     public void setPersonal(Personal personal) {
         this.personal = personal;
     }
-    
-    
+
     public static void main(String[] args) {
-        Formulario form = new Formulario(null,true,null,null);
+        Formulario form = new Formulario(null, true, null, null);
         form.setVisible(true);
     }
 

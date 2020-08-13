@@ -47,7 +47,7 @@ public class BaseDeDatos {
     //--------------------------------------------------------------------------
     //------------------------METODO ACTUALIZAR---------------------------------
     //--------------------------------------------------------------------------
-    public void Actualizar(Tabla tabla) {
+    public void actualizar(Tabla tabla) {
         //OBJETOS auxiliares----------------------------------------------------
         Fechas fecha = new Fechas("dd/MM/yyyy");
         String grados[][] = Arreglos.getGrados();
@@ -166,7 +166,7 @@ public class BaseDeDatos {
         fecha = null;
     }
 
-    public void Actualizar(Parte parte) {
+    public void actualizar(Parte parte) {
         Fechas fecha = new Fechas("dd/MM/yyyy");
         String grados[][] = Arreglos.getGrados();
 

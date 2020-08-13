@@ -21,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import mytools.Arreglos;
 import mytools.Fechas;
 import mytools.Iconos;
@@ -32,14 +34,17 @@ import windows.Tabla;
 public class FormularioParte extends JDialog implements ActionListener {
 
     private JLabel informacion;
-    private JLabel labelDiagnostico, labelObservaciones, labelDesde, labelHasta, labelCie;
-    private JComboBox tipoParte;
+    private JLabel labelDiagnostico, labelObservaciones, labelDesde, labelHasta, labelCie,
+            labelTipoParte, labelNorasSiras;
+    private JComboBox tipoParte, comboNorasSiras;
     private JTextField diagnostico, observaciones, cie;
     private JDateChooser desde, hasta;
     private JButton botonAgregar, botonModificar, botonAlta;
 
     private int puntero;
     private int idParte;
+    private boolean modificar;
+    private int flagTipoParte;
 
     private Personal personal;
 
@@ -96,7 +101,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         //COMPONENTES PRINCIPALES
         //Labels con informacion
         informacion = new JLabel();
-        informacion.setBounds(15, 15, 435, 60);
+        informacion.setBounds(15, 5, 435, 80);
         informacion.setFont(utilidad.getFuenteLabelGrande());
         informacion.setForeground(Color.black);
         container.add(informacion);
@@ -107,8 +112,25 @@ public class FormularioParte extends JDialog implements ActionListener {
         tipoParte.addItem("Exceptuado");
         tipoParte.addItem("Maternidad");
         tipoParte.setBounds(15, 90, 160, 20);
+        tipoParte.addActionListener(this);
         container.add(tipoParte);
+        labelTipoParte = new JLabel("<html>Al modificar el tipo de parte se enviara al recuento la "
+                + "informacion previamente guardada y se creara un nuevo parte. "
+                + "Se sugiere modificar el campo 'Desde' a la fecha del dia presente.<html>");
+        labelTipoParte.setBounds(180, 60, 250, 60);
+        labelTipoParte.setForeground(Color.orange);
+        labelTipoParte.setVisible(false);
+        container.add(labelTipoParte);
 
+        comboNorasSiras = new JComboBox();
+        comboNorasSiras.addItem("NORAS");
+        comboNorasSiras.addItem("SIRAS");
+        comboNorasSiras.setBounds(240, 245, 160, 20);
+        container.add(comboNorasSiras);
+        labelNorasSiras = new JLabel("NORAS / SIRAS");
+        labelNorasSiras.setBounds(240, 220, 160, 20);
+        labelNorasSiras.setFont(utilidad.getFuenteLabelsFormulario());
+        container.add(labelNorasSiras);
         //datechooser
         labelDesde = new JLabel("Desde *");
         labelDesde.setBounds(15, 125, 200, 20);
@@ -132,6 +154,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         hasta.setFont(utilidad.getFuenteTextFields());
         hasta.setDateFormatString(utilidad.getFormatoFecha());
         container.add(hasta);
+
         //textfield
         labelObservaciones = new JLabel("Observaciones *");
         labelObservaciones.setBounds(240, 125, 150, 20);
@@ -200,11 +223,35 @@ public class FormularioParte extends JDialog implements ActionListener {
             }
         }
         if (e.getSource() == botonModificar) {
-
+            if (validar()) {
+                int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
+                        "Confirmacion", JOptionPane.YES_NO_OPTION);
+                 if (opcion == JOptionPane.YES_OPTION) {
+                 Emisor emisor = new Emisor(personal.getId(), this.idParte);
+                if (flagTipoParte == tipoParte.getSelectedIndex()) {
+                    emisor.setInformacion(this);
+                } else {
+                    emisor.altaParcial(this);
+                }
+                JOptionPane.showMessageDialog(null, "Parte modificado con exito.");
+                dispose();
+                emisor.actualizar(parte);
+                vaciar();
+                emisor = null;
+                 }                
+            }
         }
 
         if (e.getSource() == botonAlta) {
 
+        }
+
+        if (e.getSource() == tipoParte) {
+            if (modificar && flagTipoParte != tipoParte.getSelectedIndex()) {
+                labelTipoParte.setVisible(true);
+            } else {
+                labelTipoParte.setVisible(false);
+            }
         }
 
     }
@@ -214,7 +261,9 @@ public class FormularioParte extends JDialog implements ActionListener {
         botonAgregar.setVisible(true);
         botonAlta.setVisible(false);
         botonModificar.setVisible(false);
-        
+
+        modificar = false;
+
         personal = null;
 
         informacion.setText("");
@@ -225,6 +274,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         ((JTextField) desde.getDateEditor().getUiComponent()).setText("");
         ((JTextField) hasta.getDateEditor().getUiComponent()).setText("");
         tipoParte.setSelectedIndex(0);
+        labelTipoParte.setVisible(false);
 
         dispose();
         System.gc();
@@ -251,6 +301,9 @@ public class FormularioParte extends JDialog implements ActionListener {
 
         Receptor receptor = new Receptor(this.idParte);
         receptor.getInformacion(this);
+
+        flagTipoParte = tipoParte.getSelectedIndex();
+        modificar = true;
 
         informacion.setText(personal.toString());
 
@@ -281,8 +334,8 @@ public class FormularioParte extends JDialog implements ActionListener {
         if (!validar.fechaValida(fechaHasta) || !validar.fechaValida(fechaDesde)) {
             labelDesde.setForeground(campoDiag ? Color.red : Color.black);
             labelHasta.setForeground(campoDiag ? Color.red : Color.black);
-            String mensaje = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
-                    + "<br>Si no conoce la fecha puede dejar el campo vacio.</center></html>";
+            String mensaje = "<html><center>Fecha ingresada invalida, "
+                    + "ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020</center></html>";
             JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
             validar = null;
             return false;
@@ -311,6 +364,10 @@ public class FormularioParte extends JDialog implements ActionListener {
         return tipoParte;
     }
 
+    public JComboBox getNorasSiras() {
+        return comboNorasSiras;
+    }
+
     public JTextField getDiagnostico() {
         return diagnostico;
     }
@@ -329,6 +386,10 @@ public class FormularioParte extends JDialog implements ActionListener {
 
     public JDateChooser getHasta() {
         return hasta;
+    }
+
+    public void setFlagTipoParte(int flagTipoParte) {
+        this.flagTipoParte = flagTipoParte;
     }
 
 }

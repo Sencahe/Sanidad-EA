@@ -476,7 +476,7 @@ public class Tabla extends JFrame implements ActionListener {
         this.showByDestino = destino;
         this.order = order;
         BaseDeDatos bdd = new BaseDeDatos();
-        bdd.Actualizar(this);
+        bdd.actualizar(this);
         bdd = null;
         System.gc();
     }

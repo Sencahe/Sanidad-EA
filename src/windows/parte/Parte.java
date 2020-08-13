@@ -192,7 +192,7 @@ public class Parte extends JFrame implements ActionListener {
         //FINALIZACION DE LOS COMPONENTES
         this.getContentPane().add(scrollContainer);
         BaseDeDatos bdd = new BaseDeDatos();
-        bdd.Actualizar(this);
+        bdd.actualizar(this);
         bdd = null;
     }
 

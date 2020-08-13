@@ -82,6 +82,7 @@ public class Receptor extends BaseDeDatos {
             ResultSet rs = pst.executeQuery();
 
             formParte.getTipoParte().setSelectedIndex(rs.getInt("TipoParte"));
+            formParte.getNorasSiras().setSelectedItem(rs.getString("NorasSiras"));
             formParte.getDiagnostico().setText(rs.getString("Diagnostico"));
             formParte.getObservaciones().setText(rs.getString("Observacion"));
             formParte.getCie().setText(rs.getString("CIE") != null ? rs.getString("CIE") : "");
@@ -91,7 +92,8 @@ public class Receptor extends BaseDeDatos {
             //id de la tabla con la referencia de los datos de personal
             int id_personal = rs.getInt("id_personal");
             //recupero los datos de personal necesarios
-            pst = super.getConnection().prepareStatement("SELECT Categoria, Grado, Apellido, Nombre, Destino, Sexo FROM Personal "
+            pst = super.getConnection().prepareStatement("SELECT Categoria, Grado, Apellido, Nombre, Destino,"
+                    + " Sexo, DNI FROM Personal "
                     + " WHERE id = " + id_personal);
             rs = pst.executeQuery();
 
@@ -100,8 +102,9 @@ public class Receptor extends BaseDeDatos {
             String nombre = rs.getString("Apellido") + " " + rs.getString("Nombre");
             String destino = rs.getString("Destino") != null ? rs.getString("Destino") : "";
             char sexo = rs.getString("Sexo").charAt(0);
+            int dni = rs.getInt("DNI");
             //creo el objeto personal en la clase formularioParte
-            formParte.setPersonal(new Personal(id_personal, categoria, grado, nombre, destino, sexo));
+            formParte.setPersonal(new Personal(id_personal, categoria, grado, nombre, destino, sexo, dni));
 
             super.getConnection().close();
         } catch (Exception e) {
