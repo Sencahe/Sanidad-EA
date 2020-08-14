@@ -22,6 +22,8 @@ import mytools.Iconos;
 
 public class Tabla extends JPanel implements ActionListener {
 
+    public static final String TABLA = "Personal";
+    
     JScrollPane scrollContainer;
     
     private JButton botonAgregar;
@@ -51,8 +53,6 @@ public class Tabla extends JPanel implements ActionListener {
         Componentes();
     }
 
-  
-
     private void Componentes() {
         //------------------------------------------
         Utilidades utilidad = new Utilidades();
@@ -62,7 +62,7 @@ public class Tabla extends JPanel implements ActionListener {
         setPreferredSize(dimension);
         setLayout(null);
         dimension = null;
-
+        setOpaque(false);
         scrollContainer = new JScrollPane(this);
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

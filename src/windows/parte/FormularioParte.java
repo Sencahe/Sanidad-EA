@@ -31,7 +31,7 @@ public class FormularioParte extends JDialog implements ActionListener {
 
     private JLabel informacion;
     private JLabel labelDiagnostico, labelObservaciones, labelDesde, labelHasta, labelCie,
-            labelTipoParte, labelNorasSiras;
+            labelTipoParte, labelNorasSiras, sugerenciaDiag;
     private JComboBox tipoParte, comboNorasSiras;
     private JTextField diagnostico, observaciones, cie;
     private JDateChooser desde, hasta;
@@ -64,7 +64,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
         //PROPIEDADES DEL FRAME        
-        setSize(450, 315);
+        setSize(450, 345);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Nuevo Parte");
@@ -95,7 +95,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         //COMPONENTES PRINCIPALES
         //Labels con informacion
         informacion = new JLabel();
-        informacion.setBounds(15, 5, 435, 80);
+        informacion.setBounds(15, 5, 355, 80);
         informacion.setFont(utilidad.getFuenteLabelGrande());
         informacion.setForeground(Color.black);
         container.add(informacion);
@@ -175,10 +175,16 @@ public class FormularioParte extends JDialog implements ActionListener {
         labelCie.setForeground(Color.black);
         container.add(labelCie);
         cie = new JTextField();
-        cie.setBounds(240, 195, 150, 20);
+        cie.setBounds(240, 195, 170, 20);
         cie.setFont(utilidad.getFuenteTextFields());
         container.add(cie);
 
+        sugerenciaDiag = new JLabel("Diagnosticos sugeridos: 'Embarazo' |"
+                + " (0-3 meses) 'Lactancia' |"
+                + " (3-12 meses) 'Maternidad'");
+        sugerenciaDiag.setBounds(10,275,435,30);
+        sugerenciaDiag.setVisible(false);
+        add(sugerenciaDiag);
         //Buttons
         botonAgregar = new JButton("Agregar");
         botonAgregar.setBounds(15, 235, 90, 30);
@@ -204,43 +210,55 @@ public class FormularioParte extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botonAgregar) {
-            if (validar()) {
-                int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
-                        "Confirmacion", JOptionPane.YES_NO_OPTION);
-                if (opcion == JOptionPane.YES_OPTION) {
-                    Emisor emisor = new Emisor(personal.getId(), 0);
-                    emisor.setInformacion(this);
-                    emisor.actualizar(parte);
-                    parte.actualizarVentana();
-                    formulario.setParteDeEnfermo(true);
-                    JOptionPane.showMessageDialog(null, "Nuevo parte de enfermo agregado con exito.");
-                    vaciar();
-                }
+            int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
+                    "Confirmacion", JOptionPane.YES_NO_OPTION);
+            if (opcion == JOptionPane.YES_OPTION) {
+                if (validar()) {
+                Emisor emisor = new Emisor(personal.getId(), 0);
+                emisor.setInformacion(this);
+                emisor.actualizar(parte);
+                parte.actualizarVentana();
+                formulario.setParteDeEnfermo(true);
+                vaciar();
+                emisor = null;                
+                }                
             }
         }
         if (e.getSource() == botonModificar) {
-            if (validar()) {
-                int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar el Parte?",
-                        "Confirmacion", JOptionPane.YES_NO_OPTION);
-                 if (opcion == JOptionPane.YES_OPTION) {
-                 Emisor emisor = new Emisor(personal.getId(), this.idParte);
-                if (flagTipoParte == tipoParte.getSelectedIndex()) {
-                    emisor.setInformacion(this);
-                } else {
-                    emisor.altaParcial(this);
+            int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar el Parte?",
+                    "Confirmacion", JOptionPane.YES_NO_OPTION);
+            if (opcion == JOptionPane.YES_OPTION) {
+                if (validar()) {
+                    Emisor emisor = new Emisor(personal.getId(), this.idParte);
+                    if (flagTipoParte == tipoParte.getSelectedIndex()) {
+                        emisor.setInformacion(this);
+                    } else {
+                        emisor.setRecuento(this, false);
+                    }
+                    emisor.actualizar(parte);
+                    parte.actualizarVentana();
+                    dispose();
+                    vaciar();
+                    emisor = null;
                 }
-                JOptionPane.showMessageDialog(null, "Parte modificado con exito.");
-                dispose();
-                emisor.actualizar(parte);
-                parte.actualizarVentana();
-                vaciar();
-                emisor = null;
-                 }                
             }
         }
 
         if (e.getSource() == botonAlta) {
-
+            int confirmar = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea dar de Alta a  "
+                    + personal.getNombreCompleto() + "?",
+                    "Confirmacion", JOptionPane.YES_NO_OPTION);
+            if (confirmar == JOptionPane.YES_OPTION) {
+                if (validar()) {
+                    Emisor emisor = new Emisor(personal.getId(), this.idParte);
+                    emisor.setRecuento(this, false);
+                    emisor.actualizar(parte);
+                    parte.actualizarVentana();;
+                    dispose();
+                    emisor = null;
+                    vaciar();
+                }
+            }
         }
 
         if (e.getSource() == tipoParte) {
@@ -249,8 +267,19 @@ public class FormularioParte extends JDialog implements ActionListener {
             } else {
                 labelTipoParte.setVisible(false);
             }
+            if(tipoParte.getSelectedIndex() == 0){
+                observaciones.setText("Lic. por Enfermedad");
+                sugerenciaDiag.setVisible(false);
+            }
+            if(tipoParte.getSelectedIndex() == 1){
+                observaciones.setText("Tareas Adm");
+                sugerenciaDiag.setVisible(false);
+            }
+            if(tipoParte.getSelectedIndex() == 2){
+                observaciones.setText("Lic. por Maternidad");
+                sugerenciaDiag.setVisible(true);
+            }
         }
-
     }
 
     //-------------------------METODO VACIAR------------------------------------
@@ -360,7 +389,6 @@ public class FormularioParte extends JDialog implements ActionListener {
     public void setFormulario(Formulario formulario) {
         this.formulario = formulario;
     }
-    
 
     public Personal getPersonal() {
         return personal;

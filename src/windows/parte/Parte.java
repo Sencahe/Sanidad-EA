@@ -44,6 +44,7 @@ public class Parte extends JPanel implements ActionListener {
         //-----PROPIEDADES DEL PANEL-----------------
         dimension = new Dimension();
         setBackground(utilidad.getColorFondo());
+        setOpaque(false);
         setLayout(null);
         scrollContainer = new JScrollPane(this);
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

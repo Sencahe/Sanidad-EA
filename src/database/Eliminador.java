@@ -12,9 +12,9 @@ public class Eliminador extends BaseDeDatos {
         this.id = id;
     }    
 
-    public void eliminar() {
+    public void eliminar(String tablaBDD) {
         try {
-            PreparedStatement pst = super.getConnection().prepareStatement("delete from Personal where ID = " + this.id);
+            PreparedStatement pst = super.getConnection().prepareStatement("DELETE FROM "+ tablaBDD +" where ID = " + this.id);
             pst.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Personal eliminado del registro con exito.");
@@ -29,6 +29,8 @@ public class Eliminador extends BaseDeDatos {
 
     public void alta(int idParte, Personal personal) {
         try {
+            
+            
             PreparedStatement pst = super.getConnection().prepareStatement("delete from Parte where ID = " + idParte);
             pst.executeUpdate();
             

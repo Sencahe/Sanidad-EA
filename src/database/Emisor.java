@@ -134,7 +134,7 @@ public class Emisor extends BaseDeDatos {
             pst.executeUpdate();
 
             pst = super.getConnection().prepareStatement("update Personal set Parte = 1 where id = " + this.id);
-            pst.executeUpdate();            
+            pst.executeUpdate();
 
             super.getConnection().close();
         } catch (Exception e) {
@@ -143,7 +143,7 @@ public class Emisor extends BaseDeDatos {
         }
     }
 
-    public void altaParcial(FormularioParte formParte) {
+    public void setRecuento(FormularioParte formParte, boolean altaDefinitiva) {
         Personal personal = formParte.getPersonal();
 
         //GUARDO LA INFORMACION ANTERIOR EN EL RECUENTO PARA SER ARCHIVADO
@@ -152,48 +152,59 @@ public class Emisor extends BaseDeDatos {
                     + " (id_personal,Categoria,Grado,NombreCompleto,Destino,DNI,"
                     + "Diagnostico,CIE,Desde,Hasta,Dias,Observacion,NorasSiras,TipoParte) "
                     + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            
-            PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT * FROM Parte WHERE id = " 
+
+            PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT * FROM Parte WHERE id = "
                     + this.idParte);
             ResultSet rs = pst2.executeQuery();
-            
+
             //Informacion propia de PERSONAL
             String categoria = Arreglos.getCategorias(personal.getCategoria());
             String grado = Arreglos.getGrados(personal.getCategoria(), personal.getGrado());
-            
-            pst.setInt(1,this.id);
-            pst.setString(2,categoria);
+
+            pst.setInt(1, this.id);
+            pst.setString(2, categoria);
             pst.setString(3, grado);
-            pst.setString(4,personal.getNombreCompleto());
-            pst.setString(5,personal.getDestino());
-            pst.setInt(6,personal.getDni());
-            
-            //Informacion propia de PARTE
+            pst.setString(4, personal.getNombreCompleto());
+            pst.setString(5, personal.getDestino());
+            pst.setInt(6, personal.getDni());
+
+            //Informacion propia de PARTE.
+            //Se recupera la informacion de la base de datos ya que es la guardada.
+            //en caso de cambios en el formulario de manera accidental antes de cambiar el tipo de parte
             Fechas fecha = new Fechas("dd/MM/yyyy");
             String desde = rs.getString("Desde");
             int dias = fecha.getDias(desde);
-            String tipoParte = formParte.getTipoParte().getSelectedItem().toString();
-            
+            int tipoParte = rs.getInt("TipoParte");
+            String tipoDeParte = formParte.getTipoParte().getItemAt(tipoParte).toString();
+
             pst.setString(7, rs.getString("Diagnostico"));
-            pst.setObject(8, rs.getObject("CIE"));            
+            pst.setObject(8, rs.getObject("CIE"));
             pst.setString(9, desde);
             pst.setString(10, rs.getString("Hasta"));
             pst.setInt(11, dias);
             pst.setString(12, rs.getString("Observacion"));
             pst.setString(13, rs.getString("NorasSiras"));
-            pst.setString(14, tipoParte);     
-            
+            pst.setString(14, tipoDeParte);
+
             pst.executeUpdate();
-                                     
+
             pst2 = super.getConnection().prepareStatement("DELETE FROM PARTE WHERE id = " + this.idParte);
             pst2.executeUpdate();
-            
-            fecha = null; 
-                  
-            //llamo al metodo de esta clase para crear un nuevo Parte
-            this.idParte = 0;      
-            setInformacion(formParte);
 
+            fecha = null;
+
+            if (altaDefinitiva) {
+                //en caso de ser un alta definitiva paso a False en la base de datos SQLite
+                //el campo "flag" que indica si tiene un o no un parte activo
+                pst = super.getConnection().prepareStatement("update from Personal set Parte = 0 where id = " + this.id);
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(null, personal.getNombreCompleto() + " se ha dado de Alta Medica.");
+            } else {
+                //llamo al metodo de esta clase para crear un nuevo Parte
+                //en caso de no ser un alta definitiva
+                this.idParte = 0;
+                setInformacion(formParte);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//AltaParcial// " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");

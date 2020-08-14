@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class Utilidades {
     
-    private final Color colorTabla, colorFondo,transparencia;
+    private final Color colorTabla, colorFondo;
     
     private final Font fuentePestañas, fuenteTabla, fuenteBoton, fuenteLabelsResumen, fuenteHeader;
     
@@ -20,9 +20,10 @@ public class Utilidades {
     private final Font fuenteLabelTitulo;
     
     public Utilidades(){
+        float alpha = 2;
         this.colorTabla = new Color(255,255,255);
-        this.transparencia = new Color(255,255,255,1);
-        this.colorFondo = new Color(20,170,20);
+        this.colorFondo = new Color (200,30,30);
+        
         this.fuentePestañas = new Font ("Tahoma", 1, 16);
         this.fuenteTabla = new Font("Tahoma", 0, 13);
         this.fuenteBoton = new Font("Tahoma", 1, 13);
@@ -45,9 +46,6 @@ public class Utilidades {
         return colorTabla;
     }
     //transparencia
-    public Color getTransparencia(){
-        return transparencia;
-    }
     public Color getColorFondo(){
         return colorFondo;
     }
@@ -122,6 +120,13 @@ public class Utilidades {
             if (((caracter < '0') || (caracter > '9')) ) {
                 e.consume();
             }
+        }
+    };
+    
+    public KeyAdapter textoNormal = new KeyAdapter(){
+        @Override
+        public void keyTyped(KeyEvent e) {
+            e.getKeyChar();
         }
     };
 }

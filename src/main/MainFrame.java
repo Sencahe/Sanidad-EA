@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -67,7 +68,7 @@ public class MainFrame extends JFrame implements ActionListener {
         parte = new Parte();
         formulario = new Formulario(this, true);
         formParte = new FormularioParte(this, true);
-        buscador = new Buscador(this, true);
+        buscador = new Buscador(this, false);
         referencia = new Referencias(this, true);
 
         tabla.setFormulario(formulario);
@@ -79,7 +80,7 @@ public class MainFrame extends JFrame implements ActionListener {
         buscador.setTabla(tabla);
         
         //PROPIEDADES DEL FRAME
-        setTitle("Carta de Situacion - Seccion Sanidad RI-1");
+        setTitle(TABLA);
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) (pantalla.getWidth() < 1525 ? pantalla.getWidth() : 1525);
         int y = (int) (pantalla.getHeight() < 650 ? pantalla.getHeight() : 650);
@@ -89,6 +90,10 @@ public class MainFrame extends JFrame implements ActionListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setIconImage(iconos.getIconoSanidad().getImage());
         setLocationRelativeTo(null);
+        // setUndecorated(true); -> Elimina la barra de windows con title y close boton
+        
+        //setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
+        //setOpacity(TOP_ALIGNMENT);
         getContentPane().setLayout(new CardLayout(0, 0));
 
         componentes(iconos);
@@ -211,12 +216,14 @@ public class MainFrame extends JFrame implements ActionListener {
             cl.show(this.getContentPane(), PARTE);
             JMenuBar menu = rootPane.getJMenuBar();
             menu.setVisible(false);
+            setTitle(PARTE);
         }
         if (e.getSource() == botonTabla) {
             CardLayout cl = (CardLayout) (this.getContentPane().getLayout());
             cl.show(this.getContentPane(), TABLA);
             JMenuBar menu = rootPane.getJMenuBar();
             menu.setVisible(true);
+            setTitle(TABLA);
         }
         //----------------------BARRA MENU--------------------------------------
         //MENU FILTRAR--------------------------------FILTROS-------------------

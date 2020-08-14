@@ -120,7 +120,7 @@ public class Formulario extends JDialog implements ActionListener {
         botonEliminar.addActionListener(this);
         botonEliminar.setVisible(false);
         container.add(botonEliminar);
-        labelParte = new JLabel("Parte de Enfermo");
+        labelParte = new JLabel("Parte de Sanidad");
         labelParte.setBounds(260, 195, 150, 30);
         labelParte.setFont(utilidad.getFuenteLabelsFormulario());
         labelParte.setForeground(Color.black);
@@ -392,7 +392,7 @@ public class Formulario extends JDialog implements ActionListener {
             if (opcion == JOptionPane.YES_OPTION) {
                 dispose();
                 Eliminador eliminar = new Eliminador(id);
-                eliminar.eliminar();
+                eliminar.eliminar(Tabla.TABLA);
                 eliminar.actualizar(tabla);
                 eliminar = null;
                 Vaciar();
@@ -402,7 +402,8 @@ public class Formulario extends JDialog implements ActionListener {
         //EVENTO BOTON PARTE DE ENFERMO
         if (e.getSource() == botonParte) {
             if (parteDeEnfermo) {
-                JOptionPane.showMessageDialog(null, personal.getNombreCompleto() + " ya cuenta con un parte de enfermo activo.");
+                JOptionPane.showMessageDialog(null, personal.getNombreCompleto()
+                        + " ya cuenta con un Parte de Sanida dactivo.");
             } else {
                 formParte.nuevoParte(this);
             }
@@ -434,7 +435,7 @@ public class Formulario extends JDialog implements ActionListener {
         String destino = String.valueOf(comboBox[2].getSelectedItem());
         String nombre = textField[0].getText() + " " + textField[1].getText();
         char sexo = M.isSelected() ? 'M' : 'F';
-        int dni = !textField[3].getText().equals("") ? Integer.parseInt(textField[3].getText()):0;
+        int dni = !textField[3].getText().equals("") ? Integer.parseInt(textField[3].getText()) : 0;
 
         personal = new Personal(this.id, categoria, grado, nombre, destino, sexo, dni);
 
@@ -470,13 +471,15 @@ public class Formulario extends JDialog implements ActionListener {
             return false;
         }
         //VALIDAR DNI
-        try {
-            int dni = Integer.parseInt(textField[3].getText());
-        } catch (Exception e) {
-            labels[6].setForeground(Color.red);
-            String mensaje = "<html><center>Numero de DNI invalido.</center></html>";
-            JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
-            return false;
+        if (!textField[3].getText().equals("")) {
+            try {
+                int dni = Integer.parseInt(textField[3].getText());
+            } catch (Exception e) {
+                labels[6].setForeground(Color.red);
+                String mensaje = "<html><center>Numero de DNI invalido.</center></html>";
+                JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
+                return false;
+            }
         }
         //VALIDAR LA FECHA
         labelIndex = 7;
@@ -674,7 +677,5 @@ public class Formulario extends JDialog implements ActionListener {
     public void setFormParte(FormularioParte formParte) {
         this.formParte = formParte;
     }
-
-    
 
 }
