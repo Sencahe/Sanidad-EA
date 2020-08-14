@@ -26,8 +26,8 @@ public class Main {
             java.util.logging.Logger.getLogger(Tabla.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //ARRANQUE DEL PROGRAMA
-        Tabla start = new Tabla();        
-        start.setVisible(true);
+        MainFrame mainFrame = new MainFrame();        
+        mainFrame.setVisible(true);
         System.gc();
         
     }

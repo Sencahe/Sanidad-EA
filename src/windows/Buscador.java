@@ -1,6 +1,7 @@
 package windows;
 
 import mytools.Iconos;
+import java.awt.Frame;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -11,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,7 +22,7 @@ import javax.swing.JTextField;
 import mytools.Utilidades;
 import java.awt.Dimension;
 
-public class Buscador extends javax.swing.JDialog implements ActionListener {
+public class Buscador extends JDialog implements ActionListener {
 
     private JButton boton;
     private JTextField texto;
@@ -34,9 +36,8 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
 
     private Tabla tabla;
 
-    public Buscador(java.awt.Frame parent, boolean modal, Tabla tabla) {
+    public Buscador(Frame parent, boolean modal) {
         super(parent, modal);
-        this.tabla = tabla;
         this.buscar = "";
         this.categoria = -1;
         this.encontrado = false;
@@ -182,5 +183,11 @@ public class Buscador extends javax.swing.JDialog implements ActionListener {
         }
 
     }
+
+    public void setTabla(Tabla tabla) {
+        this.tabla = tabla;
+    }
+    
+    
 
 }

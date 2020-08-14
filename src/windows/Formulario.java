@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
+import javax.swing.JDialog;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
@@ -35,7 +36,7 @@ import mytools.Iconos;
 import personal.Personal;
 import windows.parte.FormularioParte;
 
-public class Formulario extends javax.swing.JDialog implements ActionListener {
+public class Formulario extends JDialog implements ActionListener {
 
     private JTextField[] textField;
     private JComboBox[] comboBox;
@@ -56,13 +57,10 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
 
     private Tabla tabla;
     private FormularioParte formParte;
-
     private Personal personal;
 
-    public Formulario(Frame parent, boolean modal, Tabla tabla, FormularioParte formParte) {
+    public Formulario(Frame parent, boolean modal) {
         super(parent, modal);
-        this.tabla = tabla;
-        this.formParte = formParte;
         this.parteDeEnfermo = false;
         Componentes();
 
@@ -183,14 +181,12 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         labels[17].setText("Sexo");
         labels[17].setBounds(285, 10, 30, 20);
         M.setBounds(320, 10, 40, 20);
-        M.setBackground(utilidad.getTransparencia());
         M.setOpaque(false);
         M.setFont(utilidad.getFuenteLabelsFormulario());
         M.setSelected(true);
         bg.add(M);
         container.add(M);
         F.setBounds(360, 10, 40, 20);
-        F.setBackground(utilidad.getTransparencia());
         F.setOpaque(false);
         F.setFont(utilidad.getFuenteLabelsFormulario());
         bg.add(F);
@@ -292,7 +288,6 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
             checkBox[i].setBounds(X, 400, 46, 20);
             checkBox[i].setFont(utilidad.getFuenteChecks());
             checkBox[i].setOpaque(false);
-            checkBox[i].setBackground(utilidad.getTransparencia());
             checkBox[i].addActionListener(i >= 4 ? this : null);
             container.add(checkBox[i]);
             X += 44;
@@ -664,9 +659,22 @@ public class Formulario extends javax.swing.JDialog implements ActionListener {
         this.personal = personal;
     }
 
-    public static void main(String[] args) {
-        Formulario form = new Formulario(null, true, null, null);
-        form.setVisible(true);
+    public Tabla getTabla() {
+        return tabla;
     }
+
+    public void setTabla(Tabla tabla) {
+        this.tabla = tabla;
+    }
+
+    public FormularioParte getFormParte() {
+        return formParte;
+    }
+
+    public void setFormParte(FormularioParte formParte) {
+        this.formParte = formParte;
+    }
+
+    
 
 }

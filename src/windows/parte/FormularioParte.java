@@ -21,15 +21,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import mytools.Arreglos;
 import mytools.Fechas;
 import mytools.Iconos;
 import mytools.Utilidades;
 import personal.Personal;
 import windows.Formulario;
-import windows.Tabla;
 
 public class FormularioParte extends JDialog implements ActionListener {
 
@@ -41,7 +37,6 @@ public class FormularioParte extends JDialog implements ActionListener {
     private JDateChooser desde, hasta;
     private JButton botonAgregar, botonModificar, botonAlta;
 
-    private int puntero;
     private int idParte;
     private boolean modificar;
     private int flagTipoParte;
@@ -51,9 +46,8 @@ public class FormularioParte extends JDialog implements ActionListener {
     private Parte parte;
     private Formulario formulario;
 
-    public FormularioParte(Frame parent, boolean modal, Parte parte) {
+    public FormularioParte(Frame parent, boolean modal) {
         super(parent, modal);
-        this.parte = parte;
 
         componentes();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -73,7 +67,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         setSize(450, 315);
         setResizable(false);
         setLocationRelativeTo(null);
-        setTitle("Agregar nuevo Parte de Enfermo");
+        setTitle("Agregar Nuevo Parte");
         setIconImage(iconos.getIconoSanidad().getImage());
         //Fondo del frame
         JPanel container = new JPanel() {
@@ -216,6 +210,8 @@ public class FormularioParte extends JDialog implements ActionListener {
                 if (opcion == JOptionPane.YES_OPTION) {
                     Emisor emisor = new Emisor(personal.getId(), 0);
                     emisor.setInformacion(this);
+                    emisor.actualizar(parte);
+                    parte.actualizarVentana();
                     formulario.setParteDeEnfermo(true);
                     JOptionPane.showMessageDialog(null, "Nuevo parte de enfermo agregado con exito.");
                     vaciar();
@@ -224,7 +220,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         }
         if (e.getSource() == botonModificar) {
             if (validar()) {
-                int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
+                int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar el Parte?",
                         "Confirmacion", JOptionPane.YES_NO_OPTION);
                  if (opcion == JOptionPane.YES_OPTION) {
                  Emisor emisor = new Emisor(personal.getId(), this.idParte);
@@ -236,6 +232,7 @@ public class FormularioParte extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Parte modificado con exito.");
                 dispose();
                 emisor.actualizar(parte);
+                parte.actualizarVentana();
                 vaciar();
                 emisor = null;
                  }                
@@ -258,6 +255,7 @@ public class FormularioParte extends JDialog implements ActionListener {
 
     //-------------------------METODO VACIAR------------------------------------
     private void vaciar() {
+        setTitle("Agregar Nuevo Parte");
         botonAgregar.setVisible(true);
         botonAlta.setVisible(false);
         botonModificar.setVisible(false);
@@ -290,11 +288,10 @@ public class FormularioParte extends JDialog implements ActionListener {
     }
 
     //------------METODOS PARA MODIFICAR PARTES ACTUALES-----------------------
-    public void obtenerDatos(int idParte, int puntero) {
-        this.puntero = puntero;
+    public void obtenerDatos(int idParte) {
         this.idParte = idParte;
 
-        setTitle("Modificar Parte de Enfermo");
+        setTitle("Modificar Parte");
         botonAgregar.setVisible(false);
         botonAlta.setVisible(true);
         botonModificar.setVisible(true);
@@ -355,6 +352,15 @@ public class FormularioParte extends JDialog implements ActionListener {
     public void setPersonal(Personal personal) {
         this.personal = personal;
     }
+
+    public void setParte(Parte parte) {
+        this.parte = parte;
+    }
+
+    public void setFormulario(Formulario formulario) {
+        this.formulario = formulario;
+    }
+    
 
     public Personal getPersonal() {
         return personal;

@@ -28,7 +28,7 @@ public class Receptor extends BaseDeDatos {
         String receptor;
 
         try {
-            PreparedStatement pst = super.getConnection().prepareStatement("select * from Personal where id = " + this.id);
+            PreparedStatement pst = super.getConnection().prepareStatement("SELECT * FROM Personal WHERE id = " + this.id);
             ResultSet rs = pst.executeQuery();
             //SOLICITO LOS DATOS QUE VAN A LOS TEXTFIELD
             for (int i = 0; i < text.length; i++) {
@@ -78,7 +78,7 @@ public class Receptor extends BaseDeDatos {
     public void getInformacion(FormularioParte formParte) {
         try {
             // Recupero los datos del parte de enfermo para su formulario
-            PreparedStatement pst = super.getConnection().prepareStatement("select * from Parte where id = " + this.id);
+            PreparedStatement pst = super.getConnection().prepareStatement("SELECT * FROM Parte WHERE id = " + this.id);
             ResultSet rs = pst.executeQuery();
 
             formParte.getTipoParte().setSelectedIndex(rs.getInt("TipoParte"));

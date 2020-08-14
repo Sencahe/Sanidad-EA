@@ -91,9 +91,6 @@ public class Personal {
         this.diasParte = diasParte;
     }
     
-    
-
-    
     @Override
     public String toString(){
         return "<html><pre>Grado: " + Arreglos.getGrados(categoria, grado) + "<br>Nombre: " + this.nombreCompleto 

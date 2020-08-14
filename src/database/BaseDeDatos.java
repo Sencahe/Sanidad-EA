@@ -142,6 +142,10 @@ public class BaseDeDatos {
             cn = null;
             fila = null;
             num = null;
+            rs = null;
+            pst = null;
+            statement = null;
+            fecha = null;
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
             String[] categorias = Arreglos.getCategorias();
             int cantTabla;
@@ -156,14 +160,13 @@ public class BaseDeDatos {
                     tabla.getResumen(i).setText("TOTAL:  " + total);
                 }
             }
+            
+            categorias = null;
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
-
-        //FIN DEL METODO ACTUALIZAR------------------------
-        statement = null;
-        fecha = null;
     }
 
     public void actualizar(Parte parte) {
