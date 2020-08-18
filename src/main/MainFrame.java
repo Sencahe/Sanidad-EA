@@ -192,12 +192,7 @@ public class MainFrame extends JFrame implements ActionListener{
             itemsOrdenar[i].addActionListener(this);
             menuOrdenar.add(itemsOrdenar[i]);
         }
-        //MENU REFERENCIAS--------------------------------- 
-        menuRef = new JMenu("Ref.");
-        menuBar.add(menuRef);
-        itemRef = new JMenuItem("Referencias");
-        itemRef.addActionListener(this);
-        menuRef.add(itemRef);
+       
         //MENU BUSCAR-------------------------------------- 
         menuBuscar = new JMenu("Buscar");
         menuBar.add(menuBuscar);
@@ -205,8 +200,13 @@ public class MainFrame extends JFrame implements ActionListener{
         itemBuscar.addActionListener(this);
         itemBuscar.setIcon(iconos.getIconoSearchChico());
         menuBuscar.add(itemBuscar);
-        menuBar = null;
-
+         //MENU REFERENCIAS--------------------------------- 
+        menuRef = new JMenu("Ref.");
+        menuBar.add(menuRef);
+        itemRef = new JMenuItem("Referencias");
+        itemRef.addActionListener(this);
+        menuRef.add(itemRef);
+      
     }
 
     @Override

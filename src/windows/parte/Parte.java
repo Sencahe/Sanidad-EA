@@ -6,6 +6,7 @@ import mytools.Utilidades;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.*;
 
 
@@ -115,11 +116,7 @@ public class Parte extends JPanel implements ActionListener {
             JTableHeader header = tablas[i].getTableHeader();
             header.setFont(utilidad.getFuenteHeader());
             header.setBackground(utilidad.getColorTabla());
-            header.setOpaque(false);
             header.setPreferredSize(new Dimension(40, 26));
-            JLabel l = (JLabel) header.getDefaultRenderer();
-            l.setPreferredSize(new Dimension(0, 26));
-            l.setOpaque(false);
             header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas

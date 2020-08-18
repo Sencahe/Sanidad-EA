@@ -21,8 +21,8 @@ public class Utilidades {
     
     public Utilidades(){
         this.colorTabla = new Color(255,255,255);
-        this.colorFondo = new Color (200,30,30);      
-        this.colorBoton = new Color(150,30,30);
+        this.colorFondo = new Color (0,100,220);      
+        this.colorBoton = new Color(0,70,170);
         this.colorFuenteBoton = new Color(240,240,240);
         this.fuentePestañas = new Font ("Tahoma", 1, 16);
         this.fuenteTabla = new Font("Arial", 0, 13);

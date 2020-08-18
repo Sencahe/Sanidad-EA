@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import mytools.Iconos;
+
 
 public class Tabla extends JPanel implements ActionListener {
 
@@ -134,8 +134,8 @@ public class Tabla extends JPanel implements ActionListener {
                 }
             });
             //header de la tabla
-            JTableHeader header = tablas[i].getTableHeader();
-            UIManager.put("TableHeader.font",utilidad.getFuenteHeader());
+            UIManager.put("TableHeader.font", utilidad.getFuenteHeader());
+            JTableHeader header = tablas[i].getTableHeader();            
             header.setFont(utilidad.getFuenteHeader());
             header.setBackground(utilidad.getColorTabla());
             header.setReorderingAllowed(true);
@@ -150,7 +150,7 @@ public class Tabla extends JPanel implements ActionListener {
                 tablas[i].getColumnModel().getColumn(j).setMinWidth(Arreglos.getTamañoColumnas(j));
                 tablas[i].getColumnModel().getColumn(j).setMaxWidth(Arreglos.getTamañoColumnas(j));
                 tablas[i].getColumnModel().getColumn(j).setPreferredWidth(Arreglos.getTamañoColumnas(j));
-                
+
                 //centrado del contenido de las columnas
                 if (j != 3 && j != 19) {
                     tablas[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
@@ -162,11 +162,10 @@ public class Tabla extends JPanel implements ActionListener {
             }
             //PROPIEDADES del Scroll y agregarlo al contenedor
             scrolls[i] = new JScrollPane(tablas[i]);
-            scrolls[i].getViewport().setBackground(utilidad.getColorFondo());
+            scrolls[i].getViewport().setBackground(utilidad.getColorFondo().brighter().brighter());
             scrolls[i].setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            contenedor.addTab(categorias[i], scrolls[i]);
-
+            contenedor.addTab(categorias[i], scrolls[i]);           
         }
 
         //----------------------------------------------------------------------
@@ -176,11 +175,11 @@ public class Tabla extends JPanel implements ActionListener {
         botonAgregar.setFont(utilidad.getFuenteBoton());
         botonAgregar.setVisible(true);
         botonAgregar.addActionListener(this);
-        botonAgregar.setContentAreaFilled(false);
         botonAgregar.setOpaque(true);
         botonAgregar.setBackground(utilidad.getColorBoton());
         botonAgregar.setForeground(utilidad.getColorFuenteBoton());
         botonAgregar.setFocusPainted(false);
+        botonAgregar.setBorderPainted(false);
         botonAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(botonAgregar);
         botonParte = new JButton("<html><center>PARTE DE<br>SANIDAD</center></html>");
@@ -211,9 +210,11 @@ public class Tabla extends JPanel implements ActionListener {
         // LABELS CON CANTIDAD DE PERSONAL
         resumen = new JLabel[tablas.length + 1];
         int width = 0;
+        int contenedorHeight = contenedor.getHeight();
+        int contenedorY = contenedor.getY();
         for (int i = 0; i < resumen.length; i++) {
             resumen[i] = new JLabel();
-            resumen[i].setBounds(15 + width, contenedor.getHeight() + 70, 150, 40);
+            resumen[i].setBounds(15 + width, contenedorHeight + contenedorY, 150, 40);
             resumen[i].setFont(utilidad.getFuenteLabelsResumen());
             width += i == 1 ? 200 : 170;
             add(resumen[i]);
@@ -222,9 +223,7 @@ public class Tabla extends JPanel implements ActionListener {
         //----------------------------------------------------------------------
         //FINALIZACION DE LOS COMPONENTES
         utilidad = null;
-
         Actualizar(0, 0, 0);
-
     }
 
     //FONDO DEL PANEL
