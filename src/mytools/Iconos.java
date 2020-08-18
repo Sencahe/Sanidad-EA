@@ -11,6 +11,9 @@ public class Iconos {
     private ImageIcon iconoBuscarChico;
     private ImageIcon iconoSanidad;
     private ImageIcon iconoSave;
+    private ImageIcon iconoAlta;
+    private ImageIcon iconoDelete;
+    private ImageIcon iconoConfig;
     
     public Iconos(){        
         this.iconoRefrescar = new ImageIcon("src/myimages/refresh.png");
@@ -19,6 +22,9 @@ public class Iconos {
         this.iconoBuscarChico = new ImageIcon("src/myimages/search.png");
         this.iconoSanidad = new ImageIcon("src/myimages/Sanidad.png");
         this.iconoSave = new ImageIcon("src/myimages/save.png");
+        this.iconoAlta = new ImageIcon("src/myimages/alta.png");
+        this.iconoDelete = new ImageIcon("src/myimages/delete.png");
+        this.iconoConfig = new ImageIcon("src/myimages/config.png");
 
     }
 
@@ -43,6 +49,18 @@ public class Iconos {
         return iconoSave;
     }
 
+    public ImageIcon getIconoAlta() {
+        return iconoAlta;
+    }
+
+    public ImageIcon getIconoDelete() {
+        return iconoDelete;
+    }
+
+    public ImageIcon getIconoConfig() {
+        return iconoConfig;
+    }
+    
 
    
 }

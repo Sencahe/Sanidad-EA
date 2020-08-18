@@ -6,11 +6,11 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import mytools.Arreglos;
 import mytools.Iconos;
 import windows.Buscador;
 import windows.Formulario;
+import windows.IMC;
 import windows.Referencias;
 import windows.Tabla;
 import windows.parte.FormularioParte;
@@ -25,7 +25,7 @@ public class MainFrame extends JFrame implements ActionListener{
 
     JMenuBar menuBar;
 
-    private JMenu menuFiltrar, menuRef, menuBuscar;
+    private JMenu menuFiltrar, menuRef, menuBuscar,menuConfig;
     private JMenu menuFiltroPPS;
     private JMenu menuFiltroAptitud;
     private JMenu menuPatologias;
@@ -45,7 +45,7 @@ public class MainFrame extends JFrame implements ActionListener{
     //
     private JMenuItem[] itemsOrdenar;
 
-    private JMenuItem itemRef, itemBuscar;
+    private JMenuItem itemRef, itemBuscar, itemRestablecer, itemConfigFilas;
 
     //icono para los menuItems
     private ImageIcon check;
@@ -57,6 +57,7 @@ public class MainFrame extends JFrame implements ActionListener{
     private FormularioParte formParte;
     private Buscador buscador;
     private Referencias referencia;
+    private IMC imc;
     
 
     public MainFrame() {
@@ -69,6 +70,7 @@ public class MainFrame extends JFrame implements ActionListener{
         formParte = new FormularioParte(this, true);
         buscador = new Buscador(this, false);
         referencia = new Referencias(this, true);
+        imc = new IMC(this,true);
 
         tabla.setFormulario(formulario);
         tabla.setBuscador(buscador);
@@ -78,6 +80,8 @@ public class MainFrame extends JFrame implements ActionListener{
         formParte.setParte(parte);
         formParte.setFormulario(formulario);
         buscador.setTabla(tabla);
+        imc.setTabla(tabla);
+        imc.setMainFrame(this);
         
         //PROPIEDADES DEL FRAME
         setTitle(TABLA);
@@ -138,7 +142,7 @@ public class MainFrame extends JFrame implements ActionListener{
             itemsPPS[i].addActionListener(this);
             menuFiltroPPS.add(itemsPPS[i]);
         }
-        itemsPPS[0].setText("Todos");
+        itemsPPS[0].setText("Filtrar por IMC...");
         //Aptitud
         menuFiltroAptitud = new JMenu("Aptitud");
         menuFiltrar.add(menuFiltroAptitud);
@@ -200,6 +204,13 @@ public class MainFrame extends JFrame implements ActionListener{
         itemBuscar.addActionListener(this);
         itemBuscar.setIcon(iconos.getIconoSearchChico());
         menuBuscar.add(itemBuscar);
+        //MENU Config--------------------------------- 
+        menuConfig = new JMenu("Configuracion");
+        menuBar.add(menuConfig);
+        itemConfigFilas = new JMenuItem("Configurar");
+        itemConfigFilas.addActionListener(this);
+        itemConfigFilas.setIcon(iconos.getIconoConfig());
+        menuConfig.add(itemConfigFilas);
          //MENU REFERENCIAS--------------------------------- 
         menuRef = new JMenu("Ref.");
         menuBar.add(menuRef);
@@ -245,12 +256,12 @@ public class MainFrame extends JFrame implements ActionListener{
                 if (i != 0) {
                     tabla.setPPSFilter(itemsPPS[i].getText());
                     tabla.Actualizar(2, tabla.getShowByDestino(), tabla.getOrder());
-                } else {
-                    tabla.Actualizar(0, tabla.getShowByDestino(), tabla.getOrder());
-                }
-                eliminarChecksFiltros();
+                    eliminarChecksFiltros();
                 menuFiltroPPS.setIcon(check);
                 itemsPPS[i].setIcon(check);
+                } else {
+                    imc.setVisible(true);
+                }                
             }
         }
         // aptitudes
@@ -321,7 +332,7 @@ public class MainFrame extends JFrame implements ActionListener{
     }
 
   
-    private void eliminarChecksFiltros() {
+    public void eliminarChecksFiltros() {
         itemAnexoVencido.setIcon(null);
 
         menuFiltroPPS.setIcon(null);
@@ -339,19 +350,19 @@ public class MainFrame extends JFrame implements ActionListener{
         itemObservaciones.setIcon(null);
     }
 
-    private void eliminarChecksDestino() {
+    public void eliminarChecksDestino() {
         for (int i = 0; i < itemsDestinos.length; i++) {
             itemsDestinos[i].setIcon(null);
         }
     }
 
-    private void eliminarChecksOrden() {
+    public void eliminarChecksOrden() {
         for (int i = 0; i < itemsOrdenar.length; i++) {
             itemsOrdenar[i].setIcon(null);
         }
     }
 
-    private void eliminarChecks() {
+    public void eliminarChecks() {
         //FILTROS
         eliminarChecksFiltros();
         //DESTINOS
@@ -387,6 +398,18 @@ public class MainFrame extends JFrame implements ActionListener{
         return referencia;
     }
 
-    
+    public JMenu getMenuFiltroPPS() {
+        return menuFiltroPPS;
+    }
 
+    public JMenuItem getItemIMC() {
+        return itemsPPS[0];
+    }
+
+    public ImageIcon getCheck() {
+        return check;
+    }
+    
+    
+    
 }

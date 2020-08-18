@@ -89,16 +89,16 @@ public class Formulario extends JDialog implements ActionListener {
         container.setLayout(null);
         dimension = null;
         //BOTONES PRINCIPALES 
-        botonAgregar = new JButton("<html>Agregar</html>");
+        botonAgregar = new JButton("<html>Guardar</html>",iconos.getIconoSave());
         botonAgregar.setBounds(385, 355, 85, 30);
         botonAgregar.addActionListener(this);
         container.add(botonAgregar);
-        botonModificar = new JButton("Guardar");
+        botonModificar = new JButton("<html>Guardar</html>",iconos.getIconoSave());
         botonModificar.setBounds(385, 355, 85, 30);
         botonModificar.addActionListener(this);
         botonModificar.setVisible(false);
         container.add(botonModificar);
-        botonEliminar = new JButton("Eliminar");
+        botonEliminar = new JButton("<html>Eliminar",iconos.getIconoDelete());
         botonEliminar.setBounds(385, 390, 85, 30);
         botonEliminar.addActionListener(this);
         botonEliminar.setVisible(false);

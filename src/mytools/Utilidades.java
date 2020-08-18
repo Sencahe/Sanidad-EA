@@ -1,6 +1,7 @@
 package mytools;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -19,6 +20,10 @@ public class Utilidades {
     
     private final Font fuenteLabelTitulo;
     
+    private final Font fuenteLabelInfo;
+    
+    private final Cursor pointCursor;
+    
     public Utilidades(){
         this.colorTabla = new Color(255,255,255);
         this.colorFondo = new Color (0,100,220);      
@@ -36,8 +41,10 @@ public class Utilidades {
         this.fuenteLabelGrande = fuenteLabelsResumen;       
         this.fuenteLabelBuscador = new Font("Tahoma", 1, 11);
         this.fuenteLabelResultado = new Font("Tahoma", 0, 11);
+        this.fuenteLabelInfo = fuenteLabelResultado;
         this.fuenteLabelsRef = fuenteBoton;
         this.fuenteLabelTitulo = new Font("Impact",0,20);
+        this.pointCursor = new Cursor(Cursor.HAND_CURSOR);
     }
     
     //COLORES      
@@ -56,6 +63,11 @@ public class Utilidades {
 
     public Color getColorFuenteBoton() {
         return colorFuenteBoton;
+    }
+    //CURSOR
+
+    public Cursor getPointCursor() {
+        return pointCursor;
     }
     
     
@@ -110,6 +122,11 @@ public class Utilidades {
     public Font getFuenteLabelsRef(){
         return fuenteLabelsRef;
     }  
+
+    public Font getFuenteLabelInfo() {
+        return fuenteLabelInfo;
+    }
+    
     //OTROS
      public KeyAdapter bloquearLetras = new KeyAdapter() {
         @Override

@@ -85,6 +85,12 @@ public class BaseDeDatos {
                 break;
             case 6:
                 statement.append(" WHERE Observaciones IS NOT NULL");
+            case 7:
+                statement.append(" WHERE IMC ");
+                statement.append(tabla.getIMCoperator());
+                statement.append(" ");
+                statement.append(tabla.getIMCfilter());
+                break;
         }
         // MOSTRAR POR DESTINOS-------------------------------------------------        
         if (tabla.getShowByDestino() != 0) {

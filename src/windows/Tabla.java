@@ -8,7 +8,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-
 public class Tabla extends JPanel implements ActionListener {
 
     public static final String TABLA = "Personal";
@@ -29,7 +28,9 @@ public class Tabla extends JPanel implements ActionListener {
     private int filter;
     private int showByDestino;
     private int order;
-
+       
+    private double IMCfilter;
+    private String IMCoperator;
     private String PPSFilter;
     private String aptitudFilter;
     private String patologiaColumn;
@@ -135,7 +136,7 @@ public class Tabla extends JPanel implements ActionListener {
             });
             //header de la tabla
             UIManager.put("TableHeader.font", utilidad.getFuenteHeader());
-            JTableHeader header = tablas[i].getTableHeader();            
+            JTableHeader header = tablas[i].getTableHeader();
             header.setFont(utilidad.getFuenteHeader());
             header.setBackground(utilidad.getColorTabla());
             header.setReorderingAllowed(true);
@@ -165,46 +166,44 @@ public class Tabla extends JPanel implements ActionListener {
             scrolls[i].getViewport().setBackground(utilidad.getColorFondo().brighter().brighter());
             scrolls[i].setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            contenedor.addTab(categorias[i], scrolls[i]);           
+            contenedor.addTab(categorias[i], scrolls[i]);
         }
 
         //----------------------------------------------------------------------
         // BOTONES 
+        botonParte = new JButton("<html><center>PARTE DE<br>SANIDAD</center></html>");
+        botonParte.setBounds(10, 15, 110, 35);
+        botonParte.setFont(utilidad.getFuenteBoton());
+        botonParte.setVisible(true);
+        botonParte.setContentAreaFilled(true);
+        botonParte.setBackground(utilidad.getColorBoton());
+        botonParte.setForeground(utilidad.getColorFuenteBoton());
+        botonParte.setFocusPainted(false);
+        botonParte.setBorderPainted(false);
+        botonParte.setCursor(utilidad.getPointCursor());
+        add(botonParte);
         botonAgregar = new JButton("<html><center>AGREGAR<br>PERSONAL</center></html>");
-        botonAgregar.setBounds(10, 15, 110, 35);
+        botonAgregar.setBounds(150, 15, 110, 35);
+        botonAgregar.addActionListener(this);
         botonAgregar.setFont(utilidad.getFuenteBoton());
         botonAgregar.setVisible(true);
-        botonAgregar.addActionListener(this);
-        botonAgregar.setOpaque(true);
         botonAgregar.setBackground(utilidad.getColorBoton());
         botonAgregar.setForeground(utilidad.getColorFuenteBoton());
         botonAgregar.setFocusPainted(false);
         botonAgregar.setBorderPainted(false);
-        botonAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        add(botonAgregar);
-        botonParte = new JButton("<html><center>PARTE DE<br>SANIDAD</center></html>");
-        botonParte.setBounds(150, 15, 110, 35);
-        botonParte.setFont(utilidad.getFuenteBoton());
-        botonParte.setVisible(true);
-        botonParte.addActionListener(this);
-        botonParte.setContentAreaFilled(false);
-        botonParte.setOpaque(true);
-        botonParte.setBackground(utilidad.getColorBoton());
-        botonParte.setForeground(utilidad.getColorFuenteBoton());
-        botonParte.setFocusPainted(false);
-        botonParte.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        add(botonParte);
+        botonAgregar.setCursor(utilidad.getPointCursor());
+        add(botonAgregar);       
         ordenar = new JButton("<html><center>ORDENAR<br>COLUMNAS</center></html>");
         ordenar.setBounds(290, 15, 110, 35);
-        ordenar.setFont(utilidad.getFuenteBoton());
         ordenar.addActionListener(this);
+        ordenar.setFont(utilidad.getFuenteBoton());
         ordenar.setVisible(true);
-        ordenar.setContentAreaFilled(false);
-        ordenar.setOpaque(true);
+        ordenar.setContentAreaFilled(true); //genera efecto propio del LAF
         ordenar.setBackground(utilidad.getColorBoton());
         ordenar.setForeground(utilidad.getColorFuenteBoton());
         ordenar.setFocusPainted(false);
-        ordenar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ordenar.setBorderPainted(false);
+        ordenar.setCursor(utilidad.getPointCursor());
         add(ordenar);
         //----------------------------------------------------------------------
         // LABELS CON CANTIDAD DE PERSONAL
@@ -387,5 +386,23 @@ public class Tabla extends JPanel implements ActionListener {
     public void setPatologiaColumn(String patologiaColumn) {
         this.patologiaColumn = patologiaColumn;
     }
+
+    public void setIMCfilter(double IMCfilter) {
+        this.IMCfilter = IMCfilter;
+    }
+
+    public double getIMCfilter() {
+        return IMCfilter;
+    }
+
+    public String getIMCoperator() {
+        return IMCoperator;
+    }
+
+    public void setIMCoperator(String IMCoperator) {
+        this.IMCoperator = IMCoperator;
+    }
+    
+    
 
 }

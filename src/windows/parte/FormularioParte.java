@@ -104,6 +104,7 @@ public class FormularioParte extends JDialog implements ActionListener {
                 + "informacion actualmente guardada y se creara un nuevo parte. Revise esa informacion antes de proceder y "
                 + "recuerde modificar las fechas 'Desde' y 'Hasta' para el nuevo parte.<html>");
         labelTipoParte.setBounds(180, 55, 250, 80);
+        labelTipoParte.setFont(utilidad.getFuenteLabelInfo());
         labelTipoParte.setForeground(Color.orange);
         labelTipoParte.setVisible(false);
         container.add(labelTipoParte);
@@ -191,7 +192,7 @@ public class FormularioParte extends JDialog implements ActionListener {
         botonModificar.addActionListener(this);
         botonModificar.setVisible(false);
         container.add(botonModificar);
-        botonAlta = new JButton("Alta");
+        botonAlta = new JButton("<html>Alta</html>",iconos.getIconoAlta());
         botonAlta.setBounds(125, 235, 90, 30);
         botonAlta.addActionListener(this);
         botonAlta.setVisible(false);

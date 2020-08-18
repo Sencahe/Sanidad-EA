@@ -41,9 +41,15 @@ public class Parte extends JPanel implements ActionListener {
         scrollContainer.getVerticalScrollBar().setUnitIncrement(16);
         //BOTONES--------------------------------------------------
         botonTabla = new JButton("Volver");
-        botonTabla.setBounds(1159, 15, 100, 30);
+        botonTabla.setBounds(30, 15, 100, 30);
         botonTabla.setFont(utilidad.getFuenteBoton());
         botonTabla.setVisible(true);
+        botonTabla.setContentAreaFilled(true); 
+        botonTabla.setBackground(utilidad.getColorBoton());
+        botonTabla.setForeground(utilidad.getColorFuenteBoton());
+        botonTabla.setFocusPainted(false); 
+        botonTabla.setBorderPainted(false); 
+        botonTabla.setCursor(utilidad.getPointCursor());
         add(botonTabla);
         //-----------------------------------------------------------------------------------
         //TABLAS DEL PARTE------------------------------------------------------------------
@@ -178,7 +184,7 @@ public class Parte extends JPanel implements ActionListener {
 
     //METODO PARA ACTUALIZAR EL FRAME------------------------------------------
     public void actualizarVentana() {
-        int y = 60;
+        int y = 90;
         for (int i = 0; i < 4; i++) {
             int altura = 27 + tablas[i].getRowCount() * 16;
             scrolls[i].setBounds(15, y, 1261, altura);
