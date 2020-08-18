@@ -1,31 +1,16 @@
 package windows.parte;
 
-import com.toedter.calendar.JDateChooser;
+import personal.Personal;
+import windows.Formulario;
 import database.Emisor;
 import database.Receptor;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import mytools.Fechas;
 import mytools.Iconos;
 import mytools.Utilidades;
-import personal.Personal;
-import windows.Formulario;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import com.toedter.calendar.JDateChooser;
 
 public class FormularioParte extends JDialog implements ActionListener {
 
@@ -39,7 +24,10 @@ public class FormularioParte extends JDialog implements ActionListener {
 
     private int idParte;
     private boolean modificar;
+    private boolean modificoTipoParte;
     private int flagTipoParte;
+    private String flagDesde;
+    private String flagHasta;
 
     private Personal personal;
 
@@ -101,17 +89,21 @@ public class FormularioParte extends JDialog implements ActionListener {
         container.add(informacion);
 
         //combobox
+        JLabel labelComboTipoParte = new JLabel("Tipo de Parte");
+        labelComboTipoParte.setBounds(15, 90, 160, 20);
+        labelComboTipoParte.setFont(utilidad.getFuenteLabelsFormulario());
+        add(labelComboTipoParte);
         tipoParte = new JComboBox();
         tipoParte.addItem("Reposo");
         tipoParte.addItem("Exceptuado");
         tipoParte.addItem("Maternidad");
-        tipoParte.setBounds(15, 90, 160, 20);
+        tipoParte.setBounds(15, 110, 160, 20);
         tipoParte.addActionListener(this);
         container.add(tipoParte);
         labelTipoParte = new JLabel("<html>Al modificar el tipo de parte se enviara al recuento la "
-                + "informacion previamente guardada y se creara un nuevo parte. "
-                + "Se sugiere modificar el campo 'Desde' a la fecha del dia presente.<html>");
-        labelTipoParte.setBounds(180, 60, 250, 60);
+                + "informacion actualmente guardada y se creara un nuevo parte. Revise esa informacion antes de proceder y "
+                + "recuerde modificar las fechas 'Desde' y 'Hasta' para el nuevo parte.<html>");
+        labelTipoParte.setBounds(180, 55, 250, 80);
         labelTipoParte.setForeground(Color.orange);
         labelTipoParte.setVisible(false);
         container.add(labelTipoParte);
@@ -127,23 +119,23 @@ public class FormularioParte extends JDialog implements ActionListener {
         container.add(labelNorasSiras);
         //datechooser
         labelDesde = new JLabel("Desde *");
-        labelDesde.setBounds(15, 125, 200, 20);
+        labelDesde.setBounds(15, 135, 200, 20);
         labelDesde.setFont(utilidad.getFuenteLabelsFormulario());
         labelDesde.setForeground(Color.black);
         container.add(labelDesde);
         desde = new JDateChooser();
-        desde.setBounds(15, 145, 100, 20);
+        desde.setBounds(15, 155, 100, 20);
         desde.setForeground(Color.black);
         desde.setFont(utilidad.getFuenteTextFields());
         desde.setDateFormatString(utilidad.getFormatoFecha());
         container.add(desde);
         labelHasta = new JLabel("Hasta *");
-        labelHasta.setBounds(130, 125, 200, 20);
+        labelHasta.setBounds(130, 135, 200, 20);
         labelHasta.setFont(utilidad.getFuenteLabelsFormulario());
         labelHasta.setForeground(Color.black);
         container.add(labelHasta);
         hasta = new JDateChooser();
-        hasta.setBounds(130, 145, 100, 20);
+        hasta.setBounds(130, 155, 100, 20);
         hasta.setForeground(Color.black);
         hasta.setFont(utilidad.getFuenteTextFields());
         hasta.setDateFormatString(utilidad.getFormatoFecha());
@@ -151,12 +143,12 @@ public class FormularioParte extends JDialog implements ActionListener {
 
         //textfield
         labelObservaciones = new JLabel("Observaciones *");
-        labelObservaciones.setBounds(240, 125, 150, 20);
+        labelObservaciones.setBounds(240, 135, 150, 20);
         labelObservaciones.setFont(utilidad.getFuenteLabelsFormulario());
         labelObservaciones.setForeground(Color.black);
         container.add(labelObservaciones);
         observaciones = new JTextField();
-        observaciones.setBounds(240, 145, 170, 20);
+        observaciones.setBounds(240, 155, 170, 20);
         observaciones.setFont(utilidad.getFuenteTextFields());
         container.add(observaciones);
         labelDiagnostico = new JLabel("Diagnostico *");
@@ -182,16 +174,20 @@ public class FormularioParte extends JDialog implements ActionListener {
         sugerenciaDiag = new JLabel("Diagnosticos sugeridos: 'Embarazo' |"
                 + " (0-3 meses) 'Lactancia' |"
                 + " (3-12 meses) 'Maternidad'");
-        sugerenciaDiag.setBounds(10,275,435,30);
+        sugerenciaDiag.setBounds(10, 275, 435, 30);
         sugerenciaDiag.setVisible(false);
         add(sugerenciaDiag);
         //Buttons
-        botonAgregar = new JButton("Agregar");
+        botonAgregar = new JButton("<html>Guardar</html>", iconos.getIconoSave());
         botonAgregar.setBounds(15, 235, 90, 30);
+        botonAgregar.setHorizontalAlignment(SwingConstants.LEFT);
+        botonAgregar.setIconTextGap(10);
         botonAgregar.addActionListener(this);
         container.add(botonAgregar);
-        botonModificar = new JButton("Modificar");
+        botonModificar = new JButton("<html>Guardar</html>", iconos.getIconoSave());
         botonModificar.setBounds(15, 235, 90, 30);
+        botonModificar.setHorizontalAlignment(SwingConstants.LEFT);
+        botonModificar.setIconTextGap(10);
         botonModificar.addActionListener(this);
         botonModificar.setVisible(false);
         container.add(botonModificar);
@@ -208,22 +204,24 @@ public class FormularioParte extends JDialog implements ActionListener {
     //--------------------------------------------------------------------------
     //EVENTO BOTOENS------------------------------------------------------------
     @Override
+    //----------BOTON AGREGAR-----------------------
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botonAgregar) {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 if (validar()) {
-                Emisor emisor = new Emisor(personal.getId(), 0);
-                emisor.setInformacion(this);
-                emisor.actualizar(parte);
-                parte.actualizarVentana();
-                formulario.setParteDeEnfermo(true);
-                vaciar();
-                emisor = null;                
-                }                
+                    Emisor emisor = new Emisor(personal.getId(), 0);
+                    emisor.setInformacion(this);
+                    emisor.actualizar(parte);
+                    parte.actualizarVentana();
+                    formulario.setParteDeEnfermo(true);
+                    vaciar();
+                    emisor = null;
+                }
             }
         }
+        //---------------BOTON MODIFICARR---------------------------
         if (e.getSource() == botonModificar) {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar el Parte?",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
@@ -243,15 +241,17 @@ public class FormularioParte extends JDialog implements ActionListener {
                 }
             }
         }
-
+        //-------------------BOTON ALTA-----------------------
         if (e.getSource() == botonAlta) {
-            int confirmar = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea dar de Alta a  "
-                    + personal.getNombreCompleto() + "?",
+            int confirmar = JOptionPane.showConfirmDialog(null,
+                    "<html><center>¿Esta seguro que desea dar de Alta a "
+                    + personal.getNombreCompleto() + "?<br>"
+                    + "Recuerde que la fecha de 'Hasta' debe coincidir con la del Alta Medica.</center></html>",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (confirmar == JOptionPane.YES_OPTION) {
                 if (validar()) {
                     Emisor emisor = new Emisor(personal.getId(), this.idParte);
-                    emisor.setRecuento(this, false);
+                    emisor.setRecuento(this, true);
                     emisor.actualizar(parte);
                     parte.actualizarVentana();;
                     dispose();
@@ -260,25 +260,40 @@ public class FormularioParte extends JDialog implements ActionListener {
                 }
             }
         }
-
+        //---------------COMBO TIPO PARTE---------------------------
         if (e.getSource() == tipoParte) {
+            //si se cambia el tipo de parte se borran las fechas
             if (modificar && flagTipoParte != tipoParte.getSelectedIndex()) {
+                modificoTipoParte = true;
                 labelTipoParte.setVisible(true);
-            } else {
+                botonAlta.setVisible(false);
+                ((JTextField) desde.getDateEditor().getUiComponent()).setText("");
+                ((JTextField) hasta.getDateEditor().getUiComponent()).setText("");
+
+                //sino, se colocan las actuales    
+            } else if(modificar){
+                modificoTipoParte = false;
                 labelTipoParte.setVisible(false);
+                botonAlta.setVisible(true);
+                ((JTextField) desde.getDateEditor().getUiComponent()).setText(flagDesde);
+                ((JTextField) hasta.getDateEditor().getUiComponent()).setText(flagHasta);
+
             }
-            if(tipoParte.getSelectedIndex() == 0){
+            //----
+            //se cambia el campo observacion si se cambia el tipo de parte
+            if (tipoParte.getSelectedIndex() == 0) {
                 observaciones.setText("Lic. por Enfermedad");
                 sugerenciaDiag.setVisible(false);
             }
-            if(tipoParte.getSelectedIndex() == 1){
+            if (tipoParte.getSelectedIndex() == 1) {
                 observaciones.setText("Tareas Adm");
                 sugerenciaDiag.setVisible(false);
             }
-            if(tipoParte.getSelectedIndex() == 2){
+            if (tipoParte.getSelectedIndex() == 2) {
                 observaciones.setText("Lic. por Maternidad");
                 sugerenciaDiag.setVisible(true);
             }
+
         }
     }
 
@@ -289,7 +304,9 @@ public class FormularioParte extends JDialog implements ActionListener {
         botonAlta.setVisible(false);
         botonModificar.setVisible(false);
 
+
         modificar = false;
+        modificoTipoParte = false;
 
         personal = null;
 
@@ -330,6 +347,7 @@ public class FormularioParte extends JDialog implements ActionListener {
 
         flagTipoParte = tipoParte.getSelectedIndex();
         modificar = true;
+        modificoTipoParte = false;
 
         informacion.setText(personal.toString());
 
@@ -366,6 +384,17 @@ public class FormularioParte extends JDialog implements ActionListener {
             validar = null;
             return false;
         }
+        //validando la coherencia de las fechas Desde y Hasta ingresadas por el usuario
+        if (modificoTipoParte) {
+            if (!validar.fechaParteValida(fechaDesde,fechaHasta,flagDesde)) {
+                return false;
+            }
+        } else {
+            if (!validar.fechaParteValida(fechaDesde, fechaHasta)){
+                return false;
+            }
+        }
+        //validando que no se le agrege parte de maternidad a personal M
         if (personal.getSexo() == 'M') {
             if (tipoParte.getSelectedIndex() == 2) {
                 JOptionPane.showMessageDialog(null, "No puede agregar parte de \"Maternidad\" a un Personal Masculino.");
@@ -416,6 +445,22 @@ public class FormularioParte extends JDialog implements ActionListener {
 
     public JDateChooser getDesde() {
         return desde;
+    }
+
+    public String getFlagDesde() {
+        return flagDesde;
+    }
+
+    public void setFlagDesde(String flagDesde) {
+        this.flagDesde = flagDesde;
+    }
+
+    public String getFlagHasta() {
+        return flagHasta;
+    }
+
+    public void setFlagHasta(String flagHasta) {
+        this.flagHasta = flagHasta;
     }
 
     public JDateChooser getHasta() {

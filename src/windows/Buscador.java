@@ -1,30 +1,12 @@
 package windows;
 
 import mytools.Iconos;
-import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.JDialog;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import mytools.Utilidades;
-import java.awt.Dimension;
-import javax.swing.ButtonGroup;
-import javax.swing.JRadioButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import windows.Tabla;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
 
 public class Buscador extends JDialog implements ActionListener {
 
@@ -32,7 +14,7 @@ public class Buscador extends JDialog implements ActionListener {
     private JTextField texto;      
     private JLabel mensaje, buscando;
     private JRadioButton radioNombre, radioDNI;
-    private KeyAdapter soloNumeros, textoNormal;
+    private KeyAdapter soloNumeros;
     
     private int puntero;
     private int categoria;
@@ -49,7 +31,7 @@ public class Buscador extends JDialog implements ActionListener {
         this.buscar = "";
         this.categoria = -1;
         this.encontrado = false;
-        this.columna = 5;
+        this.columna = 3;
         Componentes();
 
         addWindowListener(new WindowAdapter() {
@@ -70,7 +52,6 @@ public class Buscador extends JDialog implements ActionListener {
         Utilidades utilidad = new Utilidades();
         Iconos iconos = new Iconos();
         soloNumeros = utilidad.soloNumeros;
-        textoNormal = utilidad.textoNormal;
         // FRAME DEL BUSCADOR
         setSize(400, 175);
         setResizable(false);
@@ -170,6 +151,7 @@ public class Buscador extends JDialog implements ActionListener {
                 setTitle("Buscando en " + tabla.getContenedor().getTitleAt(tabla.getContenedor().getSelectedIndex()).trim());
             }
 
+            nombre = "";
             buscar = texto.getText().toLowerCase().trim();
             categoria = tabla.getContenedor().getSelectedIndex();
             buscarSiguiente = true;

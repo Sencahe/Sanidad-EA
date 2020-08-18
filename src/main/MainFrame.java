@@ -1,14 +1,12 @@
 package main;
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-import javax.swing.border.EmptyBorder;
 import mytools.Arreglos;
 import mytools.Iconos;
 import windows.Buscador;
@@ -18,7 +16,7 @@ import windows.Tabla;
 import windows.parte.FormularioParte;
 import windows.parte.Parte;
 
-public class MainFrame extends JFrame implements ActionListener {
+public class MainFrame extends JFrame implements ActionListener{
 
     private final static String PARTE = "Parte de Sanidad";
     private final static String TABLA = "Carta de Situacion";
@@ -49,7 +47,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private JMenuItem itemRef, itemBuscar;
 
-    //Declaracion de iconos para los menuItems
+    //icono para los menuItems
     private ImageIcon check;
 
     //Panel y Dialogs
@@ -59,6 +57,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private FormularioParte formParte;
     private Buscador buscador;
     private Referencias referencia;
+    
 
     public MainFrame() {
         //OBJETOS AUXILIARES
@@ -72,6 +71,7 @@ public class MainFrame extends JFrame implements ActionListener {
         referencia = new Referencias(this, true);
 
         tabla.setFormulario(formulario);
+        tabla.setBuscador(buscador);
         parte.setFormParte(formParte);
         formulario.setTabla(tabla);
         formulario.setFormParte(formParte);
@@ -90,8 +90,9 @@ public class MainFrame extends JFrame implements ActionListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setIconImage(iconos.getIconoSanidad().getImage());
         setLocationRelativeTo(null);
-        // setUndecorated(true); -> Elimina la barra de windows con title y close boton
-        
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
+        // setUndecorated(true); -> Elimina la barra de windows con title y close boton      
         //setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
         //setOpacity(TOP_ALIGNMENT);
         getContentPane().setLayout(new CardLayout(0, 0));
@@ -99,8 +100,8 @@ public class MainFrame extends JFrame implements ActionListener {
         componentes(iconos);
         iconos = null;
         
-        getContentPane().add(tabla.getScrollContainer(), "Carta de Situacion");
-        getContentPane().add(parte.getScrollContainer(), "Parte de Sanidad");
+        getContentPane().add(tabla.getScrollContainer(), TABLA);
+        getContentPane().add(parte.getScrollContainer(), PARTE);
 
         botonParte = tabla.getBotonParte();
         botonParte.addActionListener(this);
@@ -319,6 +320,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
     }
 
+  
     private void eliminarChecksFiltros() {
         itemAnexoVencido.setIcon(null);
 
@@ -384,5 +386,7 @@ public class MainFrame extends JFrame implements ActionListener {
     public Referencias getReferencia() {
         return referencia;
     }
+
+    
 
 }

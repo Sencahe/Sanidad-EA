@@ -6,7 +6,7 @@ public class Arreglos {
     private static String[] columnasTabla = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Anexo 27",
         "Edad", "Peso", "Altura", "IMC", "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
     //                                      Nr Grd A/S AyN Dest  DNI A27 Age Kgs Alt IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
-    private static int[] tamañoColumnas = {40, 50, 70, 240, 60, 70, 90, 40, 50, 50, 50, 105, 65, 32, 32, 32, 32, 32, 32, 288, 40};
+    private static int[] tamañoColumnas = {40, 50, 70, 240, 60, 70, 85, 40, 50, 50, 50, 110, 65, 32, 32, 32, 32, 32, 32, 288, 40};
 
     private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
@@ -17,7 +17,7 @@ public class Arreglos {
     private static String[] columnasBD = {"Grado", "Arma", "Apellido", "Destino" ,"DNI","Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
         "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
 
-    private static String[] columnasBDParte = {};
+    //private static String[] columnasBDParte = {};
 
     private static String[] formularioBD = {  //textField
         "Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente", 
@@ -112,13 +112,13 @@ public class Arreglos {
         return columnasBD.length;
     }
 
-    public static String[] getColumnasParteBD() {
-        return columnasBDParte;
-    }
-
-    public static String getColumnasParteBD(int i) {
-        return columnasBDParte[i];
-    }
+//    public static String[] getColumnasParteBD() {
+//        return columnasBDParte;
+//    }
+//
+//    public static String getColumnasParteBD(int i) {
+//        return columnasBDParte[i];
+//    }
 
     // ARREGLO PARA LOS GRADOS SEGUN SU VALOR NUMERICO, TANTO EN LA CLASE FORMULARIO COMO EN LA CLASE BASEDEDATOS
     public static String[][] getGrados() {

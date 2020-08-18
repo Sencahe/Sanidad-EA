@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import javax.swing.JOptionPane;
 
 public class Fechas {
         
@@ -27,10 +28,17 @@ public class Fechas {
     public int getDias(String fecha){
         this.fecha = LocalDate.parse(fecha, fmt);    
         int days = (int) ChronoUnit.DAYS.between(this.fecha, fechaHoy);
-        this.periodo = Period.between(this.fecha, fechaHoy);     
-        return days;
+        return days + 1;
     }
-    //metodo para validar la fecha
+    
+    public int getPeriodoDias(String desde, String hasta){
+        LocalDate fechaDesde = LocalDate.parse(desde, fmt);
+        LocalDate fechaHasta = LocalDate.parse(hasta, fmt);
+        int days = (int) ChronoUnit.DAYS.between(fechaDesde, fechaHasta);
+        return days + 1;
+    }
+    
+    //------------------METODOS QUE VALIDAN LAS FECHAS--------------------------
     public boolean fechaValida(String fecha){       
         try {
             this.fmt.parse(fecha);            
@@ -39,11 +47,50 @@ public class Fechas {
             return false;
         }
     }
+    //valida la fecha entre el desde y el hasta 
+    public boolean fechaParteValida(String desde, String hasta){
+        LocalDate fechaDesde = LocalDate.parse(desde, fmt);
+        LocalDate fechaHasta =  LocalDate.parse(hasta, fmt);
+        if(fechaDesde.isAfter(fechaHasta) || fechaDesde.isEqual(fechaHasta)){
+            JOptionPane.showMessageDialog(null,"La fecha 'Desde' no puede ser posterior o igual a la fecha 'Hasta'.");
+            return false;
+        } else if(fechaHasta.isBefore(this.fechaHoy)){
+            JOptionPane.showMessageDialog(null,"La fecha 'Hasta' no puede ser anterior a la fecha de hoy.");
+            return false;
+        } 
+        return true;
+    }
+    //valida la fecha entre el desde y el hasta, ademas compara que el desde no sea menor que el incial
+    public boolean fechaParteValida(String desde, String hasta, String flagDesde){
+        LocalDate fechaDesde = LocalDate.parse(desde, fmt);
+        LocalDate fechaFlagDesde = LocalDate.parse(flagDesde,fmt);
+        if(fechaDesde.isBefore(fechaFlagDesde) || (fechaDesde.isEqual(fechaFlagDesde))){
+            JOptionPane.showMessageDialog(null,"Si modifica el tipo de Parte, "
+                    + "la fecha 'Desde' no puede ser anterior o igual a la fecha inicial: " + flagDesde);
+            return false;
+        } else {
+            return fechaParteValida(desde,hasta);
+        }                
+    }
+    
+    //Obtener la fecha de hoy en formato "dd/MM/yyyy"
+    public String getHoy(){
+        String hoyFecha = String.valueOf(fechaHoy);
+        String hoy = hoyFecha.substring(8,10) + "/" + hoyFecha.substring(5, 7) + "/" + hoyFecha.substring(0,4);      
+        return hoy;
+    
+    }
+
+      
     
     public String getYearAgo(){
         LocalDate yearAgo = LocalDate.now().minusYears(1);
-        String yearago = String.valueOf(yearAgo);
-        yearago = yearago.substring(0,4) + yearago.substring(5, 7) + yearago.substring(8, 10);
-        return yearago;
+        String year = String.valueOf(yearAgo);
+        year = year.substring(0,4) + year.substring(5, 7) + year.substring(8, 10);
+        return year;
     }
+
+    
+    
+    
 }

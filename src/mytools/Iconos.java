@@ -10,6 +10,7 @@ public class Iconos {
     private ImageIcon iconoBuscar;
     private ImageIcon iconoBuscarChico;
     private ImageIcon iconoSanidad;
+    private ImageIcon iconoSave;
     
     public Iconos(){        
         this.iconoRefrescar = new ImageIcon("src/myimages/refresh.png");
@@ -17,6 +18,8 @@ public class Iconos {
         this.iconoBuscar = new ImageIcon("src/myimages/searchGrande.png");
         this.iconoBuscarChico = new ImageIcon("src/myimages/search.png");
         this.iconoSanidad = new ImageIcon("src/myimages/Sanidad.png");
+        this.iconoSave = new ImageIcon("src/myimages/save.png");
+
     }
 
    
@@ -35,7 +38,11 @@ public class Iconos {
     public ImageIcon getIconoSanidad(){
         return iconoSanidad;
     }
-    
+
+    public ImageIcon getIconoSave() {
+        return iconoSave;
+    }
+
 
    
 }

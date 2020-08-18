@@ -1,6 +1,5 @@
 package database;
 
-import java.awt.TextField;
 import mytools.Arreglos;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
@@ -57,6 +56,7 @@ public class Emisor extends BaseDeDatos {
             int index = 1;
             String emisor;
             int numEmisor;
+            int dni;
 
             //Se envian los datos de los textField
             for (int i = 0; i < formulario.getTextFieldLength(); i++) {
@@ -106,13 +106,16 @@ public class Emisor extends BaseDeDatos {
 
     public void setInformacion(FormularioParte formParte) {
         String statement;
+        String mensaje;
 
         if (this.idParte != 0) {
             statement = "update Parte set id_personal = ?, Diagnostico = ?, Observacion = ?, Desde = ?, Hasta = ?, "
                     + "CIE = ?, TipoParte = ?, NorasSiras = ? where id = " + this.idParte;
+            mensaje = "Se ha modificado el parte.";
         } else {
             statement = "insert into Parte (id_personal, Diagnostico, Observacion, Desde, Hasta, CIE, TipoParte, NorasSiras)"
                     + " values(?,?,?,?,?,?,?,?)";
+            mensaje = "Se ha creado un nuevo parte.";
         }
 
         try {
@@ -136,7 +139,10 @@ public class Emisor extends BaseDeDatos {
             pst = super.getConnection().prepareStatement("update Personal set Parte = 1 where id = " + this.id);
             pst.executeUpdate();
 
+            JOptionPane.showMessageDialog(null, mensaje);
+
             super.getConnection().close();
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//setInformacion//" + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
@@ -150,14 +156,17 @@ public class Emisor extends BaseDeDatos {
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("INSERT INTO RecuentoParte"
                     + " (id_personal,Categoria,Grado,NombreCompleto,Destino,DNI,"
-                    + "Diagnostico,CIE,Desde,Hasta,Dias,Observacion,NorasSiras,TipoParte) "
+                    + "Diagnostico,CIE,Observacion,NorasSiras,TipoParte,Desde,Hasta,Dias) "
                     + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-            PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT * FROM Parte WHERE id = "
-                    + this.idParte);
+            PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT * FROM Parte "
+                    + "WHERE id = " + this.idParte);
             ResultSet rs = pst2.executeQuery();
 
             //Informacion propia de PERSONAL
+            //se guardan los valores Strings de cada dato, ya que esta tabla sirve de archivo
+            //en caso de que un personal sea eliminado de la base de datos, quedaran los registros
+            //de sus partes los cuales se accederan por el DNI
             String categoria = Arreglos.getCategorias(personal.getCategoria());
             String grado = Arreglos.getGrados(personal.getCategoria(), personal.getGrado());
 
@@ -167,37 +176,49 @@ public class Emisor extends BaseDeDatos {
             pst.setString(4, personal.getNombreCompleto());
             pst.setString(5, personal.getDestino());
             pst.setInt(6, personal.getDni());
-
+            //---------------------------           
             //Informacion propia de PARTE.
-            //Se recupera la informacion de la base de datos ya que es la guardada.
-            //en caso de cambios en el formulario de manera accidental antes de cambiar el tipo de parte
-            Fechas fecha = new Fechas("dd/MM/yyyy");
-            String desde = rs.getString("Desde");
-            int dias = fecha.getDias(desde);
-            int tipoParte = rs.getInt("TipoParte");
-            String tipoDeParte = formParte.getTipoParte().getItemAt(tipoParte).toString();
+            //Se recupera la informacion de la base de datos ya que es la guardada.                  
+            //de esta manera, el nuevo parte comenzara el mismo dia que termino el anterior   
+            String tipoDeParte = formParte.getTipoParte().getItemAt(rs.getInt("TipoParte")).toString();
 
             pst.setString(7, rs.getString("Diagnostico"));
             pst.setObject(8, rs.getObject("CIE"));
-            pst.setString(9, desde);
-            pst.setString(10, rs.getString("Hasta"));
-            pst.setInt(11, dias);
-            pst.setString(12, rs.getString("Observacion"));
-            pst.setString(13, rs.getString("NorasSiras"));
-            pst.setString(14, tipoDeParte);
+            pst.setString(9, rs.getString("Observacion"));
+            pst.setString(10, rs.getString("NorasSiras"));
+            pst.setString(11, tipoDeParte);
 
+            //dependiendo de si es un alta definitiva o no, se guardaran las fechas de distinta manera
+            Fechas fecha = new Fechas("dd/MM/yyyy");
+            String desde;
+            String hasta;
+            int dias;
+            if (altaDefinitiva) {
+                desde = ((JTextField) formParte.getDesde().getDateEditor().getUiComponent()).getText();
+                hasta = ((JTextField) formParte.getHasta().getDateEditor().getUiComponent()).getText();
+                dias = fecha.getPeriodoDias(desde, hasta);
+            } else {  
+                //se utiliza el desde de la base de Datos, fecha inicial de parte 
+                //se utiliza el hasta como el "desde" del nuevo parte
+                desde = rs.getString("Desde");            
+                hasta = ((JTextField) formParte.getDesde().getDateEditor().getUiComponent()).getText(); 
+                dias = fecha.getPeriodoDias(desde, hasta);
+            }
+            
+            pst.setString(12, desde);
+            pst.setString(13, hasta);
+            pst.setInt(14, dias);
             pst.executeUpdate();
-
-            pst2 = super.getConnection().prepareStatement("DELETE FROM PARTE WHERE id = " + this.idParte);
-            pst2.executeUpdate();
-
-            fecha = null;
-
+            
+            pst = super.getConnection().prepareStatement("DELETE FROM PARTE WHERE id = " + this.idParte);
+            pst.executeUpdate();
+            
             if (altaDefinitiva) {
                 //en caso de ser un alta definitiva paso a False en la base de datos SQLite
-                //el campo "flag" que indica si tiene un o no un parte activo
-                pst = super.getConnection().prepareStatement("update from Personal set Parte = 0 where id = " + this.id);
+                //      el campo "flag" que indica si tiene o no un parte activo
+                pst = super.getConnection().prepareStatement("update Personal set Parte = 0 where id = " + this.id);
                 pst.executeUpdate();
+                super.getConnection().close();
                 JOptionPane.showMessageDialog(null, personal.getNombreCompleto() + " se ha dado de Alta Medica.");
             } else {
                 //llamo al metodo de esta clase para crear un nuevo Parte
@@ -205,6 +226,7 @@ public class Emisor extends BaseDeDatos {
                 this.idParte = 0;
                 setInformacion(formParte);
             }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//AltaParcial// " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");

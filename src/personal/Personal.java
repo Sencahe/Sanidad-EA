@@ -93,8 +93,8 @@ public class Personal {
     
     @Override
     public String toString(){
-        return "<html><pre>Grado: " + Arreglos.getGrados(categoria, grado) + "<br>Nombre: " + this.nombreCompleto 
-                + "<br>Destino: " + this.destino + "<br>DNI: " + this.dni + "</pre></html>";
+        return "<html>Grado: " + Arreglos.getGrados(categoria, grado) + "<br>Nombre: " + this.nombreCompleto 
+                + "<br>Destino: " + this.destino + "<br>DNI: " + this.dni + "</html>";
     }
     
 }

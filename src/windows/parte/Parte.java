@@ -1,25 +1,13 @@
 package windows.parte;
 
 import database.BaseDeDatos;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import mytools.Arreglos;
 import mytools.Utilidades;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
 
 public class Parte extends JPanel implements ActionListener {
 
@@ -122,11 +110,13 @@ public class Parte extends JPanel implements ActionListener {
             tablas[i].setGridColor(Color.black);
             tablas[i].setBackground(utilidad.getColorTabla());
             tablas[i].setFont(utilidad.getFuenteTabla());
+            tablas[i].setRowHeight(16);
             //header
             JTableHeader header = tablas[i].getTableHeader();
             header.setFont(utilidad.getFuenteHeader());
-            header.setBackground(new Color(0, 0, 0, 0.6f));
+            header.setBackground(utilidad.getColorTabla());
             header.setOpaque(false);
+            header.setPreferredSize(new Dimension(40, 26));
             JLabel l = (JLabel) header.getDefaultRenderer();
             l.setPreferredSize(new Dimension(0, 26));
             l.setOpaque(false);

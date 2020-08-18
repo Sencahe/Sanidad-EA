@@ -1,40 +1,22 @@
 package windows;
 
-import database.Eliminador;
-import database.Emisor;
-import mytools.JTextFieldLimit;
-import database.Receptor;
-import mytools.Fechas;
-import mytools.TextPrompt;
-import mytools.Utilidades;
-import com.toedter.calendar.JDateChooser;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.text.DecimalFormat;
-import javax.swing.JDialog;
-import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import mytools.Arreglos;
-import mytools.Iconos;
 import personal.Personal;
 import windows.parte.FormularioParte;
+import database.Emisor;
+import database.Receptor;
+import database.Eliminador;
+import mytools.Arreglos;
+import mytools.Iconos;
+import mytools.Fechas;
+import mytools.Utilidades;
+import mytools.TextPrompt;
+import mytools.JTextFieldLimit;
+import javax.swing.*;
+import com.toedter.calendar.JDateChooser;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.DecimalFormat;
+
 
 public class Formulario extends JDialog implements ActionListener {
 
@@ -66,6 +48,7 @@ public class Formulario extends JDialog implements ActionListener {
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 Vaciar();
                 dispose();
@@ -106,7 +89,7 @@ public class Formulario extends JDialog implements ActionListener {
         container.setLayout(null);
         dimension = null;
         //BOTONES PRINCIPALES 
-        botonAgregar = new JButton("Agregar");
+        botonAgregar = new JButton("<html>Agregar</html>");
         botonAgregar.setBounds(385, 355, 85, 30);
         botonAgregar.addActionListener(this);
         container.add(botonAgregar);
@@ -149,7 +132,7 @@ public class Formulario extends JDialog implements ActionListener {
             }
             if (i >= 4 && i <= 6) {
                 textField[i].addKeyListener(utilidad.bloquearLetras);
-                textField[i].setDocument(new JTextFieldLimit(5));
+                textField[i].setDocument(new JTextFieldLimit(6));
             }
             container.add(textField[i]);
         }
@@ -191,7 +174,6 @@ public class Formulario extends JDialog implements ActionListener {
         F.setFont(utilidad.getFuenteLabelsFormulario());
         bg.add(F);
         container.add(F);
-        //M.setBounds();
         //Categoria COMBO 0
         labels[0].setBounds(15, 10, 60, 20);
         labels[0].setText("Categoria");
@@ -216,6 +198,7 @@ public class Formulario extends JDialog implements ActionListener {
         labels[4].setBounds(15, 95, 100, 20);
         labels[4].setText("Arma / Servicio");
         textField[2].setBounds(15, 120, 95, 20);
+        textField[2].setHorizontalAlignment((int) CENTER_ALIGNMENT);
         //Destino COMBO 2
         labels[5].setBounds(130, 95, 60, 20);
         labels[5].setText("Destino");
@@ -225,7 +208,7 @@ public class Formulario extends JDialog implements ActionListener {
         }
         //DNI TEXTFIELD 3
         labels[6].setBounds(240, 95, 100, 20);
-        labels[6].setText("DNI");
+        labels[6].setText("DNI *");
         textField[3].setBounds(240, 120, 80, 20);
         textField[3].setDocument(new JTextFieldLimit(9));
         textField[3].addKeyListener(utilidad.soloNumeros);
@@ -285,12 +268,12 @@ public class Formulario extends JDialog implements ActionListener {
         int X = 15;
         for (int i = 0; i < checkBox.length; i++) {
             checkBox[i] = new JCheckBox(Arreglos.getCheckBox(i));
-            checkBox[i].setBounds(X, 400, 46, 20);
+            checkBox[i].setBounds(X, 400, 50, 20);
             checkBox[i].setFont(utilidad.getFuenteChecks());
             checkBox[i].setOpaque(false);
             checkBox[i].addActionListener(i >= 4 ? this : null);
             container.add(checkBox[i]);
-            X += 44;
+            X += 46;
         }
 
         //LABEL ULTIMO ANEXO 27
@@ -313,15 +296,18 @@ public class Formulario extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //EVENTO AL CAMBIAR DE CATEGORIA
         if (e.getSource() == comboBox[0]) {
+            textField[2].setText("");
+            textField[2].setEnabled(true);
+            comboBox[2].setEnabled(true);
             comboBox[1].removeAllItems();
             int categoria = comboBox[0].getSelectedIndex();
+
             for (String i : Arreglos.getGrados(categoria)) {
                 comboBox[1].addItem(i);
             }
             if (categoria == 2 || categoria == 3) {
                 textField[2].setEnabled(false);
                 textField[2].setText("—");
-                textField[2].setHorizontalAlignment((int) CENTER_ALIGNMENT);
             }
             if (categoria == 3) {
                 comboBox[2].setSelectedIndex(1);
@@ -365,6 +351,7 @@ public class Formulario extends JDialog implements ActionListener {
         }
         //EVENTO BOTON MODIFICAR
         if (e.getSource() == botonModificar) {
+
             int opcion = JOptionPane.showConfirmDialog(null,
                     "¿Esta seguro que desea guardar los cambios?",
                     "Guardar Cambios", JOptionPane.YES_NO_OPTION);
@@ -390,20 +377,27 @@ public class Formulario extends JDialog implements ActionListener {
                     "¿Esta seguro que desea eliminar esta informacion?",
                     "Eliminar informacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
-                dispose();
-                Eliminador eliminar = new Eliminador(id);
-                eliminar.eliminar(Tabla.TABLA);
-                eliminar.actualizar(tabla);
-                eliminar = null;
-                Vaciar();
-                System.gc();
+                if (parteDeEnfermo) {
+                    JOptionPane.showMessageDialog(null, "<html><center>" + personal.getNombreCompleto()
+                            + " tiene un Parte de Sanidad activo.<br>"
+                            + "Debe darlo de alta en el sistema antes de poder eliminarlo.</center></html>");
+                } else {
+                    dispose();
+                    Eliminador eliminar = new Eliminador(id);
+                    eliminar.eliminar(Tabla.TABLA);
+                    eliminar.actualizar(tabla);
+                    eliminar = null;
+                    Vaciar();
+                    System.gc();
+                }
+
             }
         }
         //EVENTO BOTON PARTE DE ENFERMO
         if (e.getSource() == botonParte) {
             if (parteDeEnfermo) {
                 JOptionPane.showMessageDialog(null, personal.getNombreCompleto()
-                        + " ya cuenta con un Parte de Sanida dactivo.");
+                        + " ya cuenta con un Parte de Sanidad activo.");
             } else {
                 formParte.nuevoParte(this);
             }
@@ -457,23 +451,27 @@ public class Formulario extends JDialog implements ActionListener {
         labels[11].setForeground(Color.black);
         labels[12].setForeground(Color.black);
 
-        //VALIDAR NOMBRE Y APELLIDO        
-        String campos[] = {textField[0].getText(), textField[1].getText()};
-        if ("".equals(campos[0]) || "".equals(campos[1])) {
+        //VALIDAR CAMPOS OBLIGATORIOS  
+        String campos[] = {textField[0].getText().trim(), textField[1].getText().trim(), textField[3].getText().trim()};
+        if ("".equals(campos[0]) || "".equals(campos[1]) || "".equals(campos[2])) {
             if ("".equals(campos[0])) {
                 labels[2].setForeground(Color.red);
             }
             if ("".equals(campos[1])) {
                 labels[3].setForeground(Color.red);
             }
-            String mensaje = "<html><center>Debe llenar minimo los campos de Apellido y Nombre.</center></html>";
+            if ("".equals(campos[2])) {
+                labels[6].setForeground(Color.red);
+            }
+            String mensaje = "<html><center>Debe llenar los campos obligatorios.</center></html>";
             JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
             return false;
         }
+        campos = null;
         //VALIDAR DNI
         if (!textField[3].getText().equals("")) {
             try {
-                int dni = Integer.parseInt(textField[3].getText());
+                Integer.parseInt(textField[3].getText());
             } catch (Exception e) {
                 labels[6].setForeground(Color.red);
                 String mensaje = "<html><center>Numero de DNI invalido.</center></html>";
@@ -542,13 +540,13 @@ public class Formulario extends JDialog implements ActionListener {
         for (JCheckBox i : checkBox) {
             i.setSelected(false);
         }
-        labels[2].setForeground(Color.black);
-        labels[3].setForeground(Color.black);
-        labels[7].setForeground(Color.black);
-        labels[8].setForeground(Color.black);
-        labels[10].setForeground(Color.black);
-        labels[11].setForeground(Color.black);
-        labels[12].setForeground(Color.black);
+
+        for (int i = 2; i < 13; i++) {
+            if (i != 4 && i != 5 && i != 9) {
+                labels[i].setForeground(Color.black);
+            }
+        }
+
         textField[4].setForeground(Color.black);
         textField[5].setForeground(Color.black);
         textField[9].setEnabled(false);

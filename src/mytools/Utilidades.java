@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class Utilidades {
     
-    private final Color colorTabla, colorFondo;
+    private final Color colorTabla, colorFondo, colorBoton, colorFuenteBoton;
     
     private final Font fuentePestañas, fuenteTabla, fuenteBoton, fuenteLabelsResumen, fuenteHeader;
     
@@ -20,12 +20,12 @@ public class Utilidades {
     private final Font fuenteLabelTitulo;
     
     public Utilidades(){
-        float alpha = 2;
         this.colorTabla = new Color(255,255,255);
-        this.colorFondo = new Color (200,30,30);
-        
+        this.colorFondo = new Color (200,30,30);      
+        this.colorBoton = new Color(150,30,30);
+        this.colorFuenteBoton = new Color(240,240,240);
         this.fuentePestañas = new Font ("Tahoma", 1, 16);
-        this.fuenteTabla = new Font("Tahoma", 0, 13);
+        this.fuenteTabla = new Font("Arial", 0, 13);
         this.fuenteBoton = new Font("Tahoma", 1, 13);
         this.fuenteLabelsResumen = new Font("Tahoma", 1, 14);
         this.fuenteHeader = new Font("Tahoma", 1, 12);
@@ -37,7 +37,7 @@ public class Utilidades {
         this.fuenteLabelBuscador = new Font("Tahoma", 1, 11);
         this.fuenteLabelResultado = new Font("Tahoma", 0, 11);
         this.fuenteLabelsRef = fuenteBoton;
-        this.fuenteLabelTitulo = new Font("Times New Roman",1,20);
+        this.fuenteLabelTitulo = new Font("Impact",0,20);
     }
     
     //COLORES      
@@ -45,10 +45,20 @@ public class Utilidades {
     public Color getColorTabla(){       
         return colorTabla;
     }
-    //transparencia
+
     public Color getColorFondo(){
         return colorFondo;
     }
+
+    public Color getColorBoton() {
+        return colorBoton;
+    }
+
+    public Color getColorFuenteBoton() {
+        return colorFuenteBoton;
+    }
+    
+    
     //FUENTES
     //tabla
     public Font getFuentePestañas(){
@@ -120,13 +130,6 @@ public class Utilidades {
             if (((caracter < '0') || (caracter > '9')) ) {
                 e.consume();
             }
-        }
-    };
-    
-    public KeyAdapter textoNormal = new KeyAdapter(){
-        @Override
-        public void keyTyped(KeyEvent e) {
-            e.getKeyChar();
         }
     };
 }
