@@ -24,14 +24,15 @@ public class IMC extends JDialog implements ActionListener {
 
     private JTextField imc;
     private JButton filtrar;
-    
+
     private Tabla tabla;
     private MainFrame mainFrame;
 
     public IMC(Frame parent, boolean modal) {
         super(parent, modal);
+        this.mainFrame = (MainFrame) parent;
         //Propiedades del frame       
-        setSize(150, 195);
+        setSize(205, 180);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -65,69 +66,78 @@ public class IMC extends JDialog implements ActionListener {
             }
         };
         container.setBackground(utilidad.getColorFondo());
-        Dimension dimension = new Dimension(400, 175);
+        Dimension dimension = new Dimension(250, 140);
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
         //Label
         JLabel label = new JLabel("Filtrar por IMC que sea: ");
-        label.setBounds(15,15,140,30);
+        label.setFont(utilidad.getFuenteLabelsFormulario());
+        label.setBounds(30, 15, 160, 30);
         container.add(label);
         //RadioButtons
         bg = new ButtonGroup();
         radioMayor = new JRadioButton("Mayor a");
-        radioMayor.setBounds(15, 45, 100, 30);
+        radioMayor.setBounds(30, 45, 70, 30);
         radioMayor.addActionListener(this);
         radioMayor.setOpaque(false);
+        radioMayor.setFocusPainted(false);
         radioMayor.setSelected(true);
         bg.add(radioMayor);
         container.add(radioMayor);
         radioMenor = new JRadioButton("Menor a");
-        radioMenor.setBounds(15, 75, 100, 30);
+        radioMenor.setBounds(95, 45, 90, 30);
         radioMenor.addActionListener(this);
         radioMenor.setOpaque(false);
+        radioMenor.setFocusPainted(false);
         bg.add(radioMenor);
         container.add(radioMenor);
         //TextField
         imc = new JTextField();
-        imc.setBounds(15, 110, 100, 20);
+        imc.setBounds(45, 80, 95, 20);
         imc.addKeyListener(utilidad.bloquearLetras);
+        imc.setHorizontalAlignment((int) CENTER_ALIGNMENT);
         container.add(imc);
         imc.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
+                    filtrarTabla();
                 }
             }
         });
         filtrar = new JButton("Filtrar");
-        filtrar.setBounds(30,135,70,25);
+        filtrar.setBounds(60, 110, 60, 25);
         filtrar.addActionListener(this);
         container.add(filtrar);
         //--------------------------
         this.getContentPane().add(container);
+        utilidad = null;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == filtrar){
-            try {
-                double inputIMC = Double.parseDouble(imc.getText());
-                
-                tabla.setIMCfilter(inputIMC);
-                tabla.setIMCoperator(radioMayor.isSelected() ? ">=" : "<=");
-                
-                tabla.Actualizar(7, tabla.getShowByDestino(), tabla.getOrder());
-                
-                mainFrame.eliminarChecksFiltros();
-                mainFrame.getMenuFiltroPPS().setIcon(mainFrame.getCheck());
-                mainFrame.getItemIMC().setIcon(mainFrame.getCheck());
-                
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null,"Numero ingresado incorrecto.");
-            }
+        if (e.getSource() == filtrar) {
+           filtrarTabla();
+        }
+    }
+
+    private void filtrarTabla() {
+        try {
+            double inputIMC = Double.parseDouble(imc.getText());
+
+            tabla.setIMCfilter(inputIMC);
+            tabla.setIMCoperator(radioMayor.isSelected() ? ">=" : "<=");
+
+            tabla.Actualizar(7, tabla.getShowByDestino(), tabla.getOrder());
+
+            mainFrame.eliminarChecksFiltros();
+            mainFrame.getMenuFiltroPPS().setIcon(mainFrame.getCheck());
+            mainFrame.getItemIMC().setIcon(mainFrame.getCheck());
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Numero ingresado incorrecto.");
         }
     }
 
@@ -135,9 +145,6 @@ public class IMC extends JDialog implements ActionListener {
         this.tabla = tabla;
     }
 
-    public void setMainFrame(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-    }
-    
-    
+
+
 }

@@ -7,6 +7,7 @@ import database.Receptor;
 import mytools.Fechas;
 import mytools.Iconos;
 import mytools.Utilidades;
+import main.MainFrame;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -33,9 +34,11 @@ public class FormularioParte extends JDialog implements ActionListener {
 
     private Parte parte;
     private Formulario formulario;
+    private MainFrame mainFrame;
 
     public FormularioParte(Frame parent, boolean modal) {
         super(parent, modal);
+        this.mainFrame = (MainFrame) parent;
 
         componentes();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -49,8 +52,8 @@ public class FormularioParte extends JDialog implements ActionListener {
     private void componentes() {
         //PROPIEDADES DEL FRAME
         //------------------------------
-        Utilidades utilidad = new Utilidades();
-        Iconos iconos = new Iconos();
+        Utilidades utilidad = mainFrame.getUtilidad();
+        Iconos iconos = mainFrame.getIconos();
         //PROPIEDADES DEL FRAME        
         setSize(450, 345);
         setResizable(false);
@@ -200,6 +203,8 @@ public class FormularioParte extends JDialog implements ActionListener {
 
         //--------------------------------------
         this.getContentPane().add(container);
+        utilidad = null;
+        iconos = null;
     }
 
     //--------------------------------------------------------------------------

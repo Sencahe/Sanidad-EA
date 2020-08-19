@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import mytools.Arreglos;
 import mytools.Iconos;
+import mytools.Utilidades;
 import windows.Buscador;
 import windows.Formulario;
 import windows.IMC;
@@ -20,8 +21,12 @@ public class MainFrame extends JFrame implements ActionListener{
 
     private final static String PARTE = "Parte de Sanidad";
     private final static String TABLA = "Carta de Situacion";
+    
     private JButton botonParte;
     private JButton botonTabla;
+    
+    private Iconos iconos;
+    private Utilidades utilidad;
 
     JMenuBar menuBar;
 
@@ -45,7 +50,7 @@ public class MainFrame extends JFrame implements ActionListener{
     //
     private JMenuItem[] itemsOrdenar;
 
-    private JMenuItem itemRef, itemBuscar, itemRestablecer, itemConfigFilas;
+    private JMenuItem itemRef, itemBuscar, itemConfig;
 
     //icono para los menuItems
     private ImageIcon check;
@@ -58,30 +63,36 @@ public class MainFrame extends JFrame implements ActionListener{
     private Buscador buscador;
     private Referencias referencia;
     private IMC imc;
+    private Configuracion configuracion;
     
 
     public MainFrame() {
         //OBJETOS AUXILIARES
-        Iconos iconos = new Iconos();
+        iconos = new Iconos();
+        utilidad = new Utilidades();
         //PANEL Y JDIALOGS
-        tabla = new Tabla();
-        parte = new Parte();
+        tabla = new Tabla(this);
+        parte = new Parte(this);
         formulario = new Formulario(this, true);
         formParte = new FormularioParte(this, true);
         buscador = new Buscador(this, false);
         referencia = new Referencias(this, true);
         imc = new IMC(this,true);
+        configuracion = new Configuracion(this, true);
 
         tabla.setFormulario(formulario);
         tabla.setBuscador(buscador);
+        tabla.setConfig(configuracion);        
         parte.setFormParte(formParte);
+        parte.setConfig(configuracion);
         formulario.setTabla(tabla);
         formulario.setFormParte(formParte);
         formParte.setParte(parte);
         formParte.setFormulario(formulario);
         buscador.setTabla(tabla);
         imc.setTabla(tabla);
-        imc.setMainFrame(this);
+        configuracion.setTabla(tabla);
+        configuracion.setParte(parte);
         
         //PROPIEDADES DEL FRAME
         setTitle(TABLA);
@@ -96,14 +107,10 @@ public class MainFrame extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        // setUndecorated(true); -> Elimina la barra de windows con title y close boton      
-        //setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
-        //setOpacity(TOP_ALIGNMENT);
         getContentPane().setLayout(new CardLayout(0, 0));
-
-        componentes(iconos);
-        iconos = null;
         
+        componentes(iconos);
+                     
         getContentPane().add(tabla.getScrollContainer(), TABLA);
         getContentPane().add(parte.getScrollContainer(), PARTE);
 
@@ -111,6 +118,10 @@ public class MainFrame extends JFrame implements ActionListener{
         botonParte.addActionListener(this);
         botonTabla = parte.getBotonTabla();
         botonTabla.addActionListener(this);
+        
+        //Fin del constructor----------------
+        iconos = null;
+        utilidad = null;
     }
 
     private void componentes(Iconos iconos) {
@@ -200,17 +211,17 @@ public class MainFrame extends JFrame implements ActionListener{
         //MENU BUSCAR-------------------------------------- 
         menuBuscar = new JMenu("Buscar");
         menuBar.add(menuBuscar);
-        itemBuscar = new JMenuItem("Buscar...");
+        itemBuscar = new JMenuItem("<html>Buscar... Ctrl+G");
         itemBuscar.addActionListener(this);
         itemBuscar.setIcon(iconos.getIconoSearchChico());
         menuBuscar.add(itemBuscar);
         //MENU Config--------------------------------- 
         menuConfig = new JMenu("Configuracion");
         menuBar.add(menuConfig);
-        itemConfigFilas = new JMenuItem("Configurar");
-        itemConfigFilas.addActionListener(this);
-        itemConfigFilas.setIcon(iconos.getIconoConfig());
-        menuConfig.add(itemConfigFilas);
+        itemConfig = new JMenuItem("Configurar");
+        itemConfig.addActionListener(this);
+        itemConfig.setIcon(iconos.getIconoConfig());
+        menuConfig.add(itemConfig);
          //MENU REFERENCIAS--------------------------------- 
         menuRef = new JMenu("Ref.");
         menuBar.add(menuRef);
@@ -226,15 +237,15 @@ public class MainFrame extends JFrame implements ActionListener{
         if (e.getSource() == botonParte) {
             CardLayout cl = (CardLayout) (this.getContentPane().getLayout());
             cl.show(this.getContentPane(), PARTE);
-            JMenuBar menu = rootPane.getJMenuBar();
-            menu.setVisible(false);
+            menuFiltrar.setVisible(false);
+            menuBuscar.setVisible(false);
             setTitle(PARTE);
         }
         if (e.getSource() == botonTabla) {
             CardLayout cl = (CardLayout) (this.getContentPane().getLayout());
             cl.show(this.getContentPane(), TABLA);
-            JMenuBar menu = rootPane.getJMenuBar();
-            menu.setVisible(true);
+            menuFiltrar.setVisible(true);
+            menuBuscar.setVisible(true);
             setTitle(TABLA);
         }
         //----------------------BARRA MENU--------------------------------------
@@ -318,15 +329,20 @@ public class MainFrame extends JFrame implements ActionListener{
                 itemsOrdenar[i].setIcon(check);
             }
         }
-        //MENU REFERENCIAS-----------------------------------------
-        if (e.getSource() == itemRef) {
-            referencia.setVisible(true);;
-            System.gc();
-        }
-
+        
         //MENU BUSCAR--------------------------------------------
         if (e.getSource() == itemBuscar) {
             buscador.setVisible(true);
+            System.gc();
+        }
+        //MENU REFERENCIAS-----------------------------------------
+        if(e.getSource() == itemConfig){
+            configuracion.setVisible(true);
+            System.gc();
+        }
+        //MENU REFERENCIAS-----------------------------------------
+        if (e.getSource() == itemRef) {
+            referencia.setVisible(true);;
             System.gc();
         }
     }
@@ -409,7 +425,15 @@ public class MainFrame extends JFrame implements ActionListener{
     public ImageIcon getCheck() {
         return check;
     }
+
+    public Iconos getIconos() {
+        return iconos;
+    }
+
+    public Utilidades getUtilidad() {
+        return utilidad;
+    }
     
-    
+ 
     
 }

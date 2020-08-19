@@ -3,10 +3,12 @@ package windows;
 import mytools.Arreglos;
 import mytools.Utilidades;
 import database.BaseDeDatos;
+import main.MainFrame;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import main.Configuracion;
 
 public class Tabla extends JPanel implements ActionListener {
 
@@ -14,7 +16,6 @@ public class Tabla extends JPanel implements ActionListener {
 
     JScrollPane scrollContainer;
 
-    private JButton ordenar;
     private JButton botonAgregar;
     private JButton botonParte;
 
@@ -28,7 +29,7 @@ public class Tabla extends JPanel implements ActionListener {
     private int filter;
     private int showByDestino;
     private int order;
-       
+
     private double IMCfilter;
     private String IMCoperator;
     private String PPSFilter;
@@ -36,20 +37,24 @@ public class Tabla extends JPanel implements ActionListener {
     private String patologiaColumn;
 
     //OBJETOS PARA LAS VENTANAS
+    private MainFrame mainFrame;
     private Formulario formulario;
     private Buscador buscador;
+    private Configuracion config;
 
     //table model
     private DefaultTableModel[] model;
 
-    public Tabla() {
-        Componentes();
+    public Tabla(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+        componentes();
+        shortcut();
     }
 
-    private void Componentes() {
+    private void componentes() {
         //------------------------------------------
-        Utilidades utilidad = new Utilidades();
-        //PROPIEDADES DEL PANEL
+        Utilidades utilidad = mainFrame.getUtilidad();
+        //PROPIEDADES DEL PANEL-------------------------------------------------
         setBackground(utilidad.getColorFondo());
         Dimension dimension = new Dimension(1505, 580);
         setPreferredSize(dimension);
@@ -59,21 +64,7 @@ public class Tabla extends JPanel implements ActionListener {
         scrollContainer = new JScrollPane(this);
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        //ACESSOS RAPIDOS
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "abrirBuscador");
-        getActionMap().put("abrirBuscador", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buscador.setVisible(true);
-            }
-        });
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), "ordenarColumnas");
-        getActionMap().put("ordenarColumnas", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ordenarColumnas();
-            }
-        });
+
         //----------------------------------------------------------------------
         //PESTAÑAS DE LAS TABLAS
         UIManager.put("TabbedPane.contentOpaque", false);
@@ -139,7 +130,6 @@ public class Tabla extends JPanel implements ActionListener {
             JTableHeader header = tablas[i].getTableHeader();
             header.setFont(utilidad.getFuenteHeader());
             header.setBackground(utilidad.getColorTabla());
-            header.setReorderingAllowed(true);
             header.setPreferredSize(new Dimension(40, 27));
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
@@ -171,40 +161,16 @@ public class Tabla extends JPanel implements ActionListener {
 
         //----------------------------------------------------------------------
         // BOTONES 
-        botonParte = new JButton("<html><center>PARTE DE<br>SANIDAD</center></html>");
+        botonParte = utilidad.customButton();
+        botonParte.setText("<html><center>PARTE DE<br>SANIDAD</center></html>");
         botonParte.setBounds(10, 15, 110, 35);
         botonParte.setFont(utilidad.getFuenteBoton());
-        botonParte.setVisible(true);
-        botonParte.setContentAreaFilled(true);
-        botonParte.setBackground(utilidad.getColorBoton());
-        botonParte.setForeground(utilidad.getColorFuenteBoton());
-        botonParte.setFocusPainted(false);
-        botonParte.setBorderPainted(false);
-        botonParte.setCursor(utilidad.getPointCursor());
         add(botonParte);
-        botonAgregar = new JButton("<html><center>AGREGAR<br>PERSONAL</center></html>");
+        botonAgregar = utilidad.customButton();
+        botonAgregar.setText("<html><center>AGREGAR<br>PERSONAL</center></html>");
         botonAgregar.setBounds(150, 15, 110, 35);
         botonAgregar.addActionListener(this);
-        botonAgregar.setFont(utilidad.getFuenteBoton());
-        botonAgregar.setVisible(true);
-        botonAgregar.setBackground(utilidad.getColorBoton());
-        botonAgregar.setForeground(utilidad.getColorFuenteBoton());
-        botonAgregar.setFocusPainted(false);
-        botonAgregar.setBorderPainted(false);
-        botonAgregar.setCursor(utilidad.getPointCursor());
-        add(botonAgregar);       
-        ordenar = new JButton("<html><center>ORDENAR<br>COLUMNAS</center></html>");
-        ordenar.setBounds(290, 15, 110, 35);
-        ordenar.addActionListener(this);
-        ordenar.setFont(utilidad.getFuenteBoton());
-        ordenar.setVisible(true);
-        ordenar.setContentAreaFilled(true); //genera efecto propio del LAF
-        ordenar.setBackground(utilidad.getColorBoton());
-        ordenar.setForeground(utilidad.getColorFuenteBoton());
-        ordenar.setFocusPainted(false);
-        ordenar.setBorderPainted(false);
-        ordenar.setCursor(utilidad.getPointCursor());
-        add(ordenar);
+        add(botonAgregar);
         //----------------------------------------------------------------------
         // LABELS CON CANTIDAD DE PERSONAL
         resumen = new JLabel[tablas.length + 1];
@@ -218,15 +184,59 @@ public class Tabla extends JPanel implements ActionListener {
             width += i == 1 ? 200 : 170;
             add(resumen[i]);
         }
-        //----------------------------------------------------------------------      
         //----------------------------------------------------------------------
         //FINALIZACION DE LOS COMPONENTES
         utilidad = null;
+        
         Actualizar(0, 0, 0);
     }
 
-    //FONDO DEL PANEL
+    //---------------------------------------------------------------------------
+    //----------------------------ACCESOS RAPIDOS-------------------------------
+    private void shortcut() {
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_DOWN_MASK), "abrirBuscador");
+        getActionMap().put("abrirBuscador", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buscador.setVisible(true);
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), "ordenarColumnas");
+        getActionMap().put("ordenarColumnas", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ordenarColumnas();
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), "bloquearTablas");
+        getActionMap().put("bloquearTablas", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (config.configColumns.isSelected()) {
+                    config.configColumns.setSelected(false);
+                } else {
+                    config.configColumns.setSelected(true);
+                }
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK), "seleccionarCeldas");
+        getActionMap().put("seleccionarCeldas", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (config.configRow.isSelected()) {
+                    config.configRow.setSelected(false);
+
+                } else {
+                    config.configRow.setSelected(true);
+                }
+            }
+        });
+    }
+
+    //---------------------------------------------------------------------------
+    //----------------------------FONDO DEL PANEL-------------------------------
     @Override
+
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
         Graphics2D g2d = (Graphics2D) grphcs;
@@ -239,18 +249,14 @@ public class Tabla extends JPanel implements ActionListener {
         g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    //-------------------------------------------------------------------------------------------------
-    //-----------------------------EVENTO BOTONES------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //-----------------------------EVENTOS--------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        //---------------------- BOTONES ---------------------------------------
+        //---------------------- BOTONES -------------------------
         //BOTON AGREGAR
         if (e.getSource() == botonAgregar) {
             abrirFormulario(contenedor.getSelectedIndex());
-        }
-        if (e.getSource() == ordenar) {
-            ordenarColumnas();
         }
 
     }
@@ -280,7 +286,7 @@ public class Tabla extends JPanel implements ActionListener {
 
     //--------------------------------------------------------------------------
     //---------------------------ORDENAR COLUMNAS-------------------------------
-    private void ordenarColumnas() {
+    public void ordenarColumnas() {
         for (int i = 0; i < 4; i++) {
             TableModel model = tablas[i].getModel();
             TableColumnModel tcm = tablas[i].getColumnModel();
@@ -402,7 +408,9 @@ public class Tabla extends JPanel implements ActionListener {
     public void setIMCoperator(String IMCoperator) {
         this.IMCoperator = IMCoperator;
     }
-    
-    
+
+    public void setConfig(Configuracion config) {
+        this.config = config;
+    }
 
 }

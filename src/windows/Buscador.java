@@ -3,6 +3,7 @@ package windows;
 import mytools.Iconos;
 import mytools.Utilidades;
 import windows.Tabla;
+import main.MainFrame;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -25,9 +26,11 @@ public class Buscador extends JDialog implements ActionListener {
     private int columna;
 
     private Tabla tabla;
+    private MainFrame mainFrame;
 
     public Buscador(Frame parent, boolean modal) {
         super(parent, modal);
+        this.mainFrame = (MainFrame) parent;
         this.buscar = "";
         this.categoria = -1;
         this.encontrado = false;
@@ -49,14 +52,15 @@ public class Buscador extends JDialog implements ActionListener {
 
     private void Componentes() {
         //------------------------------
-        Utilidades utilidad = new Utilidades();
-        Iconos iconos = new Iconos();
+        Utilidades utilidad = mainFrame.getUtilidad();
+        Iconos iconos = mainFrame.getIconos();
         soloNumeros = utilidad.soloNumeros;
         // FRAME DEL BUSCADOR
         setSize(400, 175);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Buscar");
+        setIconImage(iconos.getIconoSearchChico().getImage());
         JPanel container = new JPanel() {
             @Override
             protected void paintComponent(Graphics grphcs) {
@@ -75,6 +79,7 @@ public class Buscador extends JDialog implements ActionListener {
         Dimension dimension = new Dimension(400, 175);
         container.setPreferredSize(dimension);
         container.setLayout(null);
+        
         dimension = null;
         //Text FIELD-------------------
         texto = new JTextField();
@@ -125,9 +130,8 @@ public class Buscador extends JDialog implements ActionListener {
         ImageIcon icono = iconos.getIconoSearch();
         png.setIcon(icono);
         add(png);
-        png = null;
-        //Icono frame
-        setIconImage(iconos.getIconoSearchChico().getImage());
+        png = null;  
+        //fin        
         this.getContentPane().add(container);
         iconos = null;
         utilidad = null;

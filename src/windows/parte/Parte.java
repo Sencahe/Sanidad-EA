@@ -3,34 +3,39 @@ package windows.parte;
 import database.BaseDeDatos;
 import mytools.Arreglos;
 import mytools.Utilidades;
+import main.MainFrame;
+import main.Configuracion;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.table.*;
-
 
 public class Parte extends JPanel implements ActionListener {
 
     private JScrollPane scrollContainer;
 
     private JButton botonTabla;
-    
+
     private JLabel[] titulos;
     private JTable[] tablas;
     private JScrollPane[] scrolls;
     private Dimension dimension;
 
+    //Objetos para las ventanas
+    private MainFrame mainFrame;
     private FormularioParte formParte;
+    private Configuracion config;
 
-    public Parte() {
+    public Parte(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         componentes();
+        shortcut();
     }
 
     private void componentes() {
         //OBJETOS AUXILIARES       
-        Utilidades utilidad = new Utilidades();
-        //-----PROPIEDADES DEL PANEL-----------------
+        Utilidades utilidad = mainFrame.getUtilidad();
+        //-------------PROPIEDADES DEL PANEL------------------------------------
         dimension = new Dimension();
         setBackground(utilidad.getColorFondo());
         setOpaque(false);
@@ -39,24 +44,18 @@ public class Parte extends JPanel implements ActionListener {
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.getVerticalScrollBar().setUnitIncrement(16);
-        //BOTONES--------------------------------------------------
-        botonTabla = new JButton("Volver");
+        //BOTONES---------------------------------------------------------------
+        botonTabla = utilidad.customButton();
+        botonTabla.setText("Volver");
         botonTabla.setBounds(30, 15, 100, 30);
-        botonTabla.setFont(utilidad.getFuenteBoton());
-        botonTabla.setVisible(true);
-        botonTabla.setContentAreaFilled(true); 
-        botonTabla.setBackground(utilidad.getColorBoton());
-        botonTabla.setForeground(utilidad.getColorFuenteBoton());
-        botonTabla.setFocusPainted(false); 
-        botonTabla.setBorderPainted(false); 
-        botonTabla.setCursor(utilidad.getPointCursor());
         add(botonTabla);
-        //-----------------------------------------------------------------------------------
-        //TABLAS DEL PARTE------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        //TABLAS DEL PARTE------------------------------------------------------
         tablas = new JTable[4];
         scrolls = new JScrollPane[4];
         titulos = new JLabel[4];
-        String[] tituloLabels = {"PARTE DE ENFERMO", "PARTE DE EXCEPTUADO", "PARTE DE MATERNIDAD", "PERSONAL QUE NO PASO NOVEDAD"};
+        String[] tituloLabels = {"PARTE DE ENFERMO", "PARTE DE EXCEPTUADO",
+            "PARTE DE MATERNIDAD", "PERSONAL QUE NO PASO NOVEDAD"};
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < 4; i++) {
@@ -123,7 +122,6 @@ public class Parte extends JPanel implements ActionListener {
             header.setFont(utilidad.getFuenteHeader());
             header.setBackground(utilidad.getColorTabla());
             header.setPreferredSize(new Dimension(40, 26));
-            header.setReorderingAllowed(false);
             ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
             //creacion de las columnas
             for (int j = 0; j < Arreglos.getColumnasParteLength(); j++) {
@@ -160,10 +158,48 @@ public class Parte extends JPanel implements ActionListener {
         bdd.actualizar(this);
         bdd = null;
 
+        utilidad = null;
+
         actualizarVentana();
     }
 
-    //FONDO DEL PANEL
+    //--------------------------------------------------------------------------
+    //---------------------ACCESOS RAPIDOS--------------------------------------
+    private void shortcut() {
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK), "ordenarColumnas");
+        getActionMap().put("ordenarColumnas", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ordenarColumnas();
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), "bloquearTablas");
+        getActionMap().put("bloquearTablas", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (config.configColumns.isSelected()) {
+                    config.configColumns.setSelected(false);
+                } else {
+                    config.configColumns.setSelected(true);
+                }
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK), "seleccionarCeldas");
+        getActionMap().put("seleccionarCeldas", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (config.configRow.isSelected()) {
+                    config.configRow.setSelected(false);
+
+                } else {
+                    config.configRow.setSelected(true);
+                }
+            }
+        });
+    }
+
+    //--------------------------------------------------------------------------
+    //---------------------FONDO DEL PANEL--------------------------------------
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
@@ -182,7 +218,24 @@ public class Parte extends JPanel implements ActionListener {
 
     }
 
-    //METODO PARA ACTUALIZAR EL FRAME------------------------------------------
+    //--------------------------------------------------------------------------
+    //---------------------------ORDENAR COLUMNAS-------------------------------
+    public void ordenarColumnas() {
+        for (int i = 0; i < 4; i++) {
+            TableModel model = tablas[i].getModel();
+            TableColumnModel tcm = tablas[i].getColumnModel();
+            for (int j = 0; j < model.getColumnCount() - 1; j++) {
+                int location = tcm.getColumnIndex(model.getColumnName(j));
+                tcm.moveColumn(location, j);
+            }
+            model = null;
+            tcm = null;
+        }
+
+    }
+
+    //--------------------------------------------------------------------------
+    //METODO PARA ACTUALIZAR EL TAMAÑO DEL PANEL--------------------------------
     public void actualizarVentana() {
         int y = 90;
         for (int i = 0; i < 4; i++) {
@@ -196,6 +249,7 @@ public class Parte extends JPanel implements ActionListener {
         this.setPreferredSize(dimension);
     }
 
+    //--------------------------------------------------------------------------
     //METODO PARA ABRIR EL FORMULARIO DEL PARTE---------------------------------
     public void abrirFormulario(int i) {
         int puntero = tablas[i].getSelectedRow();
@@ -230,5 +284,8 @@ public class Parte extends JPanel implements ActionListener {
         return botonTabla;
     }
 
-    
+    public void setConfig(Configuracion config) {
+        this.config = config;
+    }
+
 }

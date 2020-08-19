@@ -11,6 +11,7 @@ import mytools.Fechas;
 import mytools.Utilidades;
 import mytools.TextPrompt;
 import mytools.JTextFieldLimit;
+import main.MainFrame;
 import javax.swing.*;
 import com.toedter.calendar.JDateChooser;
 import java.awt.*;
@@ -40,10 +41,12 @@ public class Formulario extends JDialog implements ActionListener {
     private Tabla tabla;
     private FormularioParte formParte;
     private Personal personal;
+    private MainFrame mainFrame;
 
     public Formulario(Frame parent, boolean modal) {
         super(parent, modal);
         this.parteDeEnfermo = false;
+        this.mainFrame = (MainFrame) parent;
         Componentes();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -59,8 +62,8 @@ public class Formulario extends JDialog implements ActionListener {
 
     private void Componentes() {
         //---------------------------------------
-        Utilidades utilidad = new Utilidades();
-        Iconos iconos = new Iconos();
+        Utilidades utilidad = mainFrame.getUtilidad();
+        Iconos iconos = mainFrame.getIconos();
         //PROPIEDADES DEL FRAME-------------------------------------------------
         setSize(500, 530);
         setResizable(false);
@@ -165,12 +168,14 @@ public class Formulario extends JDialog implements ActionListener {
         labels[17].setBounds(285, 10, 30, 20);
         M.setBounds(320, 10, 40, 20);
         M.setOpaque(false);
+        M.setFocusPainted(false);
         M.setFont(utilidad.getFuenteLabelsFormulario());
         M.setSelected(true);
         bg.add(M);
         container.add(M);
         F.setBounds(360, 10, 40, 20);
         F.setOpaque(false);
+        F.setFocusPainted(false);
         F.setFont(utilidad.getFuenteLabelsFormulario());
         bg.add(F);
         container.add(F);
@@ -271,6 +276,9 @@ public class Formulario extends JDialog implements ActionListener {
             checkBox[i].setBounds(X, 400, 50, 20);
             checkBox[i].setFont(utilidad.getFuenteChecks());
             checkBox[i].setOpaque(false);
+            checkBox[i].setFocusPainted(false);
+            checkBox[i].setBorderPaintedFlat(true);
+            checkBox[i].setBorderPainted(false);
             checkBox[i].addActionListener(i >= 4 ? this : null);
             container.add(checkBox[i]);
             X += 46;

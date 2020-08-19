@@ -1,8 +1,9 @@
 package windows;
 
-import java.awt.Color;
-import java.awt.Dimension;
+
 import mytools.Iconos;
+import mytools.Utilidades;
+import main.MainFrame;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -10,14 +11,17 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import mytools.Utilidades;
+import java.awt.Dimension;
 
 public class Referencias extends javax.swing.JDialog {
+    
+    private MainFrame mainFrame;
 
     public Referencias(java.awt.Frame parent, boolean modal) {       
         super(parent, modal);
-        Iconos iconos = new Iconos();
-        Utilidades utilidad = new Utilidades();
+        this.mainFrame = (MainFrame) parent;
+        Iconos iconos = mainFrame.getIconos();
+        Utilidades utilidad = mainFrame.getUtilidad();
         //---------------------------------
         //PROPIEDADES DEL FRAME
             setSize(280, 310);
