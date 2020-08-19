@@ -84,7 +84,8 @@ public class BaseDeDatos {
                 statement.append(" WHERE (Act IS NOT NULL OR Inf IS NOT NULL)");
                 break;
             case 6:
-                statement.append(" WHERE (Observaciones) IS NOT NULL ");
+                statement.append(" WHERE Observaciones IS NOT NULL ");
+                break;
             case 7:
                 statement.append(" WHERE IMC ");
                 statement.append(tabla.getIMCoperator());
@@ -100,7 +101,6 @@ public class BaseDeDatos {
         }
         //ORDENAR LA TABLA------------------------------------------------------ 
         statement.append(Arreglos.getOrdenTablaBD(tabla.getOrder()));
-        JOptionPane.showMessageDialog(null,statement);
 
         //CONSULTA A BASE DE DATOS----------------------------------------------        
         try {
