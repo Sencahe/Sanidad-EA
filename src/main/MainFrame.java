@@ -9,31 +9,31 @@ import javax.swing.*;
 import mytools.Arreglos;
 import mytools.Iconos;
 import mytools.Utilidades;
-import windows.Buscador;
-import windows.Formulario;
-import windows.IMC;
-import windows.Referencias;
-import windows.Tabla;
-import windows.parte.FormularioParte;
-import windows.parte.Parte;
-import windows.recuento.Recuento;
+import dialogs.Buscador;
+import dialogs.Formulario;
+import dialogs.IMC;
+import dialogs.Referencias;
+import panels.Tabla;
+import dialogs.FormularioParte;
+import panels.Parte;
+import panels.Recuento;
 
-public class MainFrame extends JFrame implements ActionListener{
+public class MainFrame extends JFrame implements ActionListener {
 
     private final static String PARTE = "Parte de Sanidad";
     private final static String TABLA = "Carta de Situacion";
     private final static String RECUENTO = "Recuento de Partes de Enfermo";
-    
+
     private JButton botonParte, botonParte2;
     private JButton botonTabla;
     private JButton botonRecuento;
-    
+
     private Iconos iconos;
     private Utilidades utilidad;
 
     JMenuBar menuBar;
 
-    private JMenu menuFiltrar, menuRef, menuBuscar,menuConfig;
+    private JMenu menuFiltrar, menuRef, menuBuscar, menuConfig;
     private JMenu menuFiltroPPS;
     private JMenu menuFiltroAptitud;
     private JMenu menuPatologias;
@@ -68,7 +68,6 @@ public class MainFrame extends JFrame implements ActionListener{
     private IMC imc;
     private Configuracion configuracion;
     private Recuento recuento;
-    
 
     public MainFrame() {
         //OBJETOS AUXILIARES
@@ -82,12 +81,12 @@ public class MainFrame extends JFrame implements ActionListener{
         formParte = new FormularioParte(this, true);
         buscador = new Buscador(this, false);
         referencia = new Referencias(this, true);
-        imc = new IMC(this,true);
+        imc = new IMC(this, true);
         configuracion = new Configuracion(this, true);
 
         tabla.setFormulario(formulario);
         tabla.setBuscador(buscador);
-        tabla.setConfig(configuracion);        
+        tabla.setConfig(configuracion);
         parte.setFormParte(formParte);
         parte.setConfig(configuracion);
         recuento.setConfig(configuracion);
@@ -100,7 +99,7 @@ public class MainFrame extends JFrame implements ActionListener{
         configuracion.setTabla(tabla);
         configuracion.setParte(parte);
         configuracion.setRecuento(recuento);
-        
+
         //PROPIEDADES DEL FRAME
         setTitle(TABLA);
         Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
@@ -115,24 +114,24 @@ public class MainFrame extends JFrame implements ActionListener{
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         getContentPane().setLayout(new CardLayout(0, 0));
-        
+
         componentes(iconos);
-                     
+
         getContentPane().add(tabla.getScrollContainer(), TABLA);
         getContentPane().add(parte.getScrollContainer(), PARTE);
         getContentPane().add(recuento.getScrollContainer(), RECUENTO);
 
         botonParte = tabla.getBotonParte();
         botonParte.addActionListener(this);
-              
+
         botonTabla = parte.getBotonTabla();
         botonTabla.addActionListener(this);
         botonRecuento = parte.getBotonRecuento();
         botonRecuento.addActionListener(this);
-        
+
         botonParte2 = recuento.getBotonParte();
         botonParte2.addActionListener(this);
-        
+
         //Fin del constructor----------------
         iconos = null;
         utilidad = null;
@@ -221,7 +220,7 @@ public class MainFrame extends JFrame implements ActionListener{
             itemsOrdenar[i].addActionListener(this);
             menuOrdenar.add(itemsOrdenar[i]);
         }
-       
+
         //MENU BUSCAR-------------------------------------- 
         menuBuscar = new JMenu("Buscar");
         menuBar.add(menuBuscar);
@@ -236,13 +235,13 @@ public class MainFrame extends JFrame implements ActionListener{
         itemConfig.addActionListener(this);
         itemConfig.setIcon(iconos.getIconoConfig());
         menuConfig.add(itemConfig);
-         //MENU REFERENCIAS--------------------------------- 
+        //MENU REFERENCIAS--------------------------------- 
         menuRef = new JMenu("Ref.");
         menuBar.add(menuRef);
         itemRef = new JMenuItem("Referencias");
         itemRef.addActionListener(this);
         menuRef.add(itemRef);
-      
+
     }
 
     @Override
@@ -262,7 +261,7 @@ public class MainFrame extends JFrame implements ActionListener{
             menuBuscar.setVisible(true);
             setTitle(TABLA);
         }
-        if(e.getSource() == botonRecuento){
+        if (e.getSource() == botonRecuento) {
             CardLayout cl = (CardLayout) (this.getContentPane().getLayout());
             cl.show(this.getContentPane(), RECUENTO);
             menuFiltrar.setVisible(false);
@@ -290,11 +289,11 @@ public class MainFrame extends JFrame implements ActionListener{
                     tabla.setPPSFilter(itemsPPS[i].getText());
                     tabla.Actualizar(2, tabla.getShowByDestino(), tabla.getOrder());
                     eliminarChecksFiltros();
-                menuFiltroPPS.setIcon(check);
-                itemsPPS[i].setIcon(check);
+                    menuFiltroPPS.setIcon(check);
+                    itemsPPS[i].setIcon(check);
                 } else {
                     imc.setVisible(true);
-                }                
+                }
             }
         }
         // aptitudes
@@ -315,12 +314,12 @@ public class MainFrame extends JFrame implements ActionListener{
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (e.getSource() == itemsPatologias[i]) {
                 if (i < itemsPatologias.length - 1 && i != 0) {
-                    tabla.setPatologiaColumn(Arreglos.getCheckBox(i));
+                    tabla.setPatologiaColumn(Arreglos.getCheckBox(i - 1));
                     tabla.Actualizar(4, tabla.getShowByDestino(), tabla.getOrder());
                 } else if (i != 0) {
                     tabla.Actualizar(5, tabla.getShowByDestino(), tabla.getOrder());
                 } else {
-                    tabla.Actualizar(0, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.Actualizar(8, tabla.getShowByDestino(), tabla.getOrder());
                 }
                 eliminarChecksFiltros();
                 menuPatologias.setIcon(check);
@@ -351,14 +350,14 @@ public class MainFrame extends JFrame implements ActionListener{
                 itemsOrdenar[i].setIcon(check);
             }
         }
-        
+
         //MENU BUSCAR--------------------------------------------
         if (e.getSource() == itemBuscar) {
             buscador.setVisible(true);
             System.gc();
         }
         //MENU REFERENCIAS-----------------------------------------
-        if(e.getSource() == itemConfig){
+        if (e.getSource() == itemConfig) {
             configuracion.setVisible(true);
             System.gc();
         }
@@ -369,7 +368,6 @@ public class MainFrame extends JFrame implements ActionListener{
         }
     }
 
-  
     public void eliminarChecksFiltros() {
         itemAnexoVencido.setIcon(null);
 
@@ -455,7 +453,5 @@ public class MainFrame extends JFrame implements ActionListener{
     public Utilidades getUtilidad() {
         return utilidad;
     }
-    
- 
-    
+
 }

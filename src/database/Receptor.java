@@ -6,10 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import javax.swing.JTextField;
-import windows.recuento.Recuento;
+import panels.Recuento;
 import personal.Personal;
-import windows.Formulario;
-import windows.parte.FormularioParte;
+import dialogs.Formulario;
+import dialogs.FormularioParte;
 
 public class Receptor extends BaseDeDatos {
 
@@ -124,12 +124,18 @@ public class Receptor extends BaseDeDatos {
     }
     
     
-    public void getInformacion(Recuento recuento, int dni){
+    public void getInformacion(Recuento recuento, int dni, boolean todos){
         try {
             recuento.getTableModel().setRowCount(0);
+            String statement;
             
-            PreparedStatement pst = super.getConnection().prepareStatement("SELECT * FROM RecuentoParte "
-                    + "WHERE DNI = " + dni);
+            if(todos){
+                statement = "SELECT * FROM RecuentoParte";
+            } else {
+                statement = "SELECT * FROM RecuentoParte  WHERE DNI = " + dni;
+            }
+            
+            PreparedStatement pst = super.getConnection().prepareStatement(statement);
             ResultSet rs = pst.executeQuery();
             
             if(rs.next()){          
@@ -159,6 +165,7 @@ public class Receptor extends BaseDeDatos {
                 
             } else {
                 JOptionPane.showMessageDialog(null, "No han habido resultados con ese numero de DNI.");
+                recuento.actualizarVentana();
             }
             
         } catch (Exception e) {

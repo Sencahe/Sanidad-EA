@@ -1,6 +1,6 @@
 package mytools;
 
-import windows.Tabla;
+import panels.Tabla;
 import javax.swing.ImageIcon;
 
 public class Iconos {
@@ -14,6 +14,8 @@ public class Iconos {
     private ImageIcon iconoAlta;
     private ImageIcon iconoDelete;
     private ImageIcon iconoConfig;
+    private ImageIcon iconoPlus;
+    private ImageIcon iconoCalculator;
     
     public Iconos(){        
         this.iconoRefrescar = new ImageIcon("src/myimages/refresh.png");
@@ -25,7 +27,8 @@ public class Iconos {
         this.iconoAlta = new ImageIcon("src/myimages/alta.png");
         this.iconoDelete = new ImageIcon("src/myimages/delete.png");
         this.iconoConfig = new ImageIcon("src/myimages/config.png");
-
+        this.iconoPlus = new ImageIcon("src/myimages/plus.png");
+        this.iconoCalculator = new ImageIcon("src/myimages/calculator.png");
     }
 
    
@@ -59,6 +62,14 @@ public class Iconos {
 
     public ImageIcon getIconoConfig() {
         return iconoConfig;
+    }
+
+    public ImageIcon getIconoPlus() {
+        return iconoPlus;
+    }
+
+    public ImageIcon getIconoCalculator() {
+        return iconoCalculator;
     }
     
 

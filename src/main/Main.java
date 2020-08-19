@@ -1,7 +1,7 @@
 package main;
 
 
-import windows.Tabla;
+import panels.Tabla;
 
 public class Main {
 

@@ -1,7 +1,7 @@
 package database;
 
-import windows.Tabla;
-import windows.parte.Parte;
+import panels.Tabla;
+import panels.Parte;
 import mytools.Arreglos;
 import mytools.Fechas;
 import java.sql.Connection;
@@ -91,6 +91,10 @@ public class BaseDeDatos {
                 statement.append(tabla.getIMCoperator());
                 statement.append(" ");
                 statement.append(tabla.getIMCfilter());
+                break;
+            case 8:
+                statement.append(" WHERE D IS NOT NULL OR H IS NOT NULL OR A IS NOT NULL");
+                statement.append(" OR T IS NOT NULL OR Act IS NOT NULL OR Inf IS NOT NULL");
                 break;
         }
         // MOSTRAR POR DESTINOS-------------------------------------------------        

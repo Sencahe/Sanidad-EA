@@ -14,9 +14,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
 import mytools.Iconos;
 import mytools.Utilidades;
-import windows.Tabla;
-import windows.parte.Parte;
-import windows.recuento.Recuento;
+import panels.Tabla;
+import panels.Parte;
+import panels.Recuento;
 
 public class Configuracion extends JDialog implements ActionListener, ChangeListener{
     

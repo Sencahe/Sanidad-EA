@@ -11,12 +11,12 @@ public class Arreglos {
     private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
     //                                         Nro Grd  AyN Dest Diag cie Dsd  Hst Dias Exp  Obs id
-    private static int[] tamañoColumnasParte = {40, 50, 240, 60, 260, 50, 100, 100, 50, 110, 200, 40};
+    private static int[] tamañoColumnasParte = {40, 50, 240, 60, 260, 70, 90, 90, 50, 110, 200, 40};
     //
     private static String[] columnasRecuento = {"Nro","Grado","Apellido Y Nombre","Destino",
         "DNI","Diagnostico","CIE","Desde","Hasta","Dias","Observacion","Parte","N / S"};
     
-    private static int[] tamañoColumnasRecuento = {40,50,240,60,70,260,50,100,100,50,200,80,50};
+    private static int[] tamañoColumnasRecuento = {40,50,240,60,70,260,70,90,90,50,190,80,60};
     //=================================================================================
     //ARREGLOS PARA RECUPERAR INFORMACION DE LA BASE DE DATOS A LOS JTABLE
     private static String[] columnasBD = {"Grado", "Arma", "Apellido", "Destino" ,"DNI","Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
@@ -48,7 +48,7 @@ public class Arreglos {
     private static String[] PPS = {"", "SALUDABLE", "PREVENTIVO", "RECUPERACION", "PROTECCION", "BAJO PESO"};
     private static String[] aptitud = {"", "APTO", "APTO B", "NO APTO"};
     //=================================================================================
-    private static String[] patologias = {"Todos","Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
+    private static String[] patologias = {"Todas","Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
     private static String[] ordenTabla = {"De mayor a menor grado", "De menor a mayor grado", "Orden Alfabetico A-Z", "Orden Alfabetico Z-A"};
     private static String[] ordenTablaBD = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC", " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",
         " ORDER BY Apellido ASC, Nombre ASC, Grado DESC", " ORDER BY Apellido DESC, Nombre DESC, Grado DESC"};
@@ -129,13 +129,6 @@ public class Arreglos {
         return columnasBD.length;
     }
 
-//    public static String[] getColumnasParteBD() {
-//        return columnasBDParte;
-//    }
-//
-//    public static String getColumnasParteBD(int i) {
-//        return columnasBDParte[i];
-//    }
 
     // ARREGLO PARA LOS GRADOS SEGUN SU VALOR NUMERICO, TANTO EN LA CLASE FORMULARIO COMO EN LA CLASE BASEDEDATOS
     public static String[][] getGrados() {

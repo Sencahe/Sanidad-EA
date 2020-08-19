@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import javax.swing.JTextField;
 import mytools.Fechas;
 import personal.Personal;
-import windows.Formulario;
-import windows.parte.FormularioParte;
+import dialogs.Formulario;
+import dialogs.FormularioParte;
 
 public class Emisor extends BaseDeDatos {
 
