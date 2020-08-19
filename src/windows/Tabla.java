@@ -236,7 +236,6 @@ public class Tabla extends JPanel implements ActionListener {
     //---------------------------------------------------------------------------
     //----------------------------FONDO DEL PANEL-------------------------------
     @Override
-
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
         Graphics2D g2d = (Graphics2D) grphcs;

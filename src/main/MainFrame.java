@@ -16,14 +16,17 @@ import windows.Referencias;
 import windows.Tabla;
 import windows.parte.FormularioParte;
 import windows.parte.Parte;
+import windows.recuento.Recuento;
 
 public class MainFrame extends JFrame implements ActionListener{
 
     private final static String PARTE = "Parte de Sanidad";
     private final static String TABLA = "Carta de Situacion";
+    private final static String RECUENTO = "Recuento de Partes de Enfermo";
     
-    private JButton botonParte;
+    private JButton botonParte, botonParte2;
     private JButton botonTabla;
+    private JButton botonRecuento;
     
     private Iconos iconos;
     private Utilidades utilidad;
@@ -64,6 +67,7 @@ public class MainFrame extends JFrame implements ActionListener{
     private Referencias referencia;
     private IMC imc;
     private Configuracion configuracion;
+    private Recuento recuento;
     
 
     public MainFrame() {
@@ -73,6 +77,7 @@ public class MainFrame extends JFrame implements ActionListener{
         //PANEL Y JDIALOGS
         tabla = new Tabla(this);
         parte = new Parte(this);
+        recuento = new Recuento(this);
         formulario = new Formulario(this, true);
         formParte = new FormularioParte(this, true);
         buscador = new Buscador(this, false);
@@ -85,6 +90,7 @@ public class MainFrame extends JFrame implements ActionListener{
         tabla.setConfig(configuracion);        
         parte.setFormParte(formParte);
         parte.setConfig(configuracion);
+        recuento.setConfig(configuracion);
         formulario.setTabla(tabla);
         formulario.setFormParte(formParte);
         formParte.setParte(parte);
@@ -93,6 +99,7 @@ public class MainFrame extends JFrame implements ActionListener{
         imc.setTabla(tabla);
         configuracion.setTabla(tabla);
         configuracion.setParte(parte);
+        configuracion.setRecuento(recuento);
         
         //PROPIEDADES DEL FRAME
         setTitle(TABLA);
@@ -113,11 +120,18 @@ public class MainFrame extends JFrame implements ActionListener{
                      
         getContentPane().add(tabla.getScrollContainer(), TABLA);
         getContentPane().add(parte.getScrollContainer(), PARTE);
+        getContentPane().add(recuento.getScrollContainer(), RECUENTO);
 
         botonParte = tabla.getBotonParte();
         botonParte.addActionListener(this);
+              
         botonTabla = parte.getBotonTabla();
         botonTabla.addActionListener(this);
+        botonRecuento = parte.getBotonRecuento();
+        botonRecuento.addActionListener(this);
+        
+        botonParte2 = recuento.getBotonParte();
+        botonParte2.addActionListener(this);
         
         //Fin del constructor----------------
         iconos = null;
@@ -234,7 +248,7 @@ public class MainFrame extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         //-----------------------BOTONES----------------------------------
-        if (e.getSource() == botonParte) {
+        if (e.getSource() == botonParte || e.getSource() == botonParte2) {
             CardLayout cl = (CardLayout) (this.getContentPane().getLayout());
             cl.show(this.getContentPane(), PARTE);
             menuFiltrar.setVisible(false);
@@ -248,6 +262,14 @@ public class MainFrame extends JFrame implements ActionListener{
             menuBuscar.setVisible(true);
             setTitle(TABLA);
         }
+        if(e.getSource() == botonRecuento){
+            CardLayout cl = (CardLayout) (this.getContentPane().getLayout());
+            cl.show(this.getContentPane(), RECUENTO);
+            menuFiltrar.setVisible(false);
+            menuBuscar.setVisible(false);
+            setTitle(RECUENTO);
+        }
+
         //----------------------BARRA MENU--------------------------------------
         //MENU FILTRAR--------------------------------FILTROS-------------------
         //Lista completa

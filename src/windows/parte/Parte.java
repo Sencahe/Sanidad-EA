@@ -14,10 +14,11 @@ public class Parte extends JPanel implements ActionListener {
 
     private JScrollPane scrollContainer;
 
-    private JButton botonTabla;
-
+    private JButton botonTabla, botonRecuento;
+    
     private JLabel[] titulos;
-    private JTable[] tablas;
+   
+    private final JTable[] tablas = new JTable[4];;
     private JScrollPane[] scrolls;
     private Dimension dimension;
 
@@ -47,11 +48,15 @@ public class Parte extends JPanel implements ActionListener {
         //BOTONES---------------------------------------------------------------
         botonTabla = utilidad.customButton();
         botonTabla.setText("Volver");
-        botonTabla.setBounds(30, 15, 100, 30);
+        botonTabla.setBounds(30, 15, 100, 35);
         add(botonTabla);
+        botonRecuento = utilidad.customButton();
+        botonRecuento.setText("<html><center>Ver Recuento</center></html>");
+        botonRecuento.setBounds(155, 15, 100, 35);
+        add(botonRecuento);
         //----------------------------------------------------------------------
         //TABLAS DEL PARTE------------------------------------------------------
-        tablas = new JTable[4];
+        //tablas = new JTable[4];
         scrolls = new JScrollPane[4];
         titulos = new JLabel[4];
         String[] tituloLabels = {"PARTE DE ENFERMO", "PARTE DE EXCEPTUADO",
@@ -100,14 +105,16 @@ public class Parte extends JPanel implements ActionListener {
             //seleccionar una tabla a la vez
             tablas[i].addFocusListener(new FocusAdapter() {
                 @Override
-                public void focusLost(FocusEvent e) {
-                    super.focusLost(e);
+                public void focusGained(FocusEvent e) {
+                    super.focusGained(e);
                     for (int i = 0; i < 4; i++) {
                         if (e.getSource() == tablas[i]) {
-                            int count = tablas[i].getRowCount();
+                            
+                        } else {
+                          int count = tablas[i].getRowCount();
                             if (count >= 1) {
                                 tablas[i].removeRowSelectionInterval(0, count - 1);
-                            }
+                            }  
                         }
                     }
                 }
@@ -152,7 +159,7 @@ public class Parte extends JPanel implements ActionListener {
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
             add(scrolls[i]);
             add(titulos[i]);
-        }
+        }        
         //FINALIZACION DE LOS COMPONENTES        
         BaseDeDatos bdd = new BaseDeDatos();
         bdd.actualizar(this);
@@ -240,11 +247,10 @@ public class Parte extends JPanel implements ActionListener {
         int y = 90;
         for (int i = 0; i < 4; i++) {
             int altura = 27 + tablas[i].getRowCount() * 16;
-            scrolls[i].setBounds(15, y, 1261, altura);
             titulos[i].setBounds(60, y - 40, 400, 40);
+            scrolls[i].setBounds(15, y, 1261, altura);
             y += altura + 55;
         }
-
         dimension.setSize(1505, y);
         this.setPreferredSize(dimension);
     }
@@ -287,5 +293,10 @@ public class Parte extends JPanel implements ActionListener {
     public void setConfig(Configuracion config) {
         this.config = config;
     }
+
+    public JButton getBotonRecuento() {
+        return botonRecuento;
+    }
+   
 
 }

@@ -16,11 +16,13 @@ import mytools.Iconos;
 import mytools.Utilidades;
 import windows.Tabla;
 import windows.parte.Parte;
+import windows.recuento.Recuento;
 
 public class Configuracion extends JDialog implements ActionListener, ChangeListener{
     
     private Tabla tabla;
     private Parte parte;
+    private Recuento recuento;
     private MainFrame mainFrame;
 
     public JCheckBox configColumns, configRow;
@@ -112,8 +114,11 @@ public class Configuracion extends JDialog implements ActionListener, ChangeList
         //Configuraicon DESPLAZAMIENTO de Columnas
         if (e.getSource() == configColumns) {
             boolean desplazar = configColumns.isSelected();
-            //casualmente tanto tabla como parte tiene 4 tablas
+                   
+            JTableHeader headerRecuento = recuento.getTabla().getTableHeader();
+            headerRecuento.setReorderingAllowed(desplazar);
             for (int i = 0; i < 4; i++) {
+                //casualmente tanto tabla como parte tiene 4 tablas
                 JTableHeader headerTabla = tabla.getTablas(i).getTableHeader();
                 headerTabla.setReorderingAllowed(desplazar);
                 JTableHeader headerParte = parte.getTablas(i).getTableHeader();
@@ -123,12 +128,16 @@ public class Configuracion extends JDialog implements ActionListener, ChangeList
         //Configuracion SELECCION de Filas
         if (e.getSource() == configRow) {
             boolean individualmente = configRow.isSelected();
+            
             if (individualmente) {
+                recuento.getTabla().setCellSelectionEnabled(individualmente);
                 for (int i = 0; i < 4; i++) {
                     tabla.getTablas(i).setCellSelectionEnabled(individualmente);
-                    parte.getTablas(i).setCellSelectionEnabled(individualmente);
+                    parte.getTablas(i).setCellSelectionEnabled(individualmente);                  
                 }
             } else {
+                recuento.getTabla().setCellSelectionEnabled(individualmente);
+                recuento.getTabla().setRowSelectionAllowed(!individualmente);
                 for (int i = 0; i < 4; i++) {
                     tabla.getTablas(i).setCellSelectionEnabled(individualmente);
                     parte.getTablas(i).setCellSelectionEnabled(individualmente);
@@ -150,6 +159,11 @@ public class Configuracion extends JDialog implements ActionListener, ChangeList
     public void setParte(Parte parte) {
         this.parte = parte;
     }
+
+    public void setRecuento(Recuento recuento) {
+        this.recuento = recuento;
+    }
+
 
 
 }

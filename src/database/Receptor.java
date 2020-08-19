@@ -4,7 +4,9 @@ import mytools.Arreglos;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import javax.swing.JTextField;
+import windows.recuento.Recuento;
 import personal.Personal;
 import windows.Formulario;
 import windows.parte.FormularioParte;
@@ -16,6 +18,9 @@ public class Receptor extends BaseDeDatos {
     public Receptor(int id) {
         this.id = id;
 
+    }
+    public Receptor(){
+        this.id = 0;
     }
 
     public void getInformacion(Formulario formulario) {
@@ -115,6 +120,50 @@ public class Receptor extends BaseDeDatos {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//getInformacion " + e
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
+        }
+    }
+    
+    
+    public void getInformacion(Recuento recuento, int dni){
+        try {
+            recuento.getTableModel().setRowCount(0);
+            
+            PreparedStatement pst = super.getConnection().prepareStatement("SELECT * FROM RecuentoParte "
+                    + "WHERE DNI = " + dni);
+            ResultSet rs = pst.executeQuery();
+            
+            if(rs.next()){          
+                int num = 0;
+                Object[] fila = new Object[recuento.getTabla().getColumnCount()];
+                do{
+                    fila[0] = ++num;
+                    fila[1] = rs.getString("Grado");
+                    fila[2] = rs.getString("NombreCompleto");
+                    fila[3] = rs.getString("Destino");
+                    fila[4] = rs.getString("DNI");
+                    fila[5] = rs.getString("Diagnostico");
+                    fila[6] = rs.getString("CIE");
+                    fila[7] = rs.getString("Desde");
+                    fila[8] = rs.getString("Hasta");
+                    fila[9] = rs.getString("Dias");
+                    fila[10] = rs.getString("Observacion");
+                    fila[11] = rs.getString("TipoParte");
+                    fila[12] = rs.getString("NorasSiras");
+                    
+                    recuento.getTableModel().addRow(fila);
+                    Arrays.fill(fila,null);
+                    
+                } while(rs.next());   
+                
+                recuento.actualizarVentana();
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "No han habido resultados con ese numero de DNI.");
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error//BDD//Receptor// " + e  
+                    + "\nContactese con el desarrollador del programa para solucionar el problema.");
         }
     }
 

@@ -144,7 +144,4 @@ public class IMC extends JDialog implements ActionListener {
     public void setTabla(Tabla tabla) {
         this.tabla = tabla;
     }
-
-
-
 }

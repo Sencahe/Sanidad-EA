@@ -12,6 +12,11 @@ public class Arreglos {
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
     //                                         Nro Grd  AyN Dest Diag cie Dsd  Hst Dias Exp  Obs id
     private static int[] tamañoColumnasParte = {40, 50, 240, 60, 260, 50, 100, 100, 50, 110, 200, 40};
+    //
+    private static String[] columnasRecuento = {"Nro","Grado","Apellido Y Nombre","Destino",
+        "DNI","Diagnostico","CIE","Desde","Hasta","Dias","Observacion","Parte","N / S"};
+    
+    private static int[] tamañoColumnasRecuento = {40,50,240,60,70,260,50,100,100,50,200,80,50};
     //=================================================================================
     //ARREGLOS PARA RECUPERAR INFORMACION DE LA BASE DE DATOS A LOS JTABLE
     private static String[] columnasBD = {"Grado", "Arma", "Apellido", "Destino" ,"DNI","Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
@@ -76,6 +81,18 @@ public class Arreglos {
     public static int getTamañoColumnas(int i) {
         return tamañoColumnas[i];
     }
+
+    public static String getColumnasRecuento(int index) {
+        return columnasRecuento[index];
+    }
+
+    public static int getTamañoColumnasRecuento(int index) {
+        return tamañoColumnasRecuento[index];
+    }
+    public static int getColumnasRecuentoLength(){
+        return columnasRecuento.length;
+    }
+    
 
     //ARREGLOS COMO PROPIEDADES LOS JTABLES DEL PARTE DE ENFERMO
     public static String[] getColumnasParte() {

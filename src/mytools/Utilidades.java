@@ -9,21 +9,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class Utilidades {
 
     private final Color colorTabla, colorFondo, colorBoton, colorFuenteBoton;
 
     private final Font fuentePestañas, fuenteTabla, fuenteBoton, fuenteLabelsResumen, fuenteHeader;
-
     private final Font fuenteLabelsFormulario, fuenteTextFields, fuenteHolders, fuenteChecks, fuenteLabelGrande;
-
     private final Font fuenteLabelBuscador, fuenteLabelResultado;
-
     private final Font fuenteLabelsRef;
-
     private final Font fuenteLabelTitulo;
-
     private final Font fuenteLabelInfo;
 
     private final Cursor pointCursor;
@@ -144,12 +141,14 @@ public class Utilidades {
         return "dd/MM/yyyy";
     }
 
-    //BOTON PERSONALIZADO
+    //-------------------------BOTON PERSONALIZADO------------------------------
     public JButton customButton() {
         JButton button = new JButton();
         button.setFont(getFuenteBoton());
         button.setBackground(getColorBoton());
         button.setForeground(getColorFuenteBoton());
+        button.setContentAreaFilled(false);
+        button.setOpaque(true);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.setCursor(getPointCursor());
@@ -180,10 +179,9 @@ public class Utilidades {
             }
         });
         return button;
-
     }
-
-    //OTROS
+    
+    //----------------------------KEY ADAPTERS----------------------------------
     public KeyAdapter bloquearLetras = new KeyAdapter() {
         @Override
         public void keyTyped(KeyEvent e) {
