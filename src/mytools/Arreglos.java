@@ -5,8 +5,8 @@ public class Arreglos {
     // ARREGLOS PARA LOS JTABLE
     private static String[] columnasTabla = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Anexo 27",
         "Edad", "Peso", "Altura", "IMC", "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
-    //                                      Nr Grd A/S AyN Dest  DNI A27 Age Kgs Alt IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
-    private static int[] tamañoColumnas = {40, 55, 75, 240, 68, 65, 80, 45, 50, 50, 50, 110, 65, 30, 30, 30, 30, 36, 36, 275, 40};
+    //                                      Nr Grd A/S AyN Dest DNI A27 Age Kgs Alt IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
+    private static int[] tamañoColumnas = {40, 55, 75, 240, 68, 70, 75, 45, 50, 50, 50, 110, 65, 30, 30, 30, 30, 36, 36, 275, 40};
 
     private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};

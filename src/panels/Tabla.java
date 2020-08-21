@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import database.Reportes;
 import main.Configuracion;
+import mytools.Iconos;
 
 public class Tabla extends JPanel implements ActionListener {
 
@@ -58,6 +59,7 @@ public class Tabla extends JPanel implements ActionListener {
     private void componentes() {
         //------------------------------------------
         Utilidades utilidad = mainFrame.getUtilidad();
+        Iconos iconos = mainFrame.getIconos();
         //PROPIEDADES DEL PANEL-------------------------------------------------
         setBackground(utilidad.getColorFondo());
         Dimension dimension = new Dimension(1505, 580);
@@ -175,9 +177,19 @@ public class Tabla extends JPanel implements ActionListener {
         botonAgregar.setBounds(150, 15, 110, 35);
         botonAgregar.addActionListener(this);
         add(botonAgregar);
+        //------------------------------------
+        JLabel reporte = new JLabel("Generar Reportes");
+        reporte.setFont(utilidad.getFuenteLabelGrande());
+        reporte.setForeground(Color.white);
+        reporte.setBounds(1000,15,150,32);
+        add(reporte);
+        JLabel pdf = new JLabel();
+        pdf.setIcon(iconos.getIconoPdf());
+        pdf.setBounds(1150,15,32,32);
+        add(pdf);
         botonReporte = utilidad.customButton();
-        botonReporte.setText("<html><center>GENERAR<br>REPORTE</center></html>");
-        botonReporte.setBounds(350, 15, 110, 35);
+        botonReporte.setText("<html><center>Carta de<br>Situacion</center></html>");
+        botonReporte.setBounds(1190, 15, 110, 35);
         botonReporte.addActionListener(this);
         add(botonReporte);
         //----------------------------------------------------------------------
@@ -271,6 +283,7 @@ public class Tabla extends JPanel implements ActionListener {
         if(e.getSource() == botonReporte){
             Reportes reporte = new Reportes();
             reporte.generarReportePersonal(this);
+            reporte = null;
         }
 
     }

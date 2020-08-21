@@ -16,6 +16,7 @@ public class Iconos {
     private ImageIcon iconoConfig;
     private ImageIcon iconoPlus;
     private ImageIcon iconoCalculator;
+    private ImageIcon iconoPdf;
     
     public Iconos(){        
         this.iconoRefrescar = new ImageIcon("src/myimages/refresh.png");
@@ -29,6 +30,7 @@ public class Iconos {
         this.iconoConfig = new ImageIcon("src/myimages/config.png");
         this.iconoPlus = new ImageIcon("src/myimages/plus.png");
         this.iconoCalculator = new ImageIcon("src/myimages/calculator.png");
+        this.iconoPdf = new ImageIcon("src/myimages/pdf.png");
     }
 
    
@@ -70,6 +72,10 @@ public class Iconos {
 
     public ImageIcon getIconoCalculator() {
         return iconoCalculator;
+    }
+
+    public ImageIcon getIconoPdf() {
+        return iconoPdf;
     }
     
 
