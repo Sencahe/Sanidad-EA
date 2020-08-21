@@ -11,7 +11,7 @@ public class Arreglos {
     private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
     //                                         Nro Grd  AyN Dest Diag cie Dsd  Hst Dias Exp  Obs id
-    private static int[] tamañoColumnasParte = {40, 50, 240, 60, 260, 70, 90, 90, 50, 110, 200, 40};
+    private static int[] tamañoColumnasParte = {40, 60, 240, 60, 220, 70, 75, 75, 45, 110, 140, 40};
     //
     private static String[] columnasRecuento = {"Nro","Grado","Apellido Y Nombre","Destino",
         "DNI","Diagnostico","CIE","Desde","Hasta","Dias","Observacion","Parte","N / S"};
@@ -47,6 +47,8 @@ public class Arreglos {
     private static String[] destinos = {"", "Cdo Ser", "Bda Mil", "Ca A", "Ca B", "Ca C", "Ca E"};
     private static String[] PPS = {"", "SALUDABLE", "PREVENTIVO", "RECUPERACION", "PROTECCION", "BAJO PESO"};
     private static String[] aptitud = {"", "APTO", "APTO B", "NO APTO"};
+    
+    private static String[] tiposDeParte = {"PARTES DE ENFERMO", "PARTES DE EXCEPTUADO","PARTES DE MATERNIDAD","PERSONAL QUE NO PASO NOVEDAD"};
     //=================================================================================
     private static String[] patologias = {"Todas","Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
     private static String[] ordenTabla = {"De mayor a menor grado", "De menor a mayor grado", "Orden Alfabetico A-Z", "Orden Alfabetico Z-A"};
@@ -194,6 +196,13 @@ public class Arreglos {
 
     public static int getAptitudLength() {
         return aptitud.length;
+    }
+    //ARREGLOS PARA EL PARTE
+    public static String getTiposDeParte(int index){
+        return tiposDeParte[index];
+    }
+    public static int getTiposDeParteLength(){
+        return tiposDeParte.length;
     }
 
     // ARREGLOS PARA COMUNICAR LOS COMPONENTES DE FORMULARIO CON LA CLASE BASE DE DATOS

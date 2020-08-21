@@ -1,6 +1,7 @@
 package database;
 
 import com.itextpdf.text.*;
+import static com.itextpdf.text.pdf.PdfName.T;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
@@ -9,6 +10,11 @@ import panels.Tabla;
 import java.io.FileOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import static javafx.scene.input.KeyCode.T;
 import javax.swing.JOptionPane;
 import panels.Parte;
 
@@ -23,6 +29,9 @@ public class Reportes extends BaseDeDatos {
     public void generarReportePersonal(Tabla tabla) {
         defaults();
         try {
+            //tamaño de la hoja
+            document.setPageSize(PageSize.LEGAL.rotate());
+            document.open();
             //CREACION DE LA TABLA PARA EL PDF----------------------------------               
             //float[] para el tamaño de las columnas de la tabla
             float columnsWidth[] = new float[Arreglos.getColumnasTablaLength() - 1];
@@ -92,9 +101,86 @@ public class Reportes extends BaseDeDatos {
         System.gc();
     }
 
-    
-    public void generarReporteParte(Parte parte) {
+    public void generarReporteParte(Parte parte, boolean diagnostico) {
+        defaults();
+        try {
+            //tamaño de la hoja
+            document.setPageSize(PageSize.LEGAL);
+            document.open();
+            p3.setAlignment(Paragraph.ALIGN_LEFT);
+            //CREACION DE LA TABLA PARA EL PDF----------------------------------               
+            //float[] para el tamaño de las columnas de la tabla
+            String[] columnasParte = Arreglos.getColumnasParte();
+            ArrayList columnas = new ArrayList<>(Arrays.asList(columnasParte));
+            if (!diagnostico) {
+                columnas.remove(4);
+                columnas.remove(4);
+            }
 
+            float columnsWidth[] = new float[columnas.size() - 1];
+            int saltear;
+            for (int i = 0; i < columnsWidth.length; i++) {
+                saltear = i >= 4 && !diagnostico ? 2 : 0;
+                float scaledWidth = (Arreglos.getTamañoColumnParte(i + saltear) * 50) / 100;
+                columnsWidth[i] = scaledWidth;
+            }
+
+            //cracion del PdfpTable
+            PdfPTable[] pdfTable = new PdfPTable[Arreglos.getTiposDeParteLength()];
+            for (int i = 0; i < 4; i++) {
+                pdfTable[i] = new PdfPTable(columnsWidth);
+                pdfTable[i].setTotalWidth(columnsWidth);
+                pdfTable[i].setLockedWidth(true);
+                pdfTable[i].setHorizontalAlignment(Element.ALIGN_LEFT);
+            }
+
+            //header de la tabla   
+            Paragraph header[] = new Paragraph[columnsWidth.length];
+            for (int i = 0; i < columnsWidth.length; i++) {
+                saltear = i >= 4 && !diagnostico ? 2 : 0;
+                header[i] = new Paragraph();
+                header[i].setFont(FontFactory.getFont("Times-Roman", 8, Font.BOLD, BaseColor.BLACK));
+                header[i].setAlignment(Paragraph.ALIGN_CENTER);
+                header[i].add(Arreglos.getColumnasParte(i));
+            }
+
+            //ciclos para llenar las tabla
+            String content;
+            document.add(p);
+            document.add(p2);
+            for (int i = 0; i < 4; i++) { //itera sobre todas las tablas
+                p3.add(Arreglos.getTiposDeParte(i).toUpperCase() + "\n\n");
+                document.add(p3);
+                p3.remove(0);
+                for (int j = -1; j < parte.getTablas(i).getRowCount(); j++) { //itera sobre las filas                   
+                    for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
+                        if (j == -1) {
+                            pdfTable[i].addCell(header[k]);
+                        } else {
+                            saltear = k >= 4 && !diagnostico ? 2 : 0;
+                            content = String.valueOf(parte.getTablas(i).getValueAt(j, k + saltear));
+                            Paragraph para = new Paragraph();
+                            para.setFont(FontFactory.getFont("Times-Roman", 7, 0, BaseColor.BLACK));
+                            para.add(!content.equals("null") ? content : "");
+                            pdfTable[i].addCell(para);
+                            para = null;
+                        }
+                    }
+                }
+                document.add(pdfTable[i]);
+            }
+            document.close();
+            super.getConnection().close();
+            document = null;
+            p = null;
+            p2 = null;
+            p3 = null;
+            glue = null;
+            header = null;
+            columnsWidth = null;
+
+        } catch (Exception e) {
+        }
     }
 
     private void defaults() {
@@ -116,10 +202,6 @@ public class Reportes extends BaseDeDatos {
 
             //objeto de la libreria iText, permite colocar texto a la derecha e izquierda en la misma linea
             glue = new Chunk(new VerticalPositionMark());
-
-            //tamaño de la hoja
-            document.setPageSize(PageSize.LEGAL.rotate());
-            document.open();
 
             //Defino el header del documento
             //texto a la izquierda --- EJERCITO ARGENTINO

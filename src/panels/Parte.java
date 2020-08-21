@@ -2,6 +2,7 @@ package panels;
 
 import dialogs.FormularioParte;
 import database.BaseDeDatos;
+import database.Reportes;
 import mytools.Arreglos;
 import mytools.Utilidades;
 import main.MainFrame;
@@ -10,16 +11,18 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import mytools.Iconos;
 
 public class Parte extends JPanel implements ActionListener {
 
     private JScrollPane scrollContainer;
 
-    private JButton botonTabla, botonRecuento;
-    
+    private JButton botonTabla, botonRecuento, botonReporte, botonReporte2;
+
     private JLabel[] titulos;
-   
-    private final JTable[] tablas = new JTable[4];;
+
+    private final JTable[] tablas = new JTable[4];
+    ;
     private JScrollPane[] scrolls;
     private Dimension dimension;
 
@@ -37,6 +40,7 @@ public class Parte extends JPanel implements ActionListener {
     private void componentes() {
         //OBJETOS AUXILIARES       
         Utilidades utilidad = mainFrame.getUtilidad();
+        Iconos iconos = mainFrame.getIconos();
         //-------------PROPIEDADES DEL PANEL------------------------------------
         dimension = new Dimension();
         setBackground(utilidad.getColorFondo());
@@ -55,6 +59,25 @@ public class Parte extends JPanel implements ActionListener {
         botonRecuento.setText("<html><center>Ver Recuento</center></html>");
         botonRecuento.setBounds(155, 15, 100, 35);
         add(botonRecuento);
+        JLabel reporte = new JLabel("Generar Reportes");
+        reporte.setFont(utilidad.getFuenteLabelGrande());
+        reporte.setForeground(Color.white);
+        reporte.setBounds(1000, 15, 150, 32);
+        add(reporte);
+        JLabel pdf = new JLabel();
+        pdf.setIcon(iconos.getIconoPdf());
+        pdf.setBounds(1150, 15, 32, 32);
+        add(pdf);
+        botonReporte = utilidad.customButton();
+        botonReporte.setText("<html><center>Parte con<br>Diagnosticos</center></html>");
+        botonReporte.setBounds(1190, 15, 110, 35);
+        botonReporte.addActionListener(this);
+        add(botonReporte);
+        botonReporte2 = utilidad.customButton();
+        botonReporte2.setText("<html><center>Parte sin<br>Diagnosticos</center></html>");
+        botonReporte2.setBounds(1310, 15, 110, 35);
+        botonReporte2.addActionListener(this);
+        add(botonReporte2);
         //----------------------------------------------------------------------
         //TABLAS DEL PARTE------------------------------------------------------
         //tablas = new JTable[4];
@@ -110,12 +133,12 @@ public class Parte extends JPanel implements ActionListener {
                     super.focusGained(e);
                     for (int i = 0; i < 4; i++) {
                         if (e.getSource() == tablas[i]) {
-                            
+
                         } else {
-                          int count = tablas[i].getRowCount();
+                            int count = tablas[i].getRowCount();
                             if (count >= 1) {
                                 tablas[i].removeRowSelectionInterval(0, count - 1);
-                            }  
+                            }
                         }
                     }
                 }
@@ -160,13 +183,14 @@ public class Parte extends JPanel implements ActionListener {
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
             add(scrolls[i]);
             add(titulos[i]);
-        }        
+        }
         //FINALIZACION DE LOS COMPONENTES        
         BaseDeDatos bdd = new BaseDeDatos();
         bdd.actualizar(this);
         bdd = null;
 
         utilidad = null;
+        iconos = null;
 
         actualizarVentana();
     }
@@ -223,7 +247,14 @@ public class Parte extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if (e.getSource() == botonReporte) {
+            Reportes reporte = new Reportes();
+            reporte.generarReporteParte(this, true);
+        }
+        if (e.getSource() == botonReporte2) {
+            Reportes reporte = new Reportes();
+            reporte.generarReporteParte(this, false);
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -249,7 +280,7 @@ public class Parte extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             int altura = 27 + tablas[i].getRowCount() * 16;
             titulos[i].setBounds(60, y - 40, 400, 40);
-            scrolls[i].setBounds(15, y, 1261, altura);
+            scrolls[i].setBounds(15, y, 1131, altura);
             y += altura + 55;
         }
         dimension.setSize(1505, y);
@@ -298,6 +329,5 @@ public class Parte extends JPanel implements ActionListener {
     public JButton getBotonRecuento() {
         return botonRecuento;
     }
-   
 
 }
