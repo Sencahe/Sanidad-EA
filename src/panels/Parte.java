@@ -6,7 +6,7 @@ import database.Reportes;
 import mytools.Arreglos;
 import mytools.Utilidades;
 import main.MainFrame;
-import main.Configuracion;
+import dialogs.Configuracion;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

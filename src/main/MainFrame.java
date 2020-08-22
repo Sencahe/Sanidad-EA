@@ -1,5 +1,6 @@
 package main;
 
+import dialogs.Configuracion;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -9,14 +10,8 @@ import javax.swing.*;
 import mytools.Arreglos;
 import mytools.Iconos;
 import mytools.Utilidades;
-import dialogs.Buscador;
-import dialogs.Formulario;
-import dialogs.IMC;
-import dialogs.Referencias;
-import panels.Tabla;
-import dialogs.FormularioParte;
-import panels.Parte;
-import panels.Recuento;
+import dialogs.*;
+import panels.*;
 
 public class MainFrame extends JFrame implements ActionListener {
 
@@ -68,6 +63,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private IMC imc;
     private Configuracion configuracion;
     private Recuento recuento;
+    private ListGenerator listGenerator;
 
     public MainFrame() {
         //OBJETOS AUXILIARES
@@ -83,10 +79,12 @@ public class MainFrame extends JFrame implements ActionListener {
         referencia = new Referencias(this, true);
         imc = new IMC(this, true);
         configuracion = new Configuracion(this, true);
+        listGenerator = new ListGenerator(this, true);
 
         tabla.setFormulario(formulario);
         tabla.setBuscador(buscador);
         tabla.setConfig(configuracion);
+        tabla.setListGenerator(listGenerator);
         parte.setFormParte(formParte);
         parte.setConfig(configuracion);
         recuento.setConfig(configuracion);
@@ -95,10 +93,12 @@ public class MainFrame extends JFrame implements ActionListener {
         formParte.setParte(parte);
         formParte.setFormulario(formulario);
         buscador.setTabla(tabla);
+        buscador.setConfiguracion(configuracion);
         imc.setTabla(tabla);
         configuracion.setTabla(tabla);
         configuracion.setParte(parte);
         configuracion.setRecuento(recuento);
+        listGenerator.setTabla(tabla);
 
         //PROPIEDADES DEL FRAME
         setTitle(TABLA);
@@ -274,11 +274,13 @@ public class MainFrame extends JFrame implements ActionListener {
         //Lista completa
         if (e.getSource() == itemListaCompleta) {
             tabla.Actualizar(0, 0, 0);
+            tabla.setFiltrado(false);
             eliminarChecks();
         }
         // anexo vencido
         if (e.getSource() == itemAnexoVencido) {
             tabla.Actualizar(1, tabla.getShowByDestino(), tabla.getOrder());
+            tabla.setFiltrado(true);
             eliminarChecksFiltros();
             itemAnexoVencido.setIcon(check);
         }
@@ -288,6 +290,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 if (i != 0) {
                     tabla.setPPSFilter(itemsPPS[i].getText());
                     tabla.Actualizar(2, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.setFiltrado(true);
                     eliminarChecksFiltros();
                     menuFiltroPPS.setIcon(check);
                     itemsPPS[i].setIcon(check);
@@ -302,8 +305,10 @@ public class MainFrame extends JFrame implements ActionListener {
                 if (i != 0) {
                     tabla.setAptitudFilter(itemsAptitud[i].getText());
                     tabla.Actualizar(3, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.setFiltrado(true);
                 } else {
                     tabla.Actualizar(0, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.setFiltrado(true);
                 }
                 eliminarChecksFiltros();
                 menuFiltroAptitud.setIcon(check);
@@ -316,10 +321,13 @@ public class MainFrame extends JFrame implements ActionListener {
                 if (i < itemsPatologias.length - 1 && i != 0) {
                     tabla.setPatologiaColumn(Arreglos.getCheckBox(i - 1));
                     tabla.Actualizar(4, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.setFiltrado(true);
                 } else if (i != 0) {
                     tabla.Actualizar(5, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.setFiltrado(true);
                 } else {
                     tabla.Actualizar(8, tabla.getShowByDestino(), tabla.getOrder());
+                    tabla.setFiltrado(true);
                 }
                 eliminarChecksFiltros();
                 menuPatologias.setIcon(check);
@@ -329,6 +337,7 @@ public class MainFrame extends JFrame implements ActionListener {
         // observaciones 
         if (e.getSource() == itemObservaciones) {
             tabla.Actualizar(6, tabla.getShowByDestino(), tabla.getOrder());
+            tabla.setFiltrado(true);
             eliminarChecksFiltros();
             itemObservaciones.setIcon(check);
         }
@@ -336,6 +345,7 @@ public class MainFrame extends JFrame implements ActionListener {
         for (int i = 0; i < itemsDestinos.length; i++) {
             if (e.getSource() == itemsDestinos[i]) {
                 tabla.Actualizar(tabla.getFilter(), i, tabla.getOrder());
+                tabla.setFiltrado(true);
                 eliminarChecksDestino();
                 menuDestinos.setIcon(check);
                 itemsDestinos[i].setIcon(check);
@@ -345,6 +355,7 @@ public class MainFrame extends JFrame implements ActionListener {
         for (int i = 0; i < itemsOrdenar.length; i++) {
             if (e.getSource() == itemsOrdenar[i]) {
                 tabla.Actualizar(tabla.getFilter(), tabla.getShowByDestino(), i);
+                tabla.setFiltrado(true);
                 eliminarChecksOrden();
                 menuOrdenar.setIcon(check);
                 itemsOrdenar[i].setIcon(check);

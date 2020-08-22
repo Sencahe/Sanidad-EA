@@ -11,7 +11,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import database.Reportes;
-import main.Configuracion;
+import dialogs.Configuracion;
+import dialogs.ListGenerator;
 import mytools.Iconos;
 
 public class Tabla extends JPanel implements ActionListener {
@@ -23,6 +24,7 @@ public class Tabla extends JPanel implements ActionListener {
     private JButton botonAgregar;
     private JButton botonParte;
     private JButton botonReporte;
+    private JButton botonReporte2;
 
     private JTabbedPane contenedor;
     private JTable[] tablas;
@@ -31,6 +33,8 @@ public class Tabla extends JPanel implements ActionListener {
     private JLabel[] resumen;
 
     //FILTROS DE LA TABLA
+    private boolean filtrado;
+
     private int filter;
     private int showByDestino;
     private int order;
@@ -46,6 +50,7 @@ public class Tabla extends JPanel implements ActionListener {
     private Formulario formulario;
     private Buscador buscador;
     private Configuracion config;
+    private ListGenerator listGenerator;
 
     //table model
     private DefaultTableModel[] model;
@@ -181,17 +186,22 @@ public class Tabla extends JPanel implements ActionListener {
         JLabel reporte = new JLabel("Generar Reportes");
         reporte.setFont(utilidad.getFuenteLabelGrande());
         reporte.setForeground(Color.white);
-        reporte.setBounds(1000,15,150,32);
+        reporte.setBounds(1000, 15, 150, 32);
         add(reporte);
         JLabel pdf = new JLabel();
         pdf.setIcon(iconos.getIconoPdf());
-        pdf.setBounds(1150,15,32,32);
+        pdf.setBounds(1150, 15, 32, 32);
         add(pdf);
         botonReporte = utilidad.customButton();
-        botonReporte.setText("<html><center>Carta de<br>Situacion</center></html>");
+        botonReporte.setText("<html><center>Lista de<br>Personal</center></html>");
         botonReporte.setBounds(1190, 15, 110, 35);
         botonReporte.addActionListener(this);
         add(botonReporte);
+        botonReporte2 = utilidad.customButton();
+        botonReporte2.setText("<html><center>Carta de<br>Situacion</center></html>");
+        botonReporte2.setBounds(1310, 15, 110, 35);
+        botonReporte2.addActionListener(this);
+        add(botonReporte2);
         //----------------------------------------------------------------------
         // LABELS CON CANTIDAD DE PERSONAL
         resumen = new JLabel[tablas.length + 1];
@@ -209,7 +219,7 @@ public class Tabla extends JPanel implements ActionListener {
         //----------------------------------------------------------------------
         //FINALIZACION DE LOS COMPONENTES
         utilidad = null;
-        
+
         Actualizar(0, 0, 0);
     }
 
@@ -279,11 +289,21 @@ public class Tabla extends JPanel implements ActionListener {
         if (e.getSource() == botonAgregar) {
             abrirFormulario(contenedor.getSelectedIndex());
         }
+        if (e.getSource() == botonReporte) {
+            listGenerator.setVisible(true);
+        }
+
         //BOTON REPORTE
-        if(e.getSource() == botonReporte){
-            Reportes reporte = new Reportes();
-            reporte.generarReportePersonal(this);
-            reporte = null;
+        if (e.getSource() == botonReporte2) {
+            if (filtrado) {
+                JOptionPane.showMessageDialog(null, "<html><center>No puede generar la Carta de Situacion habiendo filtros en la tabla"
+                        + "<br>Desactivelos con el Menu->Filtrar->Lista Completa</center></html>");
+            } else {
+                Reportes reporte = new Reportes();
+                reporte.generarCartaDeSituacion(this);
+                reporte = null;
+            }
+
         }
 
     }
@@ -372,6 +392,14 @@ public class Tabla extends JPanel implements ActionListener {
         return botonParte;
     }
 
+    public boolean isFiltrado() {
+        return filtrado;
+    }
+
+    public void setFiltrado(boolean filtrado) {
+        this.filtrado = filtrado;
+    }
+
     public int getFilter() {
         return filter;
     }
@@ -439,5 +467,11 @@ public class Tabla extends JPanel implements ActionListener {
     public void setConfig(Configuracion config) {
         this.config = config;
     }
+
+    public void setListGenerator(ListGenerator listGenerator) {
+        this.listGenerator = listGenerator;
+    }
+    
+    
 
 }

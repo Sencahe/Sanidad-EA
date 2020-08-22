@@ -32,12 +32,21 @@ public class BaseDeDatos {
         return (null);
     }
 
-    public void setConection() {
+    public void setConnection() {
         this.cn = conectar();
     }
 
     public Connection getConnection() {
-        return this.cn;
+        try {
+            if (this.cn.isClosed()) {
+                setConnection();
+                return this.cn;
+            } else {
+                return this.cn;
+            }
+        } catch (Exception e) {
+        }
+        return (null);
     }
 
     protected void nullConnection() {
@@ -206,7 +215,7 @@ public class BaseDeDatos {
             //variables y objetos para recuperar la informacion y desplegarla en las tablas de Parte
             int num[] = new int[Arreglos.getCategoriasLength()];
             Object fila[] = new Object[Arreglos.getColumnasParteLength()];
-            
+
             int categoria;
             int tipoParte;
             String cie;
@@ -215,12 +224,12 @@ public class BaseDeDatos {
             String expediente;
 
             while (rs.next()) {
-                
+
                 categoria = rs.getInt("Categoria");
                 fila[1] = grados[categoria][rs.getInt("Grado")];
                 fila[2] = rs.getString("Apellido") + " " + rs.getString("Nombre");
                 fila[3] = rs.getString("Destino");
-                
+
                 cie = rs.getString("CIE");
                 hasta = rs.getString("Hasta");
                 desde = rs.getString("Desde");

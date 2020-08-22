@@ -1,20 +1,14 @@
 package mytools;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.event.InputEvent;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JTable;
-import javax.swing.border.Border;
-import javax.swing.table.DefaultTableModel;
+
 
 public class Utilidades {
 
@@ -181,6 +175,7 @@ public class Utilidades {
         });
         return button;
     }
+
 
     //----------------------------KEY ADAPTERS----------------------------------
     public KeyAdapter bloquearLetras = new KeyAdapter() {

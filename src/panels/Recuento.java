@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import main.Configuracion;
+import dialogs.Configuracion;
 import main.MainFrame;
 import mytools.Arreglos;
 import mytools.Utilidades;
@@ -234,7 +234,7 @@ public class Recuento extends JPanel implements ActionListener {
     //Buscar por dni
     private void buscarPorDNI() {
         try {
-            int dni = Integer.parseInt(textRecuento.getText());
+            long dni = Long.parseLong(textRecuento.getText());
             labelBuscarRecuento.setVisible(false);
             textBuscarRecuento.setVisible(false);
             botonBuscarPorNombre.setVisible(false);
@@ -243,7 +243,7 @@ public class Recuento extends JPanel implements ActionListener {
             receptor.getInformacion(this, dni, false);
             receptor = null;
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "El numero ingresado es incorrecto.");
+            JOptionPane.showMessageDialog(null, "El numero ingresado es incorrecto." + ex);
         }
     }
 

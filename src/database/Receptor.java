@@ -124,7 +124,7 @@ public class Receptor extends BaseDeDatos {
     }
     
     
-    public void getInformacion(Recuento recuento, int dni, boolean todos){
+    public void getInformacion(Recuento recuento, long dni, boolean todos){
         try {
             recuento.getTableModel().setRowCount(0);
             String statement;
@@ -132,7 +132,7 @@ public class Receptor extends BaseDeDatos {
             if(todos){
                 statement = "SELECT * FROM RecuentoParte";
             } else {
-                statement = "SELECT * FROM RecuentoParte  WHERE DNI = " + dni;
+                statement = "SELECT * FROM RecuentoParte  WHERE DNI LIKE '%" + dni + "%'";
             }
             
             PreparedStatement pst = super.getConnection().prepareStatement(statement);

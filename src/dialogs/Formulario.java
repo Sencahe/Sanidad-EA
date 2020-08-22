@@ -315,7 +315,7 @@ public class Formulario extends JDialog implements ActionListener {
             }
             if (categoria == 2 || categoria == 3) {
                 textField[2].setEnabled(false);
-                textField[2].setText("—");
+                textField[2].setText(categoria == 2 ? "Operacional":"Civil");
             }
             if (categoria == 3) {
                 comboBox[2].setSelectedIndex(1);

@@ -2,32 +2,31 @@ package dialogs;
 
 import mytools.Iconos;
 import mytools.Utilidades;
-import panels.Tabla;
 import main.MainFrame;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import panels.Tabla;
 
-
 public class Buscador extends JDialog implements ActionListener {
 
     private JButton boton;
-    private JTextField texto;      
-    private JLabel mensaje, buscando;
+    private JTextField textBuscar;
+    private JLabel mensaje, labelEncontrado;
     private JRadioButton radioNombre, radioDNI;
     private KeyAdapter soloNumeros;
-    
+
     private int puntero;
     private int categoria;
     private String buscar;
     private boolean encontrado;
     private boolean buscarSiguiente;
-    private String nombre;
+    private String buscando;
     private int columna;
 
     private Tabla tabla;
     private MainFrame mainFrame;
+    private Configuracion configuracion;
 
     public Buscador(Frame parent, boolean modal) {
         super(parent, modal);
@@ -69,8 +68,8 @@ public class Buscador extends JDialog implements ActionListener {
                 Graphics2D g2d = (Graphics2D) grphcs;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(200, 170,
-                        getBackground().brighter().brighter(), 0, 200,
+                GradientPaint gp = new GradientPaint(200, 50,
+                        getBackground().brighter().brighter(), 250, 200,
                         getBackground().darker().darker());
                 g2d.setPaint(gp);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -80,12 +79,12 @@ public class Buscador extends JDialog implements ActionListener {
         Dimension dimension = new Dimension(400, 175);
         container.setPreferredSize(dimension);
         container.setLayout(null);
-        
+
         dimension = null;
         //Text FIELD-------------------
-        texto = new JTextField();
-        texto.setBounds(100, 45, 250, 25);
-        texto.addKeyListener(new KeyAdapter() {
+        textBuscar = new JTextField();
+        textBuscar.setBounds(100, 45, 250, 25);
+        textBuscar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
@@ -94,7 +93,7 @@ public class Buscador extends JDialog implements ActionListener {
                 }
             }
         });
-        add(texto);
+        add(textBuscar);
         // Boton---------------------
         boton = new JButton("Buscar");
         boton.setBounds(100, 80, 90, 30);
@@ -103,14 +102,14 @@ public class Buscador extends JDialog implements ActionListener {
         //RadioButton
         ButtonGroup rg = new ButtonGroup();
         radioNombre = new JRadioButton("Buscar por Nombre");
-        radioNombre.setBounds(210,80,190,20);
+        radioNombre.setBounds(210, 80, 190, 20);
         radioNombre.setOpaque(false);
         radioNombre.addActionListener(this);
         radioNombre.setSelected(true);
         rg.add(radioNombre);
         add(radioNombre);
         radioDNI = new JRadioButton("Buscar por DNI");
-        radioDNI.setBounds(210,100,190,20);
+        radioDNI.setBounds(210, 100, 190, 20);
         radioDNI.setOpaque(false);
         radioDNI.addActionListener(this);
         rg.add(radioDNI);
@@ -121,17 +120,17 @@ public class Buscador extends JDialog implements ActionListener {
         mensaje.setBounds(100, 100, 250, 40);
         add(mensaje);
         // label informativo
-        buscando = new JLabel("Ingrese palabra para buscar por Apellido y Nombre");
-        buscando.setBounds(30 + 70, 15, 300, 30);
-        buscando.setFont(utilidad.getFuenteRsltBuscador());
-        add(buscando);
+        labelEncontrado = new JLabel("Ingrese palabra para buscar por Apellido y Nombre");
+        labelEncontrado.setBounds(30 + 70, 15, 300, 30);
+        labelEncontrado.setFont(utilidad.getFuenteRsltBuscador());
+        add(labelEncontrado);
         // Icono Buscar-----------------------------
         JLabel png = new JLabel();
         png.setBounds(15, 30, 64, 64);
         ImageIcon icono = iconos.getIconoSearch();
         png.setIcon(icono);
         add(png);
-        png = null;  
+        png = null;
         //fin        
         this.getContentPane().add(container);
         iconos = null;
@@ -143,9 +142,9 @@ public class Buscador extends JDialog implements ActionListener {
     public void buscarPorNombre() {
 
         //SOLO BUSCA SI HAY TEXTO EN EL TEXT FIELD
-        if (!"".equals(texto.getText())) {
+        if (!"".equals(textBuscar.getText())) {
             //REINICIA EL PUNTERO SI SE CAMBIA LA PALABRA A SER BUSCADA
-            if (!buscar.equals(texto.getText().toLowerCase().trim())) {
+            if (!buscar.equals(textBuscar.getText().toLowerCase().trim())) {
                 puntero = 0;
                 encontrado = false;
             }
@@ -156,8 +155,8 @@ public class Buscador extends JDialog implements ActionListener {
                 setTitle("Buscando en " + tabla.getContenedor().getTitleAt(tabla.getContenedor().getSelectedIndex()).trim());
             }
 
-            nombre = "";
-            buscar = texto.getText().toLowerCase().trim();
+            buscando = "";
+            buscar = textBuscar.getText().toLowerCase().trim();
             categoria = tabla.getContenedor().getSelectedIndex();
             buscarSiguiente = true;
 
@@ -170,12 +169,9 @@ public class Buscador extends JDialog implements ActionListener {
                         JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.", JLabel.CENTER));
                     }
                 } else {
-                    if(columna == 3){
-                        nombre = ((String) tabla.getTablas(categoria).getValueAt(puntero, columna)).toLowerCase();
-                    } else {
-                        nombre = String.valueOf(tabla.getTablas(categoria).getValueAt(puntero, columna));
-                    }                                       
-                    if (nombre.contains(buscar)) {
+                    buscando = String.valueOf(tabla.getTablas(categoria).getValueAt(puntero, columna));
+                    if (buscando.contains(buscar)) {
+                        configuracion.configRow.setSelected(false);
                         tabla.getScroll(categoria).getVerticalScrollBar().setValue(puntero * 16);
                         tabla.getTablas(categoria).setRowSelectionInterval(puntero, puntero);
                         mensaje.setText((String) tabla.getTablas(categoria).getValueAt(puntero, 3));
@@ -196,22 +192,27 @@ public class Buscador extends JDialog implements ActionListener {
             buscarPorNombre();
             System.gc();
         }
-         if(e.getSource() == radioNombre){
-            buscando.setText("Ingrese palabra para buscar por Apellido y Nombre");
-            texto.setText("");
-            texto.removeKeyListener(soloNumeros);
+        if (e.getSource() == radioNombre) {
+            labelEncontrado.setText("Ingrese palabra para buscar por Apellido y Nombre");
+            textBuscar.setText("");
+            textBuscar.removeKeyListener(soloNumeros);
             columna = 3;
         }
-        if(e.getSource() == radioDNI){
-            buscando.setText("Ingrese numero para buscar por DNI");
-            texto.setText("");            
-            texto.addKeyListener(soloNumeros);
+        if (e.getSource() == radioDNI) {
+            labelEncontrado.setText("Ingrese numero para buscar por DNI");
+            textBuscar.setText("");
+            textBuscar.addKeyListener(soloNumeros);
             columna = 5;
         }
 
     }
-       
+
     public void setTabla(Tabla tabla) {
         this.tabla = tabla;
     }
+
+    public void setConfiguracion(Configuracion configuracion) {
+        this.configuracion = configuracion;
+    }
+
 }

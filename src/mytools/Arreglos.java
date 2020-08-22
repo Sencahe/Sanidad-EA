@@ -54,7 +54,9 @@ public class Arreglos {
     private static String[] ordenTabla = {"De mayor a menor grado", "De menor a mayor grado", "Orden Alfabetico A-Z", "Orden Alfabetico Z-A"};
     private static String[] ordenTablaBD = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC", " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",
         " ORDER BY Apellido ASC, Nombre ASC, Grado DESC", " ORDER BY Apellido DESC, Nombre DESC, Grado DESC"};
-
+    
+    //=================================================================================
+    private static String[] meses = {"","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"};
     //=================================================================================
     //=================================================================================
     private Arreglos() {
@@ -285,5 +287,10 @@ public class Arreglos {
 
     public static String getOrdenTablaBD(int i) {
         return ordenTablaBD[i];
+    }
+    
+    //meses
+    public static String getMes(int i){
+        return meses[i];
     }
 }

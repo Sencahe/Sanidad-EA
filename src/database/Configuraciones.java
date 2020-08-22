@@ -3,29 +3,49 @@ package database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+import dialogs.Configuracion;
 
 public class Configuraciones extends BaseDeDatos{
     
+    Configuracion configuracion;
     
-    public void setLeyenda(){
+    public Configuraciones(Configuracion configuracion){
+        this.configuracion = configuracion;
+    }
+    
+    
+    public void setValores(){
         try {
-            PreparedStatement pst = super.getConnection().prepareStatement("Update Configuracion set Leyenda = ?");;
+            PreparedStatement pst = super.getConnection().prepareStatement("UPDATE Configuracion SET Leyenda = ? WHERE id = 1");
+            
+            pst.setString(1,configuracion.getTextLeyenda().getText().toUpperCase());
+            
+            pst.executeUpdate();        
+            
+            JOptionPane.showMessageDialog(null, "Se han guardado los cambios.");
+            
+            super.getConnection().close();          
             
         } catch (Exception e) {
         }
         
     }
     
-    public String getLeyenda(){
-        String leyenda = "";
+    public void getValores(){
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT (Leyenda) FROM Configuracion"
-                    + " WHERE id = 1");;
+                    + " WHERE id = 1");
+            
             ResultSet rs = pst.executeQuery();
-            leyenda = rs.getString(leyenda);
+            
+            configuracion.setFlagLeyenda(rs.getString("Leyenda"));   
+            
+            configuracion.restaurar();
+            
             super.getConnection().close();
+            
         } catch (Exception e) {
         }
-        return leyenda;
     }
 }
