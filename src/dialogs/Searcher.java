@@ -161,7 +161,7 @@ public class Searcher extends JDialog implements ActionListener {
             buscarSiguiente = true;
 
             while (buscarSiguiente) {
-                if (puntero == tabla.getTablas(categoria).getRowCount()) {
+                if (puntero == tabla.getTables(categoria).getRowCount()) {
                     mensaje.setText("");
                     puntero = 0;
                     if (!encontrado) {
@@ -169,12 +169,12 @@ public class Searcher extends JDialog implements ActionListener {
                         JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.", JLabel.CENTER));
                     }
                 } else {
-                    buscando = String.valueOf(tabla.getTablas(categoria).getValueAt(puntero, columna));
+                    buscando = String.valueOf(tabla.getTables(categoria).getValueAt(puntero, columna)).toLowerCase();
                     if (buscando.contains(buscar)) {
                         configuracion.configRow.setSelected(false);
                         tabla.getScroll(categoria).getVerticalScrollBar().setValue(puntero * 16);
-                        tabla.getTablas(categoria).setRowSelectionInterval(puntero, puntero);
-                        mensaje.setText((String) tabla.getTablas(categoria).getValueAt(puntero, 3));
+                        tabla.getTables(categoria).setRowSelectionInterval(puntero, puntero);
+                        mensaje.setText((String) tabla.getTables(categoria).getValueAt(puntero, 3));
                         buscarSiguiente = false;
                         encontrado = true;
                         puntero++;

@@ -182,11 +182,11 @@ public class DataBase {
 
             for (int i = 0; i < categorias.length + 1; i++) {
                 if (i != categorias.length) {
-                    cantTabla = tabla.getTablas(i).getRowCount();
-                    tabla.getResumen(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
+                    cantTabla = tabla.getTables(i).getRowCount();
+                    tabla.getSummary(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
                     total += cantTabla;
                 } else {
-                    tabla.getResumen(i).setText("TOTAL:  " + total);
+                    tabla.getSummary(i).setText("TOTAL:  " + total);
                 }
             }
 
@@ -260,7 +260,7 @@ public class DataBase {
                 significa que NO PASO NOVEDAD y se colocara en esa tabla
                 sin tener que modificar su tipo de parte 
                 */                
-                if (fecha.getDias(hasta) > 0) {
+                if (fecha.getDias(hasta)-1 > 0) {
                     fila[0] = ++num[3];
                     parte.getTableModel(3).addRow(fila);
                 } else {

@@ -153,7 +153,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
             headerRecuento.setReorderingAllowed(desplazar);
             for (int i = 0; i < 4; i++) {
                 //casualmente tanto tabla como parte tiene 4 tablas
-                JTableHeader headerTabla = tabla.getTablas(i).getTableHeader();
+                JTableHeader headerTabla = tabla.getTables(i).getTableHeader();
                 headerTabla.setReorderingAllowed(desplazar);
                 JTableHeader headerParte = parte.getTablas(i).getTableHeader();
                 headerParte.setReorderingAllowed(desplazar);
@@ -166,16 +166,16 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
             if (individualmente) {
                 recuento.getTable().setCellSelectionEnabled(individualmente);
                 for (int i = 0; i < 4; i++) {
-                    tabla.getTablas(i).setCellSelectionEnabled(individualmente);
+                    tabla.getTables(i).setCellSelectionEnabled(individualmente);
                     parte.getTablas(i).setCellSelectionEnabled(individualmente);
                 }
             } else {
                 recuento.getTable().setCellSelectionEnabled(individualmente);
                 recuento.getTable().setRowSelectionAllowed(!individualmente);
                 for (int i = 0; i < 4; i++) {
-                    tabla.getTablas(i).setCellSelectionEnabled(individualmente);
+                    tabla.getTables(i).setCellSelectionEnabled(individualmente);
                     parte.getTablas(i).setCellSelectionEnabled(individualmente);
-                    tabla.getTablas(i).setRowSelectionAllowed(!individualmente);
+                    tabla.getTables(i).setRowSelectionAllowed(!individualmente);
                     parte.getTablas(i).setRowSelectionAllowed(!individualmente);
                 }
             }

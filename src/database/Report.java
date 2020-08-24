@@ -73,12 +73,12 @@ public class Report extends DataBase {
                 p3.add("CARTA DE SITUACION - PERSONAL DE " + MyArrays.getCategorias(i).toUpperCase() + "\n\n\n");
                 document.add(p3);
                 p3.remove(0);
-                for (int j = -1; j < tabla.getTablas(i).getRowCount(); j++) { //itera sobre las filas                   
+                for (int j = -1; j < tabla.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
                     for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
                         if (j == -1) {
                             pdfTable[i].addCell(header[k]);
                         } else {
-                            content = String.valueOf(tabla.getTablas(i).getValueAt(j, k));
+                            content = String.valueOf(tabla.getTables(i).getValueAt(j, k));
                             Paragraph para = new Paragraph();
                             para.setFont(FontFactory.getFont("Times-Roman", 8, 0, BaseColor.BLACK));
                             para.add(!content.equals("null") ? content : "");
@@ -162,14 +162,14 @@ public class Report extends DataBase {
             String content;
             int num = 0;
             for (int i = 0; i < cicles; i++) { //itera sobre todas las tablas
-                for (int j = 0; j < tabla.getTablas(i).getRowCount(); j++) { //itera sobre las filas                   
+                for (int j = 0; j < tabla.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
                     for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
                         if (k == 0) {
                             content = String.valueOf(++num);
                         } else if (k == 5) {
                             content = "";
                         } else {
-                            content = String.valueOf(tabla.getTablas(i).getValueAt(j, k));
+                            content = String.valueOf(tabla.getTables(i).getValueAt(j, k));
                         }
                         Paragraph para = new Paragraph();
                         para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));

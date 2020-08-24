@@ -133,7 +133,7 @@ public class IMC extends JDialog implements ActionListener {
 
             tabla.update(7, tabla.getShowBySubUnity(), tabla.getRowOrdering());
 
-            mainFrame.eliminarChecksFiltros();
+            mainFrame.deleteChecksFilters();
             mainFrame.getMenuFiltroPPS().setIcon(mainFrame.getCheck());
             mainFrame.getItemIMC().setIcon(mainFrame.getCheck());
 

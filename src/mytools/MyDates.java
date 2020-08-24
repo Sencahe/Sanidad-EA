@@ -36,6 +36,11 @@ public class MyDates {
     public LocalDate toLocalDate(String localDate) {
         return LocalDate.parse(localDate);
     }
+    
+    public String userDateToLocalDate(String userDate){
+        LocalDate localDate = LocalDate.parse(userDate, dateTimeFormatter);
+        return localDate.toString();
+    }
 
     //------------------
     public Date toDate(LocalDate localDate) {

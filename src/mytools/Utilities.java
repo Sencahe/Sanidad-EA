@@ -1,6 +1,7 @@
 package mytools;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -8,11 +9,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 public class Utilities {
-    
-    
 
     private final Color colorTabla, colorFondo, colorBoton, colorFuenteBoton;
 
@@ -136,7 +139,6 @@ public class Utilities {
         return fuenteLabelInfo;
     }
 
-
     //-------------------------BOTON PERSONALIZADO------------------------------
     public JButton customButton() {
         JButton button = new JButton();
@@ -174,6 +176,39 @@ public class Utilities {
         return button;
     }
 
+    //----------------------TABLE CELL RENDERER---------------------------------
+    public TableCellRenderer sickCellRenderer() {
+        TableCellRenderer cellRenderer = new TableCellRenderer() {
+
+            DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+
+            MyDates myDates = new MyDates("dd/MM/yyyy");
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                if (column != 2 && column != 4) {
+                    defaultRenderer.setHorizontalAlignment(JLabel.CENTER);
+                } else {
+                    defaultRenderer.setHorizontalAlignment(JLabel.LEFT);
+                }
+
+                Component c = defaultRenderer.getTableCellRendererComponent(table,
+                        value, isSelected, hasFocus, row, column);
+
+                String date = String.valueOf(table.getModel().getValueAt(row, 7));
+                date = myDates.userDateToLocalDate(date);
+                int dias = myDates.getDias(date) - 1;
+                if (dias >= 0) {
+                    c.setForeground(Color.red);
+                }
+
+                return c;
+            }
+        };
+        return cellRenderer;
+    }
 
     //----------------------------KEY ADAPTERS----------------------------------
     public KeyAdapter bloquearLetras = new KeyAdapter() {

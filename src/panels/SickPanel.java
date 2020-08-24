@@ -14,7 +14,7 @@ import javax.swing.table.*;
 import mytools.Icons;
 
 public class SickPanel extends JPanel implements ActionListener {
-    
+
     public static final String TABLE_NAME = "Parte";
 
     private JScrollPane scrollContainer;
@@ -24,7 +24,7 @@ public class SickPanel extends JPanel implements ActionListener {
     private JLabel[] titles;
 
     private JTable[] tables;
-    
+
     private JScrollPane[] scrolls;
     private Dimension dimension;
 
@@ -52,7 +52,7 @@ public class SickPanel extends JPanel implements ActionListener {
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.getVerticalScrollBar().setUnitIncrement(16);
-        
+
         //TABLAS DEL PARTE------------------------------------------------------
         tables = new JTable[4];
         scrolls = new JScrollPane[4];
@@ -122,6 +122,7 @@ public class SickPanel extends JPanel implements ActionListener {
             tables[i].setBackground(utility.getColorTabla());
             tables[i].setFont(utility.getFuenteTabla());
             tables[i].setRowHeight(16);
+            tables[i].setDefaultRenderer(Object.class, utility.sickCellRenderer());
             //header
             JTableHeader header = tables[i].getTableHeader();
             header.setFont(utility.getFuenteHeader());
@@ -139,7 +140,7 @@ public class SickPanel extends JPanel implements ActionListener {
                 tables[i].getColumnModel().getColumn(j).setPreferredWidth(MyArrays.getTamañoColumnParte(j));
                 //centrado del contenido de las columnas
                 if (j != 2 && j != 4) {
-                    tables[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
+                    //tables[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
                 }
                 //ocultando la columna con el id
                 if (j == 11) {
@@ -158,7 +159,7 @@ public class SickPanel extends JPanel implements ActionListener {
             add(scrolls[i]);
             add(titles[i]);
         }
-                
+
         //BOTONES---------------------------------------------------------------
         buttonPersonnelPanel = utility.customButton();
         buttonPersonnelPanel.setText("Volver");
@@ -186,7 +187,7 @@ public class SickPanel extends JPanel implements ActionListener {
         buttonReport2.setText("<html><center>Parte sin<br>Diagnosticos</center></html>");
         buttonReport2.setBounds(1310, 15, 110, 35);
         buttonReport2.addActionListener(this);
-        add(buttonReport2);       
+        add(buttonReport2);
         //----------------------------------------------------------------------
         //FINALIZACION DE LOS COMPONENTES        
         DataBase db = new DataBase();
@@ -198,8 +199,9 @@ public class SickPanel extends JPanel implements ActionListener {
 
         updateWindow();
     }
-     //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //---------------------FONDO DEL PANEL--------------------------------------
+
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
@@ -242,6 +244,7 @@ public class SickPanel extends JPanel implements ActionListener {
         }
 
     }
+
     public void updateWindow() {
         int y = 90;
         for (int i = 0; i < 4; i++) {
@@ -260,6 +263,10 @@ public class SickPanel extends JPanel implements ActionListener {
             int idSick = (int) tables[i].getModel().getValueAt(pointer, 11);
             formularySick.obtenerDatos(idSick);
         }
+    }
+    
+    public void paintRow(int index){
+        
     }
 
     //--------------------------------------------------------------------------
@@ -296,7 +303,7 @@ public class SickPanel extends JPanel implements ActionListener {
             }
         });
     }
-    
+
     //--------------------------------------------------------------------------
     //-----------------------SETTERS Y GETTERS---------------------------------
     public DefaultTableModel getTableModel(int index) {
@@ -330,5 +337,6 @@ public class SickPanel extends JPanel implements ActionListener {
     public JButton getButtonReCountPanel() {
         return buttonReCountPanel;
     }
+
 
 }

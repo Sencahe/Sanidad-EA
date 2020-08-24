@@ -367,11 +367,11 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         return (DefaultTableModel) tables[cat].getModel();
     }
 
-    public JLabel getResumen(int cat) {
+    public JLabel getSummary(int cat) {
         return labelsSummary[cat];
     }
 
-    public JTable getTablas(int cat) {
+    public JTable getTables(int cat) {
         return tables[cat];
     }
 

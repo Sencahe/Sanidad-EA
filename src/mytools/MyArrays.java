@@ -25,7 +25,7 @@ public class MyArrays {
     //private static String[] columnasBDParte = {};
 
     private static String[] formularioBD = {  //textField
-        "Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente", 
+        "Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente","DM", 
         "Categoria", "Grado", "Destino", "Aptitud", "PPS", //comboBoxes
         "FechaNacimiento", "Anexo27", //dateChooser
         "D", "H", "A", "T", "Act", "Inf", //checkBoxes
@@ -33,7 +33,8 @@ public class MyArrays {
         "Parte"};  //flags
     //=================================================================================
     //ARREGLOS PARA LOS COMPONENTES DE FORMULARIO y LA BASE DE DATOS
-    private static String[] textField = {"Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente"};
+    private static String[] textField = {"Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", 
+        "Observaciones", "Legajo", "Expediente","DM"};
     private static String[] comboBox = {"Categoria", "Grado", "Destino", "Aptitud", "PPS"};
     private static String[] dateChooser = {"FechaNacimiento", "Anexo27"};
     private static String[] checkBox = {"D", "H", "A", "T", "Act", "Inf"};

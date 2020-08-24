@@ -65,7 +65,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         Utilities utilidad = mainFrame.getUtility();
         Icons iconos = mainFrame.getIcons();
         //PROPIEDADES DEL FRAME-------------------------------------------------
-        setSize(500, 530);
+        setSize(500, 550);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Nuevo Registro");
@@ -270,6 +270,10 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[16].setText("Nro de Expediente");
         textField[9].setBounds(195, 445, 140, 20);
         textField[9].setEnabled(false);
+        //DM TEXTFIELD10
+        labels[17].setBounds(15, 465, 120, 20);
+        labels[17].setText("D.M.");
+        textField[10].setBounds(15, 485, 140, 20);
         //CheckBoxes D 0 - H 1 - A 2 - T 3 - ACT 4 - INF 5
         int X = 15;
         for (int i = 0; i < checkBox.length; i++) {
@@ -372,7 +376,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                     enviar.actualizar(tabla);
                     enviar = null;
                     try {
-                        tabla.getTablas(tabla.getTabbedPane().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);
+                        tabla.getTables(tabla.getTabbedPane().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);
                     } catch (Exception ex) {
                     }
                     Vaciar();
