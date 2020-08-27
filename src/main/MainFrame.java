@@ -90,14 +90,14 @@ public class MainFrame extends JFrame implements ActionListener {
         reCountPanel.setConfig(configurator);
         personnelFormulary.setTabla(personnelPanel);
         personnelFormulary.setFormParte(sickFormulary);
-        sickFormulary.setParte(sickPanel);
+        sickFormulary.setSickPanel(sickPanel);
         sickFormulary.setFormulario(personnelFormulary);
-        searcher.setTabla(personnelPanel);
-        searcher.setConfiguracion(configurator);
-        imc.setTabla(personnelPanel);
-        configurator.setTabla(personnelPanel);
-        configurator.setParte(sickPanel);
-        configurator.setRecuento(reCountPanel);
+        searcher.setPersonnelPanel(personnelPanel);
+        searcher.setConfigurator(configurator);
+        imc.setPersonnelPanel(personnelPanel);
+        configurator.setPersonnelPanel(personnelPanel);
+        configurator.setSickPanel(sickPanel);
+        configurator.setReCountPanel(reCountPanel);
         listGenerator.setTabla(personnelPanel);
 
         //PROPIEDADES DEL FRAME
@@ -109,7 +109,7 @@ public class MainFrame extends JFrame implements ActionListener {
         setSize(x, y);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setIconImage(icons.getIconoSanidad().getImage());
+        setIconImage(icons.getIconHealthService().getImage());
         setLocationRelativeTo(null);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -147,7 +147,7 @@ public class MainFrame extends JFrame implements ActionListener {
         menuBar.add(menuFiltrar);
         //ITEM LISTA COMPLETA
         itemListaCompleta = new JMenuItem("Lista Completa");
-        itemListaCompleta.setIcon(iconos.getIconoRefrescar());
+        itemListaCompleta.setIcon(iconos.getIconRefresh());
         itemListaCompleta.addActionListener(this);
         menuFiltrar.add(itemListaCompleta);
         JPopupMenu.Separator separador1 = new JPopupMenu.Separator();
@@ -170,9 +170,9 @@ public class MainFrame extends JFrame implements ActionListener {
         //Aptitud
         menuFiltroAptitud = new JMenu("Aptitud");
         menuFiltrar.add(menuFiltroAptitud);
-        itemsAptitud = new JMenuItem[MyArrays.getAptitudLength()];
+        itemsAptitud = new JMenuItem[MyArrays.getAptitudeLength()];
         for (int i = 0; i < itemsAptitud.length; i++) {
-            itemsAptitud[i] = new JMenuItem(MyArrays.getAptitud(i));
+            itemsAptitud[i] = new JMenuItem(MyArrays.getAptitude(i));
             itemsAptitud[i].addActionListener(this);
             menuFiltroAptitud.add(itemsAptitud[i]);
         }
@@ -180,14 +180,14 @@ public class MainFrame extends JFrame implements ActionListener {
         //Patologias
         menuPatologias = new JMenu("Patologias");
         menuFiltrar.add(menuPatologias);
-        itemsPatologias = new JMenuItem[MyArrays.getPatologiasLength()];
+        itemsPatologias = new JMenuItem[MyArrays.getPathologiesLength()];
         for (int i = 0; i < itemsPatologias.length; i++) {
             if (i == itemsPatologias.length - 1) {
                 JPopupMenu.Separator separadorPatologias = new JPopupMenu.Separator();
                 menuPatologias.add(separadorPatologias);
                 separadorPatologias = null;
             }
-            itemsPatologias[i] = new JMenuItem(MyArrays.getPatologias(i));
+            itemsPatologias[i] = new JMenuItem(MyArrays.getPathologies(i));
             itemsPatologias[i].addActionListener(this);
             menuPatologias.add(itemsPatologias[i]);
         }
@@ -201,9 +201,9 @@ public class MainFrame extends JFrame implements ActionListener {
         //Destinos
         menuDestinos = new JMenu("Mostrar por destino");
         menuFiltrar.add(menuDestinos);
-        itemsDestinos = new JMenuItem[MyArrays.getDestinosLength()];
+        itemsDestinos = new JMenuItem[MyArrays.getSubUnitiesLength()];
         for (int i = 0; i < itemsDestinos.length; i++) {
-            itemsDestinos[i] = new JMenuItem(MyArrays.getDestinos(i));
+            itemsDestinos[i] = new JMenuItem(MyArrays.getSubUnities(i));
             itemsDestinos[i].addActionListener(this);
             menuDestinos.add(itemsDestinos[i]);
         }
@@ -214,9 +214,9 @@ public class MainFrame extends JFrame implements ActionListener {
         //ordenamiento de la tabla
         menuOrdenar = new JMenu("Ordenar por...");
         menuFiltrar.add(menuOrdenar);
-        itemsOrdenar = new JMenuItem[MyArrays.getOrdenTabla().length];
+        itemsOrdenar = new JMenuItem[MyArrays.getOrderPersonnelMenu().length];
         for (int i = 0; i < itemsOrdenar.length; i++) {
-            itemsOrdenar[i] = new JMenuItem(MyArrays.getOrdenTabla(i));
+            itemsOrdenar[i] = new JMenuItem(MyArrays.getOrderPersonnelMenu(i));
             itemsOrdenar[i].addActionListener(this);
             menuOrdenar.add(itemsOrdenar[i]);
         }
@@ -233,7 +233,7 @@ public class MainFrame extends JFrame implements ActionListener {
         menuBar.add(menuConfig);
         itemConfig = new JMenuItem("Configurar");
         itemConfig.addActionListener(this);
-        itemConfig.setIcon(iconos.getIconoConfig());
+        itemConfig.setIcon(iconos.getIconConfig());
         menuConfig.add(itemConfig);
         //MENU REFERENCIAS--------------------------------- 
         menuRef = new JMenu("Ref.");

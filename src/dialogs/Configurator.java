@@ -24,17 +24,17 @@ import panels.ReCountPanel;
 
 public class Configurator extends JDialog implements ActionListener, ChangeListener {
 
-    private PersonnelPanel tabla;
-    private SickPanel parte;
-    private ReCountPanel recuento;
+    private PersonnelPanel personnelPanel;
+    private SickPanel sickPanel;
+    private ReCountPanel reCountPanel;
     private MainFrame mainFrame;
 
     public JCheckBox configColumns, configRow;
 
-    private JButton botonRestaurar, botonGuardar;
+    private JButton buttonRestore, buttonSave;
     
-    private JTextField textLeyenda;
-    private String flagLeyenda;
+    private JTextField textLeyend;
+    private String flagLeyend;
 
     public Configurator(Frame parent, boolean modal) {
         super(parent, modal);
@@ -45,7 +45,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                restaurar();                
+                restore();                
                 dispose();
                 System.gc();
             }
@@ -55,14 +55,14 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
 
     public void componentes() {
         // PROPIEDADES DEL FRAME
-        Utilities utilidad = mainFrame.getUtility();
-        Icons iconos = mainFrame.getIcons();
+        Utilities utility = mainFrame.getUtility();
+        Icons icons = mainFrame.getIcons();
         // FRAME DEL BUSCADOR
         setSize(390, 250);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Configuraciones");
-        setIconImage(iconos.getIconoSanidad().getImage());
+        setIconImage(icons.getIconHealthService().getImage());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         JPanel container = new JPanel() {
             @Override
@@ -78,7 +78,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        container.setBackground(utilidad.getColorFondo());
+        container.setBackground(utility.getColorBackground());
         Dimension dimension = new Dimension(390, 270);
         container.setPreferredSize(dimension);
         container.setLayout(null);
@@ -90,41 +90,41 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         configColumns.setSelected(true);
         configColumns.addChangeListener(this);
         configColumns.setFocusPainted(false);
-        configColumns.setFont(utilidad.getFuenteLabelsFormulario());
+        configColumns.setFont(utility.getFontLabelFormulary());
         configColumns.setOpaque(false);
         container.add(configColumns);
         configRow = new JCheckBox("Seleccionar las celdas individualmente (Ctrl+E)");
         configRow.setBounds(15, 60, 350, 30);
         configRow.addChangeListener(this);
         configRow.setFocusPainted(false);
-        configRow.setFont(utilidad.getFuenteLabelsFormulario());
+        configRow.setFont(utility.getFontLabelFormulary());
         configRow.setOpaque(false);
         container.add(configRow);
         //botones
-        botonRestaurar = new JButton("<html>Ordenar Tablas</html>");
-        botonRestaurar.setBounds(15, 100, 115, 25);
-        botonRestaurar.addActionListener(this);
-        botonRestaurar.setFocusPainted(false);
-        container.add(botonRestaurar);
+        buttonRestore = new JButton("<html>Ordenar Tablas</html>");
+        buttonRestore.setBounds(15, 100, 115, 25);
+        buttonRestore.addActionListener(this);
+        buttonRestore.setFocusPainted(false);
+        container.add(buttonRestore);
         JLabel labelRestaurar = new JLabel("(Ctrl+T)");
         labelRestaurar.setBounds(140, 95, 70, 30);
-        labelRestaurar.setFont(utilidad.getFuenteLabelsFormulario());
+        labelRestaurar.setFont(utility.getFontLabelFormulary());
         container.add(labelRestaurar);
         //textfield
-        textLeyenda = new JTextField();
-        textLeyenda.setBounds(15, 140, 300, 25);
-        container.add(textLeyenda);
-        botonGuardar = new JButton(iconos.getIconoSave());
-        botonGuardar.setBounds(320, 140, 50, 25);
-        botonGuardar.addActionListener(this);
-        botonGuardar.setFocusPainted(false);
-        container.add(botonGuardar);
+        textLeyend = new JTextField();
+        textLeyend.setBounds(15, 140, 300, 25);
+        container.add(textLeyend);
+        buttonSave = new JButton(icons.getIconoSave());
+        buttonSave.setBounds(320, 140, 50, 25);
+        buttonSave.addActionListener(this);
+        buttonSave.setFocusPainted(false);
+        container.add(buttonSave);
         //obtener de la base de datos
-        valoresGuardados(false);
+        savedValues(false);
         //fin        
         this.getContentPane().add(container);
-        iconos = null;
-        utilidad = null;
+        icons = null;
+        utility = null;
 
     }
 
@@ -132,13 +132,13 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
     @Override
     public void actionPerformed(ActionEvent e) {
         //Ordenamiento de las tablas
-        if (e.getSource() == botonRestaurar) {
-            tabla.ordenarColumnas();
-            parte.restoreColumns();
-            recuento.restoreColumns();
+        if (e.getSource() == buttonRestore) {
+            personnelPanel.ordenarColumnas();
+            sickPanel.restoreColumns();
+            reCountPanel.restoreColumns();
         }
-        if (e.getSource() == botonGuardar) {
-            valoresGuardados(true);
+        if (e.getSource() == buttonSave) {
+            savedValues(true);
         }
     }
 
@@ -149,13 +149,13 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         if (e.getSource() == configColumns) {
             boolean desplazar = configColumns.isSelected();
 
-            JTableHeader headerRecuento = recuento.getTable().getTableHeader();
+            JTableHeader headerRecuento = reCountPanel.getTable().getTableHeader();
             headerRecuento.setReorderingAllowed(desplazar);
             for (int i = 0; i < 4; i++) {
                 //casualmente tanto tabla como parte tiene 4 tablas
-                JTableHeader headerTabla = tabla.getTables(i).getTableHeader();
+                JTableHeader headerTabla = personnelPanel.getTables(i).getTableHeader();
                 headerTabla.setReorderingAllowed(desplazar);
-                JTableHeader headerParte = parte.getTablas(i).getTableHeader();
+                JTableHeader headerParte = sickPanel.getTablas(i).getTableHeader();
                 headerParte.setReorderingAllowed(desplazar);
             }
         }
@@ -164,19 +164,19 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
             boolean individualmente = configRow.isSelected();
 
             if (individualmente) {
-                recuento.getTable().setCellSelectionEnabled(individualmente);
+                reCountPanel.getTable().setCellSelectionEnabled(individualmente);
                 for (int i = 0; i < 4; i++) {
-                    tabla.getTables(i).setCellSelectionEnabled(individualmente);
-                    parte.getTablas(i).setCellSelectionEnabled(individualmente);
+                    personnelPanel.getTables(i).setCellSelectionEnabled(individualmente);
+                    sickPanel.getTablas(i).setCellSelectionEnabled(individualmente);
                 }
             } else {
-                recuento.getTable().setCellSelectionEnabled(individualmente);
-                recuento.getTable().setRowSelectionAllowed(!individualmente);
+                reCountPanel.getTable().setCellSelectionEnabled(individualmente);
+                reCountPanel.getTable().setRowSelectionAllowed(!individualmente);
                 for (int i = 0; i < 4; i++) {
-                    tabla.getTables(i).setCellSelectionEnabled(individualmente);
-                    parte.getTablas(i).setCellSelectionEnabled(individualmente);
-                    tabla.getTables(i).setRowSelectionAllowed(!individualmente);
-                    parte.getTablas(i).setRowSelectionAllowed(!individualmente);
+                    personnelPanel.getTables(i).setCellSelectionEnabled(individualmente);
+                    sickPanel.getTablas(i).setCellSelectionEnabled(individualmente);
+                    personnelPanel.getTables(i).setRowSelectionAllowed(!individualmente);
+                    sickPanel.getTablas(i).setRowSelectionAllowed(!individualmente);
                 }
             }
         }
@@ -184,45 +184,45 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
     }
 
     //------------------------------- VALORES ----------------------------------
-    private void valoresGuardados(boolean cambios) {
-        Configurations configurar = new Configurations(this);
+    private void savedValues(boolean cambios) {
+        Configurations config = new Configurations(this);
         if(cambios){
-           configurar.setValores(); 
+           config.setValues(); 
         }     
-        configurar.getValores();
+        config.getValues();
         
-        configurar = null;
+        config = null;
     }
     
-    public void restaurar(){
-        textLeyenda.setText(flagLeyenda);     
+    public void restore(){
+        textLeyend.setText(flagLeyend);     
         
     }
 
     //-------------------------GETTERS Y SETTERS--------------------------------
-    public void setTabla(PersonnelPanel tabla) {
-        this.tabla = tabla;
+    public void setPersonnelPanel(PersonnelPanel personnelPanel) {
+        this.personnelPanel = personnelPanel;
     }
 
-    public void setParte(SickPanel parte) {
-        this.parte = parte;
+    public void setSickPanel(SickPanel sickPanel) {
+        this.sickPanel = sickPanel;
     }
 
-    public void setRecuento(ReCountPanel recuento) {
-        this.recuento = recuento;
+    public void setReCountPanel(ReCountPanel reCountPanel) {
+        this.reCountPanel = reCountPanel;
     }
 
-    public JTextField getTextLeyenda() {
-        return textLeyenda;
+    public JTextField getTextLeyend() {
+        return textLeyend;
     }
 
     
-    public String getFlagLeyenda() {
-        return flagLeyenda;
+    public String getFlagLeyend() {
+        return flagLeyend;
     }
 
-    public void setFlagLeyenda(String flagLeyenda) {
-        this.flagLeyenda = flagLeyenda;
+    public void setFlagLeyend(String flagLeyend) {
+        this.flagLeyend = flagLeyend;
     }
     
 }

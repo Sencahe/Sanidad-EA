@@ -20,8 +20,8 @@ public class References extends javax.swing.JDialog {
     public References(java.awt.Frame parent, boolean modal) {       
         super(parent, modal);
         this.mainFrame = (MainFrame) parent;
-        Icons iconos = mainFrame.getIcons();
-        Utilities utilidad = mainFrame.getUtility();
+        Icons icons = mainFrame.getIcons();
+        Utilities utility = mainFrame.getUtility();
         //---------------------------------
         //PROPIEDADES DEL FRAME
             setSize(280, 310);
@@ -29,7 +29,7 @@ public class References extends javax.swing.JDialog {
             setLocationRelativeTo(null);
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             setTitle("Referencias");
-            setIconImage(iconos.getIconoSanidad().getImage());
+            setIconImage(icons.getIconHealthService().getImage());
              JPanel container = new JPanel() {
                 @Override
                 protected void paintComponent(Graphics grphcs) {
@@ -44,66 +44,66 @@ public class References extends javax.swing.JDialog {
                     g2d.fillRect(0, 0, getWidth(), getHeight());
                 }
             };
-            container.setBackground(utilidad.getColorFondo());
+            container.setBackground(utility.getColorBackground());
             Dimension dimension = new Dimension(280, 310);
             container.setPreferredSize(dimension);
             container.setLayout(null);
             dimension = null;
         //LABELS CON REFERENCIAS
-        Font font = utilidad.getFuenteLabelsRef();
+        Font font = utility.getFuenteLabelsRef();
         int width = 250;
         int heigt = 30;
         int x = 15;
         int y = 15;
-        int espacio = 25;
+        int separation = 25;
         JLabel IMC = new JLabel("IMC: Indice de Masa Coportal");
         IMC.setBounds(x, y, width, heigt);
         IMC.setFont(font);
         container.add(IMC);
         IMC = null;
-        y += espacio;
+        y += separation;
         JLabel PPS = new JLabel("PPS: Programa Peso Saludable");
         PPS.setBounds(x, y, width, heigt);
         PPS.setFont(font);
         container.add(PPS);
         PPS = null;
-        y += espacio;
+        y += separation;
         JLabel D = new JLabel("D: Diabetes");
         D.setBounds(x, y, width, heigt);
         D.setFont(font);
         container.add(D);
         D = null;
-        y += espacio;
+        y += separation;
         JLabel H = new JLabel("H: Hipertension");
         H.setBounds(x, y, width, heigt);
         H.setFont(font);
         container.add(H);
         H = null;
-        y += espacio;
+        y += separation;
         JLabel A = new JLabel("A: Asma (Problemas Respiratorios)");
         A.setBounds(x, y, width, heigt);
         A.setFont(font);
         container.add(A);
         A = null;
-        y += espacio;
+        y += separation;
         JLabel T = new JLabel("T: Tabaquismo");
         T.setBounds(x, y, width, heigt);
         T.setFont(font);
         container.add(T);
         T = null;
-        y += espacio;
+        y += separation;
         JLabel AJM = new JLabel("AJM: Actuacion de Justicia Militar");
         AJM.setBounds(x, y, width, heigt);
         AJM.setFont(font);
         container.add(AJM);
         AJM = null;
-        y += espacio;
+        y += separation;
         JLabel Act = new JLabel("Act: Acta (AJM)");
         Act.setBounds(x, y, width, heigt);
         Act.setFont(font);
         container.add(Act);
         Act = null;
-        y += espacio;
+        y += separation;
         JLabel Inf = new JLabel("Inf: Informacion (AJM)");
         Inf.setBounds(x, y, width, heigt);
         Inf.setFont(font);
@@ -112,7 +112,7 @@ public class References extends javax.swing.JDialog {
         font = null;
         //---------------------------------      
         this.getContentPane().add(container);
-        utilidad = null;
-        iconos = null;
+        utility = null;
+        icons = null;
     }
 }

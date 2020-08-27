@@ -19,11 +19,11 @@ public class DataBase {
     private Connection cn;
 
     public DataBase() {
-        this.cn = conectar();
+        this.cn = connect();
     }
 
     //------------------------CONECTAR------------------------------------------
-    private Connection conectar() {
+    private Connection connect() {
         try {
             Connection cn = DriverManager.getConnection(SQLITE_URL);
             return cn;
@@ -35,7 +35,7 @@ public class DataBase {
     }
 
     public void setConnection() {
-        this.cn = conectar();
+        this.cn = connect();
     }
 
     public Connection getConnection() {
@@ -58,15 +58,15 @@ public class DataBase {
     //--------------------------------------------------------------------------
     //------------------------METODO ACTUALIZAR---------------------------------
     //-------------------------TABLA PERSONAL-----------------------------------
-    public void actualizar(PersonnelPanel tabla) {
+    public void update(PersonnelPanel personnelPanel) {
         //OBJETOS auxiliares----------------------------------------------------
-        MyDates fecha = new MyDates(MyDates.USER_DATE_FORMAT);
-        String grados[][] = MyArrays.getGrados();
-        int filter = tabla.getFilter();
+        MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
+        String[][] grades = MyArrays.getGrades();
+        int filter = personnelPanel.getFilter();
         
         //VACIADO DE LA TABLA ACTUAL--------------------------------------------
-        for (int i = 0; i < 4; i++) {
-            tabla.getTableModel(i).setRowCount(0);
+        for (int i = 0; i < MyArrays.getCategoriesLength(); i++) {
+            personnelPanel.getTableModel(i).setRowCount(0);
         }
         
         //FILTRAR TABLA---------------------------------------------------------           
@@ -75,22 +75,22 @@ public class DataBase {
             case 1:
                 statement.append(" WHERE (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,5,2)||SUBSTR(Anexo27,7,2)) <= ");
                 statement.append("\"");
-                statement.append(fecha.getYearAgo());
+                statement.append(myDates.getYearAgo());
                 statement.append("\"");
                 break;
             case 2:
                 statement.append(" WHERE PPS = \"");
-                statement.append(tabla.getPPSFilter());
+                statement.append(personnelPanel.getPPSFilter());
                 statement.append("\"");
                 break;
             case 3:
                 statement.append(" WHERE Aptitud = \"");
-                statement.append(tabla.getAptitudeFilter());
+                statement.append(personnelPanel.getAptitudeFilter());
                 statement.append("\"");
                 break;
             case 4:
                 statement.append(" WHERE ");
-                statement.append(tabla.getPathologyColumn());
+                statement.append(personnelPanel.getPathologyColumn());
                 statement.append(" IS NOT NULL");
                 break;
             case 5:
@@ -101,9 +101,9 @@ public class DataBase {
                 break;
             case 7:
                 statement.append(" WHERE IMC ");
-                statement.append(tabla.getIMCoperator());
+                statement.append(personnelPanel.getIMCoperator());
                 statement.append(" ");
-                statement.append(tabla.getIMCfilter());
+                statement.append(personnelPanel.getIMCfilter());
                 break;
             case 8:
                 statement.append(" WHERE D IS NOT NULL OR H IS NOT NULL OR A IS NOT NULL");
@@ -112,85 +112,86 @@ public class DataBase {
         }
         
         // MOSTRAR POR DESTINOS-------------------------------------------------        
-        if (tabla.getShowBySubUnity() != 0) {
+        if (personnelPanel.getShowBySubUnity() != 0) {
             statement.append(filter > 0 ? " AND Destino = \"" : " WHERE Destino = \"");
-            statement.append(MyArrays.getDestinos(tabla.getShowBySubUnity()));
+            statement.append(MyArrays.getSubUnities(personnelPanel.getShowBySubUnity()));
             statement.append("\"");
         }
         
         //ORDENAR LA TABLA------------------------------------------------------ 
-        statement.append(MyArrays.getOrdenTablaBD(tabla.getRowOrdering()));
+        statement.append(MyArrays.getOrderPersonnel(personnelPanel.getRowOrdering()));
 
         //CONSULTA A BASE DE DATOS----------------------------------------------        
         try {
             if (cn == null || cn.isClosed()) {
-                cn = conectar();
+                cn = connect();
             }
             //consulta a la base de datos
             PreparedStatement pst = cn.prepareStatement(statement.toString());
             ResultSet rs = pst.executeQuery();
 
             //llenado de la tabla
-            int num[] = new int[MyArrays.getCategoriasLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
-            int categoria;
+            int num[] = new int[MyArrays.getCategoriesLength()]; //arreglo para el numero de orden en las 4 tabla distintas 
+            int categorie;
             int aux;
 
-            Object[] fila = new Object[MyArrays.getColumnasBDLength() + 1];
-            String[] columnas = MyArrays.getColumnasBD();
+            Object[] row = new Object[MyArrays.getPersonnelPanelDBLength() + 1];
+            String[] columnsName = MyArrays.getPersonnelPanelDB();
 
             while (rs.next()) {
-                categoria = rs.getInt("Categoria"); //obteniendo la categoria                                                           
-                fila[0] = ++num[categoria];
+                categorie = rs.getInt("Categoria"); //obteniendo la categoria                                                           
+                row[0] = ++num[categorie];
                 aux = 1; //indice inicial para el resto de los datos que iran en la fila
-                for (String i : columnas) {
+                for (String i : columnsName) {
                     if (rs.getObject(i) != null) {
                         switch (i) {
                             case "Grado":
-                                fila[aux] = grados[categoria][rs.getInt("Grado")];
+                                row[aux] = grades[categorie][rs.getInt("Grado")];
                                 break;
                             case "Apellido":
-                                fila[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
+                                row[aux] = rs.getString("Apellido") + " " + rs.getString("Nombre");
                                 break;
                             case "Anexo27":
-                                fila[aux] = fecha.toUserDate(rs.getString("Anexo27"));
+                                row[aux] = myDates.toUserDate(rs.getString("Anexo27"));
                                 break;
                             case "FechaNacimiento":
-                                fila[aux] = fecha.getEdad(rs.getString(i));
+                                row[aux] = myDates.getEdad(rs.getString(i));
                                 break;
                             default:
-                                fila[aux] = rs.getObject(i);
+                                row[aux] = rs.getObject(i);
                                 break;
                         }
                     }
                     aux++;
                 }
-                tabla.getTableModel(categoria).addRow(fila);
-                Arrays.fill(fila, null);
+                personnelPanel.getTableModel(categorie).addRow(row);
+                Arrays.fill(row, null);
             }
             cn.close();
             cn = null;
-            fila = null;
+            row = null;
             num = null;
             rs = null;
             pst = null;
             statement = null;
-            fecha = null;
+            myDates = null;
+            
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
-            String[] categorias = MyArrays.getCategorias();
-            int cantTabla;
+            String[] categories = MyArrays.getCategories();
+            int rowCount;
             int total = 0;
 
-            for (int i = 0; i < categorias.length + 1; i++) {
-                if (i != categorias.length) {
-                    cantTabla = tabla.getTables(i).getRowCount();
-                    tabla.getSummary(i).setText(categorias[i].toUpperCase() + ":  " + cantTabla);
-                    total += cantTabla;
+            for (int i = 0; i < categories.length + 1; i++) {
+                if (i != categories.length) {
+                    rowCount = personnelPanel.getTables(i).getRowCount();
+                    personnelPanel.getSummary(i).setText(categories[i].toUpperCase() + ":  " + rowCount);
+                    total += rowCount;
                 } else {
-                    tabla.getSummary(i).setText("TOTAL:  " + total);
+                    personnelPanel.getSummary(i).setText("TOTAL:  " + total);
                 }
             }
 
-            categorias = null;
+            categories = null;
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
@@ -201,18 +202,18 @@ public class DataBase {
     //--------------------------------------------------------------------------
     //------------------------METODO ACTUALIZAR---------------------------------
     //---------------------------TABLA PARTE------------------------------------
-    public void actualizar(SickPanel parte) {
-        MyDates fecha = new MyDates(MyDates.USER_DATE_FORMAT);
-        String grados[][] = MyArrays.getGrados();
+    public void update(SickPanel sickPanel) {
+        MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
+        String[][] grades = MyArrays.getGrades();
 
         //vaciado del Parte
         for (int i = 0; i < 4; i++) {
-            parte.getTableModel(i).setRowCount(0);
+            sickPanel.getTableModel(i).setRowCount(0);
         }
 
         try {
             if (cn == null || cn.isClosed()) {
-                cn = conectar();
+                cn = connect();
             }
             //Consulto los datos necesarios de Personal y de Parte para llenar las tablas de Parte de Sanidad
             PreparedStatement pst = cn.prepareStatement("SELECT Categoria, Grado, Apellido, Nombre, Destino, Expediente "
@@ -222,63 +223,62 @@ public class DataBase {
             ResultSet rs = pst.executeQuery();
 
             //variables y objetos para recuperar la informacion y desplegarla en las tablas de Parte
-            int num[] = new int[MyArrays.getCategoriasLength()];
-            Object fila[] = new Object[MyArrays.getColumnasParteLength()];
+            int num[] = new int[MyArrays.getCategoriesLength()];
+            Object[] row = new Object[MyArrays.getSickColumnsLength()];
 
-            int categoria;
-            int tipoParte;
+            int categorie;
+            int sickType;
             String cie;
-            String hasta;
-            String desde;
-            String expediente;
+            String until;
+            String since;
+            String record;
 
             while (rs.next()) {
 
                 //informacion de Personal
-                categoria = rs.getInt("Categoria");
-                fila[1] = grados[categoria][rs.getInt("Grado")];
-                fila[2] = rs.getString("Apellido") + " " + rs.getString("Nombre");
-                fila[3] = rs.getString("Destino");
+                categorie = rs.getInt("Categoria");
+                row[1] = grades[categorie][rs.getInt("Grado")];
+                row[2] = rs.getString("Apellido") + " " + rs.getString("Nombre");
+                row[3] = rs.getString("Destino");
 
                 //informacion de Parte
                 cie = rs.getString("CIE");
-                hasta = rs.getString("Hasta");
-                desde = rs.getString("Desde");
-                expediente = rs.getString("Expediente");
+                until = rs.getString("Hasta");
+                since = rs.getString("Desde");
+                record = rs.getString("Expediente");
 
-                fila[4] = rs.getString("Diagnostico");
-                fila[5] = cie != null ? cie : "";
-                fila[6] = fecha.toUserDate(desde);
-                fila[7] = fecha.toUserDate(hasta);
-                fila[8] = fecha.getDias(desde);
-                fila[9] = expediente != null ? expediente : "No";
-                fila[10] = rs.getString("Observacion");
-                fila[11] = rs.getInt("id");
-                tipoParte = rs.getInt("TipoParte");
+                row[4] = rs.getString("Diagnostico");
+                row[5] = cie != null ? cie : "";
+                row[6] = myDates.toUserDate(since);
+                row[7] = myDates.toUserDate(until);
+                row[8] = myDates.getDays(since);
+                row[9] = record != null ? record : "No";
+                row[10] = rs.getString("Observacion");
+                row[11] = rs.getInt("id");
+                sickType = rs.getInt("TipoParte");
                 /*
-                si getDias() con la fecha dedevuelve un numero positivo 
-                significa que NO PASO NOVEDAD y se colocara en esa tabla
+                si getDias() con la fecha de until devuelve un numero positivo 
+                significa que NO PASO NOVEDAD, es decir que no se presento en la 
+                fecha de control. En consecuencia se lo colocara en esa tabla
                 sin tener que modificar su tipo de parte 
                 */                
-                if (fecha.getDias(hasta)-1 > 0) {
-                    fila[0] = ++num[3];
-                    parte.getTableModel(3).addRow(fila);
+                if (myDates.getDays(until)-1 > 0) {
+                    row[0] = ++num[3];
+                    sickPanel.getTableModel(3).addRow(row);
                 } else {
-                    fila[0] = ++num[tipoParte];
-                    parte.getTableModel(tipoParte).addRow(fila);
+                    row[0] = ++num[sickType];
+                    sickPanel.getTableModel(sickType).addRow(row);
                 }
-                Arrays.fill(fila, null);
+                Arrays.fill(row, null);
             }
             cn.close();
-            fila = null;
+            row = null;
             num = null;
-            fecha = null;
+            myDates = null;
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Actualizar " + e
                     + "\nContactese con el desarrolador para resolver el problema.");
         }
-
     }
-
 }

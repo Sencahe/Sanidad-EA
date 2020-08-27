@@ -20,13 +20,13 @@ import panels.PersonnelPanel;
 public class IMC extends JDialog implements ActionListener {
 
     private ButtonGroup bg;
-    private JRadioButton radioMayor;
-    private JRadioButton radioMenor;
+    private JRadioButton radioHigher;
+    private JRadioButton radioLesser;
 
     private JTextField imc;
-    private JButton filtrar;
+    private JButton filter;
 
-    private PersonnelPanel tabla;
+    private PersonnelPanel personnelPanel;
     private MainFrame mainFrame;
 
     public IMC(Frame parent, boolean modal) {
@@ -38,7 +38,7 @@ public class IMC extends JDialog implements ActionListener {
         setLocationRelativeTo(null);
         setResizable(false);
         setTitle("Filtrar por IMC");
-        componentes();
+        components();
         
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -48,9 +48,9 @@ public class IMC extends JDialog implements ActionListener {
 
     }
 
-    private void componentes() {
+    private void components() {
         //------------------------------
-        Utilities utilidad = new Utilities();
+        Utilities utility = new Utilities();
         //Fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -66,37 +66,37 @@ public class IMC extends JDialog implements ActionListener {
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        container.setBackground(utilidad.getColorFondo());
+        container.setBackground(utility.getColorBackground());
         Dimension dimension = new Dimension(250, 140);
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
         //Label
         JLabel label = new JLabel("Filtrar por IMC que sea: ");
-        label.setFont(utilidad.getFuenteLabelsFormulario());
+        label.setFont(utility.getFontLabelFormulary());
         label.setBounds(30, 15, 160, 30);
         container.add(label);
         //RadioButtons
         bg = new ButtonGroup();
-        radioMayor = new JRadioButton("Mayor a");
-        radioMayor.setBounds(30, 45, 70, 30);
-        radioMayor.addActionListener(this);
-        radioMayor.setOpaque(false);
-        radioMayor.setFocusPainted(false);
-        radioMayor.setSelected(true);
-        bg.add(radioMayor);
-        container.add(radioMayor);
-        radioMenor = new JRadioButton("Menor a");
-        radioMenor.setBounds(95, 45, 90, 30);
-        radioMenor.addActionListener(this);
-        radioMenor.setOpaque(false);
-        radioMenor.setFocusPainted(false);
-        bg.add(radioMenor);
-        container.add(radioMenor);
+        radioHigher = new JRadioButton("Mayor a");
+        radioHigher.setBounds(30, 45, 70, 30);
+        radioHigher.addActionListener(this);
+        radioHigher.setOpaque(false);
+        radioHigher.setFocusPainted(false);
+        radioHigher.setSelected(true);
+        bg.add(radioHigher);
+        container.add(radioHigher);
+        radioLesser = new JRadioButton("Menor a");
+        radioLesser.setBounds(95, 45, 90, 30);
+        radioLesser.addActionListener(this);
+        radioLesser.setOpaque(false);
+        radioLesser.setFocusPainted(false);
+        bg.add(radioLesser);
+        container.add(radioLesser);
         //TextField
         imc = new JTextField();
         imc.setBounds(45, 80, 95, 20);
-        imc.addKeyListener(utilidad.bloquearLetras);
+        imc.addKeyListener(utility.bloquearLetras);
         imc.setHorizontalAlignment((int) CENTER_ALIGNMENT);
         container.add(imc);
         imc.addKeyListener(new KeyAdapter() {
@@ -108,18 +108,18 @@ public class IMC extends JDialog implements ActionListener {
                 }
             }
         });
-        filtrar = new JButton("Filtrar");
-        filtrar.setBounds(60, 110, 60, 25);
-        filtrar.addActionListener(this);
-        container.add(filtrar);
+        filter = new JButton("Filtrar");
+        filter.setBounds(60, 110, 60, 25);
+        filter.addActionListener(this);
+        container.add(filter);
         //--------------------------
         this.getContentPane().add(container);
-        utilidad = null;
+        utility = null;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == filtrar) {
+        if (e.getSource() == filter) {
            filtrarTabla();
         }
     }
@@ -128,10 +128,10 @@ public class IMC extends JDialog implements ActionListener {
         try {
             double inputIMC = Double.parseDouble(imc.getText());
 
-            tabla.setIMCfilter(inputIMC);
-            tabla.setIMCoperator(radioMayor.isSelected() ? ">=" : "<=");
+            personnelPanel.setIMCfilter(inputIMC);
+            personnelPanel.setIMCoperator(radioHigher.isSelected() ? ">=" : "<=");
 
-            tabla.update(7, tabla.getShowBySubUnity(), tabla.getRowOrdering());
+            personnelPanel.update(7, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
 
             mainFrame.deleteChecksFilters();
             mainFrame.getMenuFiltroPPS().setIcon(mainFrame.getCheck());
@@ -142,7 +142,7 @@ public class IMC extends JDialog implements ActionListener {
         }
     }
 
-    public void setTabla(PersonnelPanel tabla) {
-        this.tabla = tabla;
+    public void setPersonnelPanel(PersonnelPanel personnelPanel) {
+        this.personnelPanel = personnelPanel;
     }
 }

@@ -5,77 +5,77 @@ import javax.swing.ImageIcon;
 
 public class Icons {
 
-    private ImageIcon iconoRefrescar;
+    private ImageIcon iconRefresh;
     private ImageIcon iconoCheck;
-    private ImageIcon iconoBuscar;
-    private ImageIcon iconoBuscarChico;
-    private ImageIcon iconoSanidad;
+    private ImageIcon iconSearch;
+    private ImageIcon iconLittleSearch;
+    private ImageIcon iconHealthService;
     private ImageIcon iconoSave;
-    private ImageIcon iconoAlta;
-    private ImageIcon iconoDelete;
-    private ImageIcon iconoConfig;
-    private ImageIcon iconoPlus;
-    private ImageIcon iconoCalculator;
-    private ImageIcon iconoPdf;
+    private ImageIcon iconHealed;
+    private ImageIcon iconDelete;
+    private ImageIcon iconConfig;
+    private ImageIcon iconPlus;
+    private ImageIcon iconCalculator;
+    private ImageIcon iconPdf;
     
     public Icons(){        
-        this.iconoRefrescar = new ImageIcon("src/myimages/refresh.png");
+        this.iconRefresh = new ImageIcon("src/myimages/refresh.png");
         this.iconoCheck = new ImageIcon("src/myimages/check.png");
-        this.iconoBuscar = new ImageIcon("src/myimages/searchGrande.png");
-        this.iconoBuscarChico = new ImageIcon("src/myimages/search.png");
-        this.iconoSanidad = new ImageIcon("src/myimages/Sanidad.png");
+        this.iconSearch = new ImageIcon("src/myimages/searchGrande.png");
+        this.iconLittleSearch = new ImageIcon("src/myimages/search.png");
+        this.iconHealthService = new ImageIcon("src/myimages/Sanidad.png");
         this.iconoSave = new ImageIcon("src/myimages/save.png");
-        this.iconoAlta = new ImageIcon("src/myimages/alta.png");
-        this.iconoDelete = new ImageIcon("src/myimages/delete.png");
-        this.iconoConfig = new ImageIcon("src/myimages/config.png");
-        this.iconoPlus = new ImageIcon("src/myimages/plus.png");
-        this.iconoCalculator = new ImageIcon("src/myimages/calculator.png");
-        this.iconoPdf = new ImageIcon("src/myimages/pdf.png");
+        this.iconHealed = new ImageIcon("src/myimages/alta.png");
+        this.iconDelete = new ImageIcon("src/myimages/delete.png");
+        this.iconConfig = new ImageIcon("src/myimages/config.png");
+        this.iconPlus = new ImageIcon("src/myimages/plus.png");
+        this.iconCalculator = new ImageIcon("src/myimages/calculator.png");
+        this.iconPdf = new ImageIcon("src/myimages/pdf.png");
     }
 
    
-    public ImageIcon getIconoRefrescar() {
-        return iconoRefrescar;
+    public ImageIcon getIconRefresh() {
+        return iconRefresh;
     }
     public ImageIcon getIconoCheck(){
         return iconoCheck;
     }
     public ImageIcon getIconoSearch(){
-        return iconoBuscar; 
+        return iconSearch; 
     }
     public ImageIcon getIconoSearchChico(){
-        return iconoBuscarChico; 
+        return iconLittleSearch; 
     }
-    public ImageIcon getIconoSanidad(){
-        return iconoSanidad;
+    public ImageIcon getIconHealthService(){
+        return iconHealthService;
     }
 
     public ImageIcon getIconoSave() {
         return iconoSave;
     }
 
-    public ImageIcon getIconoAlta() {
-        return iconoAlta;
+    public ImageIcon getIconHealed() {
+        return iconHealed;
     }
 
-    public ImageIcon getIconoDelete() {
-        return iconoDelete;
+    public ImageIcon getIconDelete() {
+        return iconDelete;
     }
 
-    public ImageIcon getIconoConfig() {
-        return iconoConfig;
+    public ImageIcon getIconConfig() {
+        return iconConfig;
     }
 
-    public ImageIcon getIconoPlus() {
-        return iconoPlus;
+    public ImageIcon getIconPlus() {
+        return iconPlus;
     }
 
-    public ImageIcon getIconoCalculator() {
-        return iconoCalculator;
+    public ImageIcon getIconCalculator() {
+        return iconCalculator;
     }
 
-    public ImageIcon getIconoPdf() {
-        return iconoPdf;
+    public ImageIcon getIconPdf() {
+        return iconPdf;
     }
     
 

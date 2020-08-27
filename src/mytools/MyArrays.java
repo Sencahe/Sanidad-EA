@@ -1,30 +1,33 @@
 package mytools;
 
+import java.util.HashMap;
+
 public class MyArrays {
 
     // ARREGLOS PARA LOS JTABLE
-    private static String[] columnasTabla = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Anexo 27",
+    private static String[] personnelColumns = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Anexo 27",
         "Edad", "Peso", "Altura", "IMC", "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
     //                                      Nr Grd A/S AyN Dest DNI A27 Age Kgs Alt IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
-    private static int[] tamañoColumnas = {40, 55, 75, 240, 68, 70, 75, 45, 50, 50, 50, 110, 65, 30, 30, 30, 30, 36, 36, 275, 40};
+    private static int[] personnelColumnsSize = {40, 55, 75, 240, 68, 70, 75, 45, 50, 50, 50, 110, 65, 30, 30, 30, 30, 36, 36, 275, 40};
 
-    private static String[] columnasParte = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
+    private static String[] sickColumns = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
     //                                         Nro Grd  AyN Dest Diag cie Dsd  Hst Dias Exp  Obs id
-    private static int[] tamañoColumnasParte = {40, 60, 240, 60, 220, 70, 75, 75, 45, 110, 140, 40};
+    private static int[] sickColumnsSize = {40, 60, 240, 60, 220, 70, 75, 75, 45, 110, 140, 40};
     //
-    private static String[] columnasRecuento = {"Nro","Grado","Apellido Y Nombre","Destino",
+    private static String[] reCountColumns = {"Nro","Grado","Apellido Y Nombre","Destino",
         "DNI","Diagnostico","CIE","Desde","Hasta","Dias","Observacion","Parte","N / S"};
     
-    private static int[] tamañoColumnasRecuento = {40,50,240,60,70,260,70,90,90,50,190,80,60};
+    private static int[] reCountColumnsSize = {40,50,240,60,70,260,70,90,90,50,190,80,60};
+          
     //=================================================================================
     //ARREGLOS PARA RECUPERAR INFORMACION DE LA BASE DE DATOS A LOS JTABLE
-    private static String[] columnasBD = {"Grado", "Arma", "Apellido", "Destino" ,"DNI","Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
+    private static String[] personnelPanelDB = {"Grado", "Arma", "Apellido", "Destino" ,"DNI","Anexo27", "FechaNacimiento", "Peso", "Altura", "IMC",
         "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
 
     //private static String[] columnasBDParte = {};
 
-    private static String[] formularioBD = {  //textField
+    private static String[] personnelFormularyDB = {  //textField
         "Apellido", "Nombre", "Arma", "DNI", "Peso", "Altura", "IMC", "Observaciones", "Legajo", "Expediente","DM", 
         "Categoria", "Grado", "Destino", "Aptitud", "PPS", //comboBoxes
         "FechaNacimiento", "Anexo27", //dateChooser
@@ -39,25 +42,25 @@ public class MyArrays {
     private static String[] dateChooser = {"FechaNacimiento", "Anexo27"};
     private static String[] checkBox = {"D", "H", "A", "T", "Act", "Inf"};
     //=================================================================================
-    private static String[] categorias = {"Oficiales", "SubOficiales", "Soldados", "Civiles"};
-    private static String[][] grados = {
+    private static String[] categories = {"Oficiales", "SubOficiales", "Soldados", "Civiles"};
+    private static String[][] grades = {
         {"ST", "TT", "TP", "CT", "MY", "TC", "CR"},
         {"CB", "C1", "SG", "S1", "SA", "SP", "SM"},
         {"VS \"ec\"", "VS", "VP"},
         {"A/C"}};
-    private static String[] destinos = {"", "Cdo Ser", "Bda Mil", "Ca A", "Ca B", "Ca C", "Ca E"};
+    private static String[] subUnities = {"", "Cdo Ser", "Bda Mil", "Ca A", "Ca B", "Ca C", "Ca E"};
     private static String[] PPS = {"", "SALUDABLE", "PREVENTIVO", "RECUPERACION", "PROTECCION", "BAJO PESO"};
-    private static String[] aptitud = {"", "APTO", "APTO B", "NO APTO"};
+    private static String[] aptitude = {"", "APTO", "APTO B", "NO APTO"};
     
-    private static String[] tiposDeParte = {"PARTES DE ENFERMO", "PARTES DE EXCEPTUADO","PARTES DE MATERNIDAD","PERSONAL QUE NO PASO NOVEDAD"};
+    private static String[] sickTypes = {"PARTES DE ENFERMO", "PARTES DE EXCEPTUADO","PARTES DE MATERNIDAD","PERSONAL QUE NO PASO NOVEDAD"};
     //=================================================================================
-    private static String[] patologias = {"Todas","Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
-    private static String[] ordenTabla = {"De mayor a menor grado", "De menor a mayor grado", "Orden Alfabetico A-Z", "Orden Alfabetico Z-A"};
-    private static String[] ordenTablaBD = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC", " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",
+    private static String[] pathologies = {"Todas","Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
+    private static String[] orderPersonnelMenu = {"De mayor a menor grado", "De menor a mayor grado", "Orden Alfabetico A-Z", "Orden Alfabetico Z-A"};
+    private static String[] orderPersonnel = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC", " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",
         " ORDER BY Apellido ASC, Nombre ASC, Grado DESC", " ORDER BY Apellido DESC, Nombre DESC, Grado DESC"};
     
     //=================================================================================
-    private static String[] meses = {"","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"};
+    private static String[] months = {"","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"};
     //=================================================================================
     //=================================================================================
     private MyArrays() {
@@ -67,112 +70,112 @@ public class MyArrays {
     //=================================================================================
     //=================================================================================
     // ARREGLOS COMO PROPIEDADES PARA LOS JTABLES DEL FRAME PRINCIPAL
-    public static String[] getColumnasTabla() {
-        return columnasTabla;
+    public static String[] getPersonnelColumns() {
+        return personnelColumns;
     }
 
-    public static String getColumnasTabla(int i) {
-        return columnasTabla[i];
+    public static String getPersonnelColumns(int i) {
+        return personnelColumns[i];
     }
 
-    public static int getColumnasTablaLength() {
-        return columnasTabla.length;
+    public static int getPersonnelColumnsLength() {
+        return personnelColumns.length;
     }
 
-    public static int[] getTamañoColumnas() {
-        return tamañoColumnas;
+    public static int[] getPersonnelColumnsSize() {
+        return personnelColumnsSize;
     }
 
-    public static int getTamañoColumnas(int i) {
-        return tamañoColumnas[i];
+    public static int getPersonnelColumnsSize(int i) {
+        return personnelColumnsSize[i];
     }
     
 
     //ARREGLOS COMO PROPIEDADES LOS JTABLES DEL PARTE DE ENFERMO
-    public static String[] getColumnasParte() {
-        return columnasParte;
+    public static String[] getSickColumns() {
+        return sickColumns;
     }
 
-    public static String getColumnasParte(int i) {
-        return columnasParte[i];
+    public static String getSickColumns(int i) {
+        return sickColumns[i];
     }
 
-    public static int getColumnasParteLength() {
-        return columnasParte.length;
+    public static int getSickColumnsLength() {
+        return sickColumns.length;
     }
 
-    public static int[] getTamañoColumnParte() {
-        return tamañoColumnasParte;
+    public static int[] getSickColumnsSize() {
+        return sickColumnsSize;
     }
 
-    public static int getTamañoColumnParte(int i) {
-        return tamañoColumnasParte[i];
+    public static int getSickColumnsSize(int i) {
+        return sickColumnsSize[i];
     }
     //ARREGLOS COMO PROPIEDADES LOS JTABLES DEL RECUENTO
 
-    public static String[] getColumnasRecuento() {
-        return columnasRecuento;
+    public static String[] getReCountColumns() {
+        return reCountColumns;
     }
 
-    public static int[] getTamañoColumnasRecuento() {
-        return tamañoColumnasRecuento;
+    public static int[] getReCountColumnsSize() {
+        return reCountColumnsSize;
     }
   
    
-    public static String getColumnasRecuento(int index) {
-        return columnasRecuento[index];
+    public static String getReCountColumns(int i) {
+        return reCountColumns[i];
     }
     
-    public static int getTamañoColumnasRecuento(int index) {
-        return tamañoColumnasRecuento[index];
+    public static int getReCountColumnsSize(int i) {
+        return reCountColumnsSize[i];
     }
-    public static int getColumnasRecuentoLength(){
-        return columnasRecuento.length;
+    public static int getReCountColumnsLength(){
+        return reCountColumns.length;
     }
 
     //=================================================================================
     // ARREGLO SOBRE EL CUAL SE ITERA PARA RECUPERAR LA INFORMACION DE LA BASE DE DATOS A LAS TABLAS
-    public static String[] getColumnasBD() {
-        return columnasBD;
+    public static String[] getPersonnelPanelDB() {
+        return personnelPanelDB;
     }
 
-    public static String getColumnasBD(int i) {
-        return columnasBD[i];
+    public static String getPersonnelPanelDB(int i) {
+        return personnelPanelDB[i];
     }
 
-    public static int getColumnasBDLength() {
-        return columnasBD.length;
+    public static int getPersonnelPanelDBLength() {
+        return personnelPanelDB.length;
     }
 
 
     // ARREGLO PARA LOS GRADOS SEGUN SU VALOR NUMERICO, TANTO EN LA CLASE FORMULARIO COMO EN LA CLASE BASEDEDATOS
-    public static String[][] getGrados() {
-        return grados;
+    public static String[][] getGrades() {
+        return grades;
     }
 
-    public static String[] getGrados(int i) {
-        return grados[i];
+    public static String[] getGrades(int i) {
+        return grades[i];
     }
 
-    public static String getGrados(int i, int j) {
-        return grados[i][j];
+    public static String getGrades(int i, int j) {
+        return grades[i][j];
     }
 
-    public static int getGradosLength(int i) {
-        return grados[i].length;
+    public static int getGradesLength(int i) {
+        return grades[i].length;
     }
 
     //ARREGLOS PARA LOS COMBO BOX Y CHECK BOX DE LA CLASE FORMULARIO
-    public static String[] getCategorias() {
-        return categorias;
+    public static String[] getCategories() {
+        return categories;
     }
 
-    public static String getCategorias(int i) {
-        return categorias[i];
+    public static String getCategories(int i) {
+        return categories[i];
     }
 
-    public static int getCategoriasLength() {
-        return categorias.length;
+    public static int getCategoriesLength() {
+        return categories.length;
     }
 
     public static String[] getPPS() {
@@ -187,35 +190,40 @@ public class MyArrays {
         return PPS.length;
     }
 
-    public static String[] getDestinos() {
-        return destinos;
+    public static String[] getSubUnities() {
+        return subUnities;
     }
 
-    public static String getDestinos(int i) {
-        return destinos[i];
+    public static String getSubUnities(int i) {
+        return subUnities[i];
     }
 
-    public static int getDestinosLength() {
-        return destinos.length;
+    public static int getSubUnitiesLength() {
+        return subUnities.length;
     }
 
-    public static String[] getAptitud() {
-        return aptitud;
+    public static String[] getAptitude() {
+        return aptitude;
     }
 
-    public static String getAptitud(int i) {
-        return aptitud[i];
+    public static String getAptitude(int i) {
+        return aptitude[i];
     }
 
-    public static int getAptitudLength() {
-        return aptitud.length;
+    public static int getAptitudeLength() {
+        return aptitude.length;
     }
     //ARREGLOS PARA EL PARTE
-    public static String getTiposDeParte(int index){
-        return tiposDeParte[index];
+
+    public static String[] getSickTypes() {
+        return sickTypes;
     }
-    public static int getTiposDeParteLength(){
-        return tiposDeParte.length;
+    
+    public static String getSickTypes(int i){
+        return sickTypes[i];
+    }
+    public static int getSickTypesLength(){
+        return sickTypes.length;
     }
 
     // ARREGLOS PARA COMUNICAR LOS COMPONENTES DE FORMULARIO CON LA CLASE BASE DE DATOS
@@ -267,41 +275,52 @@ public class MyArrays {
         return checkBox.length;
     }
 
-    public static String[] getFormularioBD() {
-        return formularioBD;
+    public static String[] getPersonnelFormularyDB() {
+        return personnelFormularyDB;
     }
 
-    public static String getFormularioBD(int i) {
-        return formularioBD[i];
+    public static String getPersonnelFormularyDBLength(int i) {
+        return personnelFormularyDB[i];
     }
 
     // ARREGLOS QUE SIRVEN DE AYUDA PARA LOS FILTROS DE LA TABLA
-    public static String[] getPatologias() {
-        return patologias;
+    public static String[] getPathologies() {
+        return pathologies;
     }
 
-    public static String getPatologias(int i) {
-        return patologias[i];
+    public static String getPathologies(int i) {
+        return pathologies[i];
     }
 
-    public static int getPatologiasLength() {
-        return patologias.length;
+    public static int getPathologiesLength() {
+        return pathologies.length;
     }
 
-    public static String[] getOrdenTabla() {
-        return ordenTabla;
+    public static String[] getOrderPersonnelMenu() {
+        return orderPersonnelMenu;
     }
 
-    public static String getOrdenTabla(int i) {
-        return ordenTabla[i];
+    public static String getOrderPersonnelMenu(int i) {
+        return orderPersonnelMenu[i];
     }
 
-    public static String getOrdenTablaBD(int i) {
-        return ordenTablaBD[i];
+    public static String[] getOrderPersonnel() {
+        return orderPersonnel;
+    }
+      
+
+    public static String getOrderPersonnel(int i) {
+        return orderPersonnel[i];
     }
     
     //meses
-    public static String getMes(int i){
-        return meses[i];
+
+    public static String[] getMonths() {
+        return months;
+    }
+    
+    
+    public static String getMonths(int i){
+        return months[i];
     }
 }

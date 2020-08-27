@@ -8,18 +8,18 @@ import dialogs.Configurator;
 
 public class Configurations extends DataBase{
     
-    Configurator configuracion;
+    Configurator configurator;
     
     public Configurations(Configurator configuracion){
-        this.configuracion = configuracion;
+        this.configurator = configuracion;
     }
     
     
-    public void setValores(){
+    public void setValues(){
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("UPDATE Configuracion SET Leyenda = ? WHERE id = 1");
             
-            pst.setString(1,configuracion.getTextLeyenda().getText().toUpperCase());
+            pst.setString(1,configurator.getTextLeyend().getText().toUpperCase());
             
             pst.executeUpdate();        
             
@@ -32,16 +32,16 @@ public class Configurations extends DataBase{
         
     }
     
-    public void getValores(){
+    public void getValues(){
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT (Leyenda) FROM Configuracion"
                     + " WHERE id = 1");
             
             ResultSet rs = pst.executeQuery();
             
-            configuracion.setFlagLeyenda(rs.getString("Leyenda"));   
+            configurator.setFlagLeyend(rs.getString("Leyenda"));   
             
-            configuracion.restaurar();
+            configurator.restore();
             
             super.getConnection().close();
             

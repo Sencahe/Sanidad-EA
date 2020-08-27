@@ -20,17 +20,23 @@ public class PersonnelPanel extends JPanel implements ActionListener {
 
     public static final String TABLE_NAME = "Personal";
 
+    public static final int NAME_COLUMN = 3;
+    public static final int DNI_COLUMN = 5;
+    public static final int OBS_COLUMN = 19;
+    public static final int ID_COLUMN = 20;
+
     JScrollPane scrollContainer;
 
     private JButton buttonAdd;
     private JButton buttonSickPanel;
     private JButton buttonReport;
     private JButton buttonReport2;
+    private JButton buttonReport3;
 
     private JTabbedPane tabbedPane;
     private JTable[] tables;
     private JScrollPane[] scrolls;
-    
+
     private JLabel[] labelsSummary;
 
     //FILTROS DE LA TABLA
@@ -67,7 +73,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         Utilities utility = mainFrame.getUtility();
         Icons icons = mainFrame.getIcons();
         //PROPIEDADES DEL PANEL-------------------------------------------------
-        setBackground(utility.getColorFondo());
+        setBackground(utility.getColorBackground());
         Dimension dimension = new Dimension(1505, 580);
         setPreferredSize(dimension);
         setLayout(null);
@@ -83,42 +89,31 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         tabbedPane = new JTabbedPane();
         tabbedPane.setOpaque(false);
         tabbedPane.setBounds(10, 70, 1485, 460);
-        tabbedPane.setFont(utility.getFuentePestañas());
+        tabbedPane.setFont(utility.getFontTabbedPane());
         add(tabbedPane);
         String categories[] = {"   OFICIALES   ", " SUBOFICIALES ", "  SOLDADOS  ", "    CIVILES    "};
         //----------------------------------------------------------------------
         // TABLAS PRINCIPALES 
-        scrolls = new JScrollPane[MyArrays.getCategoriasLength()];
-        tables = new JTable[MyArrays.getCategoriasLength()];
-        model = new DefaultTableModel[MyArrays.getCategoriasLength()];
+        scrolls = new JScrollPane[MyArrays.getCategoriesLength()];
+        tables = new JTable[MyArrays.getCategoriesLength()];
+        model = new DefaultTableModel[MyArrays.getCategoriesLength()];
         //objeto para centrar las celdas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         // ciclos para crear las distintas tablas a la vez
         for (int i = 0; i < tables.length; i++) {
-            //creacion del table model              
-            model[i] = new DefaultTableModel() {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
             // PROPIEDADES de la tabla
-            tables[i] = new JTable(model[i]);
-            tables[i].setGridColor(Color.black);
-            tables[i].setBackground(utility.getColorTabla());
-            tables[i].setFont(utility.getFuenteTabla());
-            tables[i].setRowHeight(16);
-            //eventos al presionar teclas en las tablas
+            tables[i] = utility.customTable(this, NAME_COLUMN, OBS_COLUMN);
+            //eventos al presionar teclas en lastablas
             tables[i].getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
             tables[i].getActionMap().put("Enter", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    int categoria = tabbedPane.getSelectedIndex();
-                    int puntero = tables[categoria].getSelectedRow();
-                    if (puntero != -1) {
-                        int id = (int) tables[categoria].getModel().getValueAt(puntero, 20);
-                        modifyPersonnel(id, puntero);
+                    int categorie = tabbedPane.getSelectedIndex();
+                    int pointer = tables[categorie].getSelectedRow();
+                    if (pointer != -1) {
+                        int id = (int) tables[categorie].getModel().getValueAt(pointer, 20);
+                        modifyPersonnel(id, pointer);
                         System.gc();
                     }
                 }
@@ -137,72 +132,52 @@ public class PersonnelPanel extends JPanel implements ActionListener {
                     }
                 }
             });
-            //header de la tabla
-            UIManager.put("TableHeader.font", utility.getFuenteHeader());
-            JTableHeader header = tables[i].getTableHeader();
-            header.setFont(utility.getFuenteHeader());
-            header.setBackground(utility.getColorTabla());
-            header.setPreferredSize(new Dimension(40, 27));
-            ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
-            //creacion de las columnas
-            for (int j = 0; j < MyArrays.getColumnasTablaLength(); j++) {
-                model[i].addColumn(MyArrays.getColumnasTabla(j));
-            }
-            //tamaño de las columnas y filas
-            for (int j = 0; j < MyArrays.getColumnasTablaLength(); j++) {
-                tables[i].getColumnModel().getColumn(j).setMinWidth(MyArrays.getTamañoColumnas(j));
-                tables[i].getColumnModel().getColumn(j).setMaxWidth(MyArrays.getTamañoColumnas(j));
-                tables[i].getColumnModel().getColumn(j).setPreferredWidth(MyArrays.getTamañoColumnas(j));
 
-                //centrado del contenido de las columnas
-                if (j != 3 && j != 19) {
-                    tables[i].getColumnModel().getColumn(j).setCellRenderer(centerRenderer);
-                }
-                //ocultando la columna con el id
-                if (j == 20) {
-                    tables[i].getColumnModel().removeColumn(tables[i].getColumnModel().getColumn(j));
-                }
-            }
-            //PROPIEDADES del Scroll y agregarlo al contenedor
+            //PROPIEDADES del Scroll y agregarlo al tabbedPane------------------
             scrolls[i] = new JScrollPane(tables[i]);
-            scrolls[i].getViewport().setBackground(utility.getColorFondo().brighter().brighter());
+            scrolls[i].getViewport().setBackground(utility.getColorBackground().brighter().brighter());
             scrolls[i].setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             tabbedPane.addTab(categories[i], scrolls[i]);
         }
-
         //----------------------------------------------------------------------
         // BOTONES 
         buttonSickPanel = utility.customButton();
         buttonSickPanel.setText("<html><center>PARTE DE<br>SANIDAD</center></html>");
         buttonSickPanel.setBounds(10, 15, 110, 35);
-        buttonSickPanel.setFont(utility.getFuenteBoton());
+        buttonSickPanel.setFont(utility.getFontButton());
         add(buttonSickPanel);
         buttonAdd = utility.customButton();
-        buttonAdd.setText("<html><center>AGREGAR<br>PERSONAL</center></html>");
+        buttonAdd.setText("<html><center>Agregar<br>Personal</center></html>");
         buttonAdd.setBounds(150, 15, 110, 35);
         buttonAdd.addActionListener(this);
         add(buttonAdd);
         //--------------------
         JLabel labelReport = new JLabel("Generar Reportes");
-        labelReport.setFont(utility.getFuenteLabelGrande());
+        labelReport.setFont(utility.getFontLabelBig());
         labelReport.setForeground(Color.white);
-        labelReport.setBounds(1000, 15, 150, 32);
+        labelReport.setBounds(900, 15, 150, 32);
         add(labelReport);
         JLabel labelPdf = new JLabel();
-        labelPdf.setIcon(icons.getIconoPdf());
-        labelPdf.setBounds(1150, 15, 32, 32);
+        labelPdf.setIcon(icons.getIconPdf());
+        labelPdf.setBounds(1050, 15, 32, 32);
         add(labelPdf);
         buttonReport = utility.customButton();
         buttonReport.setText("<html><center>Lista de<br>Personal</center></html>");
-        buttonReport.setBounds(1190, 15, 110, 35);
+        buttonReport.setBounds(1090, 15, 110, 35);
         buttonReport.addActionListener(this);
         add(buttonReport);
         buttonReport2 = utility.customButton();
         buttonReport2.setText("<html><center>Carta de<br>Situacion</center></html>");
-        buttonReport2.setBounds(1310, 15, 110, 35);
+        buttonReport2.setBounds(1210, 15, 110, 35);
         buttonReport2.addActionListener(this);
         add(buttonReport2);
+        buttonReport3 = utility.customButton();
+        buttonReport3.setText("<html><center>Control de<br>IMC</center></html>");
+        buttonReport3.setBounds(1330, 15, 110, 35);
+        buttonReport3.addActionListener(this);
+        add(buttonReport3);
+
         //----------------------------------------------------------------------
         // LABELS CON CANTIDAD DE PERSONAL
         labelsSummary = new JLabel[tables.length + 1];
@@ -213,7 +188,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
             labelsSummary[i] = new JLabel();
             labelsSummary[i].setBounds(15 + width, contenedorHeight + contenedorY, 150, 40);
             labelsSummary[i].setForeground(Color.black);
-            labelsSummary[i].setFont(utility.getFuenteLabelsResumen());
+            labelsSummary[i].setFont(utility.getFontLabelSummary());
             width += i == 1 ? 200 : 170;
             add(labelsSummary[i]);
         }
@@ -259,9 +234,14 @@ public class PersonnelPanel extends JPanel implements ActionListener {
                         + "<br>Desactivelos con el Menu->Filtrar->Lista Completa</center></html>");
             } else {
                 Report reporte = new Report();
-                reporte.generarCartaDeSituacion(this);
+                reporte.createSituationChart(this);
                 reporte = null;
             }
+        }
+        if (e.getSource() == buttonReport3) {
+            Report reporte = new Report();
+            reporte.createOverWeightControlList();
+            reporte = null;
         }
     }
 
@@ -281,7 +261,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.showBySubUnity = showBySubUnity;
         this.rowOrdering = rowOrdering;
         DataBase db = new DataBase();
-        db.actualizar(this);
+        db.update(this);
         db = null;
         System.gc();
     }
@@ -341,6 +321,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
             }
         });
     }
+
     //--------------------------------------------------------------------------
     //-------------------------GETTER Y SETTERS---------------------------------
     public PersonnelFormulary getFormulary() {

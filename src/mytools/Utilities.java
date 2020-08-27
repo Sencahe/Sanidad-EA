@@ -3,148 +3,68 @@ package mytools;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.GroupLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import panels.PersonnelPanel;
+import panels.ReCountPanel;
+import panels.SickPanel;
+
 
 public class Utilities {
 
-    private final Color colorTabla, colorFondo, colorBoton, colorFuenteBoton;
+    private final Color colorTable, colorBackground, colorButton, colorButtonFont;
 
-    private final Font fuentePestañas, fuenteTabla, fuenteBoton, fuenteLabelsResumen, fuenteHeader;
-    private final Font fuenteLabelsFormulario, fuenteTextFields, fuenteHolders, fuenteChecks, fuenteLabelGrande;
-    private final Font fuenteLabelBuscador, fuenteLabelResultado;
+    private final Font fontTabbedPane, fontTable, fontButton, fontLabelSummary, fontTableHeader;
+    private final Font fontLabelFormulary, fontTextFields, fontHolder, fontChecks, fontLabelBig;
+    private final Font fontLabelSearcher, fontLabelResult;
     private final Font fuenteLabelsRef;
-    private final Font fuenteLabelTitulo;
+    private final Font fontLabelTitle;
     private final Font fuenteLabelInfo;
 
     private final Cursor pointCursor;
 
     public Utilities() {
-        this.colorTabla = new Color(255, 255, 255);
-        this.colorFondo = new Color(0, 100, 220);
-        this.colorBoton = new Color(0, 70, 170);
-        this.colorFuenteBoton = new Color(240, 240, 240);
-        this.fuentePestañas = new Font("Tahoma", 1, 16);
-        this.fuenteTabla = new Font("Arial", 0, 13);
-        this.fuenteBoton = new Font("Tahoma", 1, 13);
-        this.fuenteLabelsResumen = new Font("Tahoma", 1, 14);
-        this.fuenteHeader = new Font("Tahoma", 1, 12);
-        this.fuenteLabelsFormulario = fuenteHeader;
-        this.fuenteTextFields = fuenteTabla;
-        this.fuenteHolders = new Font("Tahoma", 2, 10);
-        this.fuenteChecks = fuenteHeader;
-        this.fuenteLabelGrande = fuenteLabelsResumen;
-        this.fuenteLabelBuscador = new Font("Tahoma", 1, 11);
-        this.fuenteLabelResultado = new Font("Tahoma", 0, 11);
-        this.fuenteLabelInfo = fuenteLabelResultado;
-        this.fuenteLabelsRef = fuenteBoton;
-        this.fuenteLabelTitulo = new Font("Impact", 0, 20);
+        this.colorTable = new Color(255, 255, 255);
+        this.colorBackground = new Color(0, 100, 220);
+        this.colorButton = new Color(0, 70, 170);
+        this.colorButtonFont = new Color(240, 240, 240);
+        this.fontTabbedPane = new Font("Tahoma", 1, 16);
+        this.fontTable = new Font("Arial", 0, 13);
+        this.fontButton = new Font("Tahoma", 1, 13);
+        this.fontLabelSummary = new Font("Tahoma", 1, 14);
+        this.fontTableHeader = new Font("Tahoma", 1, 12);
+        this.fontLabelFormulary = fontTableHeader;
+        this.fontTextFields = fontTable;
+        this.fontHolder = new Font("Tahoma", 2, 10);
+        this.fontChecks = fontTableHeader;
+        this.fontLabelBig = fontLabelSummary;
+        this.fontLabelSearcher = new Font("Tahoma", 1, 11);
+        this.fontLabelResult = new Font("Tahoma", 0, 11);
+        this.fuenteLabelInfo = fontLabelResult;
+        this.fuenteLabelsRef = fontButton;
+        this.fontLabelTitle = new Font("Impact", 0, 20);
         this.pointCursor = new Cursor(Cursor.HAND_CURSOR);
-    }
-
-    //COLORES      
-    //tabla
-    public Color getColorTabla() {
-        return colorTabla;
-    }
-
-    public Color getColorFondo() {
-        return colorFondo;
-    }
-
-    public Color getColorBoton() {
-        return colorBoton;
-    }
-
-    public Color getColorFuenteBoton() {
-        return colorFuenteBoton;
-    }
-    //CURSOR
-
-    public Cursor getPointCursor() {
-        return pointCursor;
-    }
-
-    //FUENTES
-    //tabla
-    public Font getFuentePestañas() {
-        return fuentePestañas;
-    }
-
-    public Font getFuenteTabla() {
-        return fuenteTabla;
-    }
-
-    public Font getFuenteBoton() {
-        return fuenteBoton;
-    }
-
-    public Font getFuenteLabelsResumen() {
-        return fuenteLabelsResumen;
-    }
-
-    public Font getFuenteHeader() {
-        return fuenteHeader;
-    }
-
-    //formulario
-    public Font getFuenteLabelsFormulario() {
-        return fuenteLabelsFormulario;
-    }
-
-    public Font getFuenteTextFields() {
-        return fuenteTextFields;
-    }
-
-    public Font getFuenteHolders() {
-        return fuenteHolders;
-    }
-
-    public Font getFuenteChecks() {
-        return fuenteChecks;
-    }
-
-    public Font getFuenteLabelGrande() {
-        return fuenteLabelGrande;
-    }
-
-    public Font getFuenteLabelTitulo() {
-        return fuenteLabelTitulo;
-    }
-
-    //Buscador
-    public Font getFuenteMsgBuscador() {
-        return fuenteLabelBuscador;
-    }
-
-    public Font getFuenteRsltBuscador() {
-        return fuenteLabelResultado;
-    }
-
-    //Referencias
-    public Font getFuenteLabelsRef() {
-        return fuenteLabelsRef;
-    }
-
-    public Font getFuenteLabelInfo() {
-        return fuenteLabelInfo;
     }
 
     //-------------------------BOTON PERSONALIZADO------------------------------
     public JButton customButton() {
         JButton button = new JButton();
-        button.setFont(getFuenteBoton());
-        button.setBackground(getColorBoton());
-        button.setForeground(getColorFuenteBoton());
+        button.setFont(getFontButton());
+        button.setBackground(getColorButton());
+        button.setForeground(getColorButtonFont());
         button.setContentAreaFilled(false);
         button.setOpaque(true);
         button.setFocusPainted(false);
@@ -176,13 +96,82 @@ public class Utilities {
         return button;
     }
 
+    //---------------------TABLA PERSONALIZADA----------------------------------
+    public JTable customTable(JPanel panel,int column1, int column2) {
+        
+        boolean personnelPanelInstance = panel instanceof PersonnelPanel;
+        boolean sickPanelInstance = panel instanceof SickPanel;
+        boolean reCountPanelInstance = panel instanceof ReCountPanel;
+        
+        //default table model
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
+
+        //-------------JTable-----------------
+        JTable table = new JTable(model);
+        table.setGridColor(Color.black);
+        table.setBackground(getColorTable());
+        table.setFont(getFontTable());
+        table.setRowHeight(16);
+
+        //----------------- TableHeader ----------------
+        UIManager.put("TableHeader.font", getFontTableHeader());
+        JTableHeader header = table.getTableHeader();
+        header.setFont(getFontTableHeader());
+        header.setBackground(getColorTable());
+        header.setPreferredSize(new Dimension(40, 27));
+        ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+
+        //-----------------columnas----------------          
+        String columns[];
+        int columnsWidth[];
+
+        if (personnelPanelInstance) {
+            columns = MyArrays.getPersonnelColumns();
+            columnsWidth = MyArrays.getPersonnelColumnsSize();
+        } else if (sickPanelInstance) {
+            columns = MyArrays.getSickColumns();
+            columnsWidth = MyArrays.getSickColumnsSize();
+        } else {
+            columns = MyArrays.getReCountColumns();
+            columnsWidth = MyArrays.getReCountColumnsSize();
+        }
+
+        for (int i = 0; i < columns.length; i++) {
+            model.addColumn(columns[i]);
+        }
+        for (int i = 0; i < columnsWidth.length; i++) {
+            table.getColumnModel().getColumn(i).setMinWidth(columnsWidth[i]);
+            table.getColumnModel().getColumn(i).setMaxWidth(columnsWidth[i]);
+            table.getColumnModel().getColumn(i).setPreferredWidth(columnsWidth[i]);
+            if (!sickPanelInstance) {
+                if (i != column1 && i != column2) {
+                    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+                    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+                    table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+                    centerRenderer = null;
+                }
+            }
+            if (!reCountPanelInstance && i == columnsWidth.length - 1) {
+                table.getColumnModel().removeColumn(table.getColumnModel().getColumn(i));
+            }
+        }
+
+        return table;
+    }
+
     //----------------------TABLE CELL RENDERER---------------------------------
     public TableCellRenderer sickCellRenderer() {
         TableCellRenderer cellRenderer = new TableCellRenderer() {
 
             DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
 
-            MyDates myDates = new MyDates("dd/MM/yyyy");
+            MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
 
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -199,7 +188,7 @@ public class Utilities {
 
                 String date = String.valueOf(table.getModel().getValueAt(row, 7));
                 date = myDates.userDateToLocalDate(date);
-                int dias = myDates.getDias(date) - 1;
+                int dias = myDates.getDays(date) - 1;
                 if (dias >= 0) {
                     c.setForeground(Color.red);
                 }
@@ -232,4 +221,91 @@ public class Utilities {
             }
         }
     };
+
+    //COLORES      
+    //tabla
+    public Color getColorTable() {
+        return colorTable;
+    }
+
+    public Color getColorBackground() {
+        return colorBackground;
+    }
+
+    public Color getColorButton() {
+        return colorButton;
+    }
+
+    public Color getColorButtonFont() {
+        return colorButtonFont;
+    }
+    //CURSOR
+
+    public Cursor getPointCursor() {
+        return pointCursor;
+    }
+
+    //--------------------GETTERS Y SETTERS-------------------------------------
+    public Font getFontTabbedPane() {
+        return fontTabbedPane;
+    }
+
+    public Font getFontTable() {
+        return fontTable;
+    }
+
+    public Font getFontButton() {
+        return fontButton;
+    }
+
+    public Font getFontLabelSummary() {
+        return fontLabelSummary;
+    }
+
+    public Font getFontTableHeader() {
+        return fontTableHeader;
+    }
+
+    //formulario
+    public Font getFontLabelFormulary() {
+        return fontLabelFormulary;
+    }
+
+    public Font getFontTextFields() {
+        return fontTextFields;
+    }
+
+    public Font getFontHolder() {
+        return fontHolder;
+    }
+
+    public Font getFontChecks() {
+        return fontChecks;
+    }
+
+    public Font getFontLabelBig() {
+        return fontLabelBig;
+    }
+
+    public Font getFontLabelTitle() {
+        return fontLabelTitle;
+    }
+
+    //Buscador
+    public Font getFuenteMsgBuscador() {
+        return fontLabelSearcher;
+    }
+
+    public Font getFuenteRsltBuscador() {
+        return fontLabelResult;
+    }
+
+    //Referencias
+    public Font getFuenteLabelsRef() {
+        return fuenteLabelsRef;
+    }
+
+    public Font getFuenteLabelInfo() {
+        return fuenteLabelInfo;
+    }
 }

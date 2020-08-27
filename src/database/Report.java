@@ -16,24 +16,24 @@ import panels.ReCountPanel;
 
 public class Report extends DataBase {
 
-    private String leyenda;
-    private String ruta;
+    private String leyend;
+    private String route;
     private Chunk glue;
     private Document document;
     private Paragraph p, p2, p3, p4;
 
-    private int dia;
-    private String mes;
-    private int año;
+    private int day;
+    private String month;
+    private int year;
 
     public Report() {
-        LocalDate hoy = LocalDate.now();
-        dia = hoy.getDayOfMonth();
-        mes = MyArrays.getMes(hoy.getMonthValue());
-        año = hoy.getYear();
+        LocalDate today = LocalDate.now();
+        day = today.getDayOfMonth();
+        month = MyArrays.getMonths(today.getMonthValue());
+        year = today.getYear();
     }
 
-    public void generarCartaDeSituacion(PersonnelPanel tabla) {
+    public void createSituationChart(PersonnelPanel tabla) {
         defaults("Carta De Situacion.pdf");
         try {
             //tamaño de la hoja                    
@@ -41,9 +41,9 @@ public class Report extends DataBase {
             document.open();
             //CREACION DE LA TABLA PARA EL PDF----------------------------------               
             //float[] para el tamaño de las columnas de la tabla
-            float columnsWidth[] = new float[MyArrays.getColumnasTablaLength() - 1];
+            float columnsWidth[] = new float[MyArrays.getPersonnelColumnsLength() - 1];
             for (int i = 0; i < columnsWidth.length; i++) {
-                float scaledWidth = (MyArrays.getTamañoColumnas(i) * 65) / 100;
+                float scaledWidth = (MyArrays.getPersonnelColumnsSize(i) * 65) / 100;
                 columnsWidth[i] = scaledWidth;
             }
 
@@ -61,7 +61,7 @@ public class Report extends DataBase {
                 header[i] = new Paragraph();
                 header[i].setFont(FontFactory.getFont("Times-Roman", 9, Font.BOLD, BaseColor.BLACK));
                 header[i].setAlignment(Paragraph.ALIGN_CENTER);
-                header[i].add(MyArrays.getColumnasTabla(i));
+                header[i].add(MyArrays.getPersonnelColumns(i));
             }
 
             //ciclos para llenar las tabla
@@ -70,7 +70,7 @@ public class Report extends DataBase {
             for (int i = 0; i < 4; i++) { //itera sobre todas las tablas
                 document.add(p);
                 document.add(p2);
-                p3.add("CARTA DE SITUACION - PERSONAL DE " + MyArrays.getCategorias(i).toUpperCase() + "\n\n\n");
+                p3.add("CARTA DE SITUACION - PERSONAL DE " + MyArrays.getCategories(i).toUpperCase() + "\n\n\n");
                 document.add(p3);
                 p3.remove(0);
                 for (int j = -1; j < tabla.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
@@ -111,7 +111,7 @@ public class Report extends DataBase {
         System.gc();
     }
 
-    public void generarReporteLista(PersonnelPanel tabla, String titulo, boolean civilians) {
+    public void createListReport(PersonnelPanel personnelPanel, String title, boolean civilians) {
         int cicles = civilians ? 4 : 3;
         defaults("Lista.pdf");
         try {
@@ -120,11 +120,10 @@ public class Report extends DataBase {
             document.open();
             //CREACION DE LA TABLA PARA EL PDF----------------------------------               
             //float[] para el tamaño de las columnas de la tabla
-            int cantColumnas = 6;
-            float columnsWidth[] = new float[cantColumnas];
+            float columnsWidth[] = new float[6];
             for (int i = 0; i < columnsWidth.length; i++) {
                 if (i != 5) {
-                    float scaledWidth = (MyArrays.getTamañoColumnas(i) * 65) / 100;
+                    float scaledWidth = (MyArrays.getPersonnelColumnsSize(i) * 65) / 100;
                     columnsWidth[i] = scaledWidth;
                 } else {
                     float scaledWidth = 150;
@@ -140,7 +139,7 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add(titulo + "\n\n\n");
+            p3.add(title + "\n\n\n");
             document.add(p3);
             p3.remove(0);
 
@@ -151,7 +150,7 @@ public class Report extends DataBase {
                 header[i].setFont(FontFactory.getFont("Times-Roman", 10, Font.BOLD, BaseColor.BLACK));
                 header[i].setAlignment(Paragraph.ALIGN_CENTER);
                 if (i != 5) {
-                    header[i].add(MyArrays.getColumnasTabla(i));
+                    header[i].add(MyArrays.getPersonnelColumns(i));
                 } else {
                     header[i].add("Observaciones");
                 }
@@ -162,14 +161,14 @@ public class Report extends DataBase {
             String content;
             int num = 0;
             for (int i = 0; i < cicles; i++) { //itera sobre todas las tablas
-                for (int j = 0; j < tabla.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
+                for (int j = 0; j < personnelPanel.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
                     for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
                         if (k == 0) {
                             content = String.valueOf(++num);
                         } else if (k == 5) {
                             content = "";
                         } else {
-                            content = String.valueOf(tabla.getTables(i).getValueAt(j, k));
+                            content = String.valueOf(personnelPanel.getTables(i).getValueAt(j, k));
                         }
                         Paragraph para = new Paragraph();
                         para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));
@@ -193,7 +192,7 @@ public class Report extends DataBase {
             header = null;
             columnsWidth = null;
 
-            JOptionPane.showMessageDialog(null, titulo + " confeccionado. El archivo se guardo en el Escritorio");
+            JOptionPane.showMessageDialog(null, title + " confeccionado. El archivo se guardo en el Escritorio");
             System.gc();
         } catch (Exception e) {
             System.out.println(e);
@@ -201,32 +200,32 @@ public class Report extends DataBase {
 
     }
 
-    public void generarReporteParte(SickPanel parte, boolean diagnostico) {
+    public void createSickReport(SickPanel parte, boolean diagnostico) {
         //obener la fecha del dia presente
 
         String confidencial = diagnostico ? " CONFIDENCIAL" : "";
 
-        defaults("Parte de Sanidad " + dia + " " + mes.substring(0, 3).toUpperCase()
-                + " " + año + confidencial + ".pdf");
+        defaults("Parte de Sanidad " + day + " " + month.substring(0, 3).toUpperCase()
+                + " " + year + confidencial + ".pdf");
         try {
             //tamaño de la hoja
             document.setPageSize(PageSize.LEGAL);
             document.open();
             //CREACION DE LA TABLA PARA EL PDF----------------------------------                           
-            String[] columnasParte = MyArrays.getColumnasParte();
-            int[] tamañoColumnas = MyArrays.getTamañoColumnParte();
-            int saltear; //variable auxiliar en caso de recuperar la informacion sin diagnostico
+            String[] columnasParte = MyArrays.getSickColumns();
+            int[] tamañoColumnas = MyArrays.getSickColumnsSize();
+            int jump; //variable auxiliar en caso de recuperar la informacion sin diagnostico
 
             //float[] para el tamaño escalado de las columnas de la tabla 
             float columnsWidth[] = new float[columnasParte.length - 1 - (!diagnostico ? 2 : 0)];
             for (int i = 0; i < columnsWidth.length; i++) {
-                saltear = i >= 4 && !diagnostico ? 2 : 0;
-                float scaledWidth = (tamañoColumnas[i + saltear] * 50) / 100;
+                jump = i >= 4 && !diagnostico ? 2 : 0;
+                float scaledWidth = (tamañoColumnas[i + jump] * 50) / 100;
                 columnsWidth[i] = scaledWidth;
             }
 
             //cracion del PdfpTable
-            PdfPTable[] pdfTable = new PdfPTable[MyArrays.getTiposDeParteLength()];
+            PdfPTable[] pdfTable = new PdfPTable[MyArrays.getSickTypesLength()];
             for (int i = 0; i < 4; i++) {
                 pdfTable[i] = new PdfPTable(columnsWidth);
                 pdfTable[i].setTotalWidth(columnsWidth);
@@ -237,10 +236,10 @@ public class Report extends DataBase {
             //header de la tabla   
             Paragraph header[] = new Paragraph[columnsWidth.length];
             for (int i = 0; i < columnsWidth.length; i++) {
-                saltear = i >= 4 && !diagnostico ? 2 : 0;
+                jump = i >= 4 && !diagnostico ? 2 : 0;
                 header[i] = new Paragraph();
                 header[i].setFont(FontFactory.getFont("Times-Roman", 8, Font.BOLD, BaseColor.BLACK));
-                header[i].add(columnasParte[i + saltear]);
+                header[i].add(columnasParte[i + jump]);
             }
 
             //encabezado
@@ -248,7 +247,7 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add("PARTE DIARIO DE SANIDAD DE LA UNIDAD DEL " + dia + " DE " + mes.toUpperCase() + " DE " + año + "\n\n");
+            p3.add("PARTE DIARIO DE SANIDAD DE LA UNIDAD DEL " + day + " DE " + month.toUpperCase() + " DE " + year + "\n\n");
             document.add(p3);
             Paragraph p5 = new Paragraph();
             p5.setFont(FontFactory.getFont("Times-Roman", 10, Font.BOLD, BaseColor.BLACK));
@@ -256,7 +255,7 @@ public class Report extends DataBase {
             //ciclos para llenar las tabla
             for (int i = 0; i < pdfTable.length; i++) { //itera sobre todas las tablas
 
-                p5.add(MyArrays.getTiposDeParte(i).toUpperCase() + "\n\n");
+                p5.add(MyArrays.getSickTypes(i).toUpperCase() + "\n\n");
                 document.add(p5);
                 p5.remove(0);
 
@@ -267,8 +266,8 @@ public class Report extends DataBase {
                             pdfTable[i].addCell(header[k]);
                         } else {
                             //agregar el contenido de las celdas
-                            saltear = k >= 4 && !diagnostico ? 2 : 0;
-                            content = String.valueOf(parte.getTablas(i).getValueAt(j, k + saltear));
+                            jump = k >= 4 && !diagnostico ? 2 : 0;
+                            content = String.valueOf(parte.getTablas(i).getValueAt(j, k + jump));
                             Paragraph para = new Paragraph();
                             para.setFont(FontFactory.getFont("Times-Roman", 7, 0, BaseColor.BLACK));
                             para.add(!content.equals("null") ? content : "");
@@ -300,7 +299,7 @@ public class Report extends DataBase {
 
     }
 
-    public void generarReporteRecuento(ReCountPanel recuento) {
+    public void createReCountReport(ReCountPanel reCountPanel) {
 
         defaults("Recuento Parte de Sanidad.pdf");
         try {
@@ -312,13 +311,13 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add("RECUENTO PARTE DE SANIDAD A LA FECHA DEL " + dia + " DE " + mes.toUpperCase() + " DE" + año + "\n\n\n");
+            p3.add("RECUENTO PARTE DE SANIDAD A LA FECHA DEL " + day + " DE " + month.toUpperCase() + " DE" + year + "\n\n\n");
             document.add(p3);
             p3.remove(0);
 
             //CREACION DE LA TABLA PARA EL PDF----------------------------------                           
-            String[] columnasRecuento = MyArrays.getColumnasRecuento();
-            int[] tamañoColumnas = MyArrays.getTamañoColumnasRecuento();
+            String[] columnasRecuento = MyArrays.getReCountColumns();
+            int[] tamañoColumnas = MyArrays.getReCountColumnsSize();
             //float[] para el tamaño escalado de las columnas de la tabla 
             float columnsWidth[] = new float[columnasRecuento.length];
             for (int i = 0; i < columnsWidth.length; i++) {
@@ -342,9 +341,9 @@ public class Report extends DataBase {
 
             //ciclos para llenar la tabla
             String content;
-            for (int j = 0; j < recuento.getTable().getRowCount(); j++) { //itera sobre las filas                   
+            for (int j = 0; j < reCountPanel.getTable().getRowCount(); j++) { //itera sobre las filas                   
                 for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
-                    content = String.valueOf(recuento.getTable().getValueAt(j, k));
+                    content = String.valueOf(reCountPanel.getTable().getValueAt(j, k));
                     Paragraph para = new Paragraph();
                     para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));
                     para.add(!content.equals("null") ? content : "");
@@ -352,7 +351,7 @@ public class Report extends DataBase {
                     para = null;
                 }
             }
-            
+
             document.add(pdfTable);
             document.add(p4);
             document.close();
@@ -374,6 +373,138 @@ public class Report extends DataBase {
         }
     }
 
+    public void createOverWeightControlList() {
+        boolean keepAsking = true;
+        boolean next = false;
+        int imc = 0;
+        while (keepAsking) {
+            try {
+                String input = JOptionPane.showInputDialog(null,
+                        "Ingrese el IMC a partir del cual se haran los controles.",
+                        "Control IMC", 1);
+                if (input != null) {
+                    imc = Integer.parseInt(input);
+                    keepAsking = false;
+                    next = true;
+                } else {
+                    keepAsking = false;
+                    next = false;
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Numero ingresado incorrecto");
+            }
+        }
+
+        if (next) {
+            try {
+
+                defaults("Control de IMC.pdf");
+                document.setPageSize(PageSize.LEGAL.rotate());
+
+                //tamaño de la hoja
+                document.setPageSize(PageSize.LEGAL.rotate());
+                document.open();
+
+                //encabezado
+                document.add(p);
+                document.add(p2);
+                p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
+                p3.add("LISTA PARA CONTROL DE PERSONAL CON SOBREPESO\n\n\n");
+                document.add(p3);
+                p3.remove(0);
+
+                //CREACION DE LA TABLA PARA EL PDF----------------------------------                           
+                String[] columnasRecuento = {"Nro", "Grado", "Apellido y Nombre", "Destino", "DNI", "IMC",
+                    "IMC 1", "Fecha", "IMC 2", "Fecha", "IMC 3", "Fecha", "IMC 4", "Fecha",
+                    "IMC 5", "Fecha", "IMC 6", "Fecha"};
+                //                                            control y fecha
+                int[] columnsSize = {40, 60, 240, 68, 70, 50, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70};
+                //float[] para el tamaño escalado de las columnas de la tabla 
+                float columnsWidth[] = new float[columnasRecuento.length];
+                for (int i = 0; i < columnsWidth.length; i++) {
+                    float scaledWidth = (columnsSize[i] * 65) / 100;
+                    columnsWidth[i] = scaledWidth;
+                }
+
+                PdfPTable pdfTable = new PdfPTable(columnsWidth);
+                pdfTable.setTotalWidth(columnsWidth);
+                pdfTable.setLockedWidth(true);
+
+                //header de la tabla   
+                Paragraph header[] = new Paragraph[columnsWidth.length];
+                for (int i = 0; i < columnsWidth.length; i++) {
+                    header[i] = new Paragraph();
+                    header[i].setFont(FontFactory.getFont("Times-Roman", 10, Font.BOLD, BaseColor.BLACK));
+                    header[i].setAlignment(Paragraph.ALIGN_CENTER);
+                    header[i].add(columnasRecuento[i]);
+                    pdfTable.addCell(header[i]);
+                }
+
+                // ciclos para llenar la tabla
+                String content;
+                int num = 0;
+                
+                PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT "
+                        + " Grado, Apellido,Nombre,Destino,DNI,IMC,Categoria FROM Personal WHERE IMC >= " + imc
+                        + " AND Categoria != 3"
+                        + " " + MyArrays.getOrderPersonnel(0));
+                ResultSet rs = pst2.executeQuery();
+
+                if (rs.next()) {
+                    do {
+                        for (int i = 0; i < 7; i++) { //itera sobre las columnas
+                            switch (i) {
+                                case 0:
+                                    content = String.valueOf(++num);
+                                    break;
+                                case 1:
+                                    content = MyArrays.getGrades(rs.getInt("Categoria"), rs.getInt("Grado"));
+                                    break;
+                                case 2:
+                                    content = rs.getString(i) + " " + rs.getString(++i);
+                                    break;
+                                default:
+                                    content = rs.getString(i) != null ? rs.getString(i):"";
+                                    break;
+                            }
+                            Paragraph para = new Paragraph();
+                            para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));
+                            para.add(!content.equals("null") ? content : "");
+                            pdfTable.addCell(para);
+                            para = null;
+                        }
+                        for (int i = 0; i < columnasRecuento.length - 6; i++) {
+                            pdfTable.addCell("");
+                        }
+                        
+                    } while (rs.next());
+                                      
+                    document.add(pdfTable);
+                    document.add(p4);
+                    document.close();
+                    super.getConnection().close();
+                    document = null;
+                    p = null;
+                    p2 = null;
+                    p3 = null;
+                    p4 = null;
+                    glue = null;
+                    header = null;
+                    columnsWidth = null;
+
+                    JOptionPane.showMessageDialog(null, "Control de IMC confeccionado. El archivo se guardo en el Escritorio");
+                    System.gc();
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado Personal con un IMC mayor a " + imc);
+                }
+            } catch (Exception e) {
+                int line = e.getStackTrace()[0].getLineNumber();
+                System.out.println(e + " " + line);
+            }
+        }
+    }
+
     private void defaults(String nombreArchivo) {
         try {
             //creando el objeto documento para el pdf
@@ -383,13 +514,13 @@ public class Report extends DataBase {
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT (Leyenda) FROM Configuracion"
                     + " WHERE id = 1");
             ResultSet rs = pst.executeQuery();
-            leyenda = rs.getString("Leyenda");
+            leyend = rs.getString("Leyenda");
 
             super.getConnection().close();
 
             //Enviando el pdf al escritorio
-            ruta = System.getProperty("user.home");
-            PdfWriter.getInstance(document, new FileOutputStream(ruta + "/Desktop/" + nombreArchivo));
+            route = System.getProperty("user.home");
+            PdfWriter.getInstance(document, new FileOutputStream(route + "/Desktop/" + nombreArchivo));
 
             //objeto de la libreria iText, permite colocar texto a la derecha e izquierda en la misma linea
             glue = new Chunk(new VerticalPositionMark());
@@ -402,7 +533,7 @@ public class Report extends DataBase {
             //texto a la derecha ---- LEYENDA
             p.add(new Chunk(glue));
             p.setFont(FontFactory.getFont("Times-Roman", 9, Font.ITALIC, BaseColor.BLACK));
-            p.add(leyenda);
+            p.add(leyend);
             //texto a la izquierda pero abajo - REGIMIENTO DE INFANTERIA 1
             p2 = new Paragraph();
             p2.setFont(FontFactory.getFont("Times-Roman", 14, Font.BOLD, BaseColor.BLACK));
@@ -414,9 +545,10 @@ public class Report extends DataBase {
             p4 = new Paragraph();
             p4.setAlignment(Paragraph.ALIGN_RIGHT);
             p4.setFont(FontFactory.getFont("Times-Roman", 12, Font.NORMAL, BaseColor.BLACK));
-            p4.add("Ciudad Autónoma de Buenos Aires, " + dia + " de " + mes + " de " + año);
+            p4.add("Ciudad Autónoma de Buenos Aires, " + day + " de " + month + " de " + year);
 
         } catch (Exception e) {
+
         }
     }
 

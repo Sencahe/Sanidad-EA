@@ -47,7 +47,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         super(parent, modal);
         this.parteDeEnfermo = false;
         this.mainFrame = (MainFrame) parent;
-        Componentes();
+        components();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -60,7 +60,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         });
     }
 
-    private void Componentes() {
+    private void components() {
         //---------------------------------------
         Utilities utilidad = mainFrame.getUtility();
         Icons iconos = mainFrame.getIcons();
@@ -68,8 +68,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         setSize(500, 550);
         setResizable(false);
         setLocationRelativeTo(null);
-        setTitle("Agregar Nuevo Registro");
-        setIconImage(iconos.getIconoSanidad().getImage());
+        setTitle("Agregar Personal");
+        setIconImage(iconos.getIconHealthService().getImage());
         //fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -86,7 +86,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
             }
         };
-        container.setBackground(utilidad.getColorFondo());
+        container.setBackground(utilidad.getColorBackground());
         Dimension dimension = new Dimension(480, 500);
         container.setPreferredSize(dimension);
         container.setLayout(null);
@@ -101,22 +101,22 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         botonModificar.addActionListener(this);
         botonModificar.setVisible(false);
         container.add(botonModificar);
-        botonEliminar = new JButton("<html>Eliminar</html>", iconos.getIconoDelete());
+        botonEliminar = new JButton("<html>Eliminar</html>", iconos.getIconDelete());
         botonEliminar.setBounds(385, 360, 85, 30);
         botonEliminar.addActionListener(this);
         botonEliminar.setVisible(false);
         container.add(botonEliminar);
-        botonCalcularIMC = new JButton("<html><center>Calcular IMC</center><html>", iconos.getIconoCalculator());
+        botonCalcularIMC = new JButton("<html><center>Calcular IMC</center><html>", iconos.getIconCalculator());
         botonCalcularIMC.setBounds(45, 305, 85, 30);
         botonCalcularIMC.addActionListener(this);
         container.add(botonCalcularIMC);
         labelParte = new JLabel("<html>Parte de Sanidad<html>");
         labelParte.setBounds(370, 395, 150, 30);
-        labelParte.setFont(utilidad.getFuenteLabelsFormulario());
+        labelParte.setFont(utilidad.getFontLabelFormulary());
         labelParte.setForeground(Color.black);
         labelParte.setVisible(false);
         container.add(labelParte);
-        botonParte = new JButton("<html>Agregar</html>", iconos.getIconoPlus());
+        botonParte = new JButton("<html>Agregar</html>", iconos.getIconPlus());
         botonParte.setBounds(385, 420, 85, 30);
         botonParte.addActionListener(this);
         botonParte.setVisible(false);
@@ -130,10 +130,10 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
-            textField[i].setFont(utilidad.getFuenteTextFields());
+            textField[i].setFont(utilidad.getFontTextFields());
             if (i == 0 || i == 1) {
                 TextPrompt holder = new TextPrompt("Campo obligatorio", textField[i]);
-                holder.setFont(utilidad.getFuenteHolders());
+                holder.setFont(utilidad.getFontHolder());
                 holder.setForeground(Color.GRAY);
                 holder = null;
             }
@@ -152,7 +152,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 0; i < dateChooser.length; i++) {
             dateChooser[i] = new JDateChooser();
             dateChooser[i].setForeground(Color.black);
-            dateChooser[i].setFont(utilidad.getFuenteTextFields());
+            dateChooser[i].setFont(utilidad.getFontTextFields());
             dateChooser[i].setDateFormatString(MyDates.USER_DATE_FORMAT);
             container.add(dateChooser[i]);
         }
@@ -160,7 +160,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 0; i < labels.length; i++) {
             labels[i] = new JLabel();
             labels[i].setForeground(Color.black);
-            labels[i].setFont(utilidad.getFuenteLabelsFormulario());
+            labels[i].setFont(utilidad.getFontLabelFormulary());
             container.add(labels[i]);
         }
         //RadioButtons
@@ -175,14 +175,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         M.setOpaque(false);
         M.setFocusPainted(false);
         M.setForeground(Color.black);
-        M.setFont(utilidad.getFuenteLabelsFormulario());
+        M.setFont(utilidad.getFontLabelFormulary());
         M.setSelected(true);
         bg.add(M);
         container.add(M);
         F.setBounds(360, 10, 40, 20);
         F.setOpaque(false);
         F.setFocusPainted(false);
-        F.setFont(utilidad.getFuenteLabelsFormulario());
+        F.setFont(utilidad.getFontLabelFormulary());
         bg.add(F);
         container.add(F);
         //Categoria COMBO 0
@@ -190,8 +190,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[0].setText("Categoria");
         comboBox[0].setBounds(80, 10, 110, 20);
         comboBox[0].addActionListener(this);
-        for (int i = 0; i < MyArrays.getCategoriasLength(); i++) {
-            comboBox[0].addItem(MyArrays.getCategorias(i));
+        for (int i = 0; i < MyArrays.getCategoriesLength(); i++) {
+            comboBox[0].addItem(MyArrays.getCategories(i));
         }
         //Grado COMBO 1
         labels[1].setBounds(15, 45, 60, 20);
@@ -214,8 +214,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[5].setBounds(130, 95, 60, 20);
         labels[5].setText("Destino");
         comboBox[2].setBounds(130, 120, 90, 20);
-        for (int i = 0; i < MyArrays.getDestinos().length; i++) {
-            comboBox[2].addItem(MyArrays.getDestinos()[i]);
+        for (int i = 0; i < MyArrays.getSubUnities().length; i++) {
+            comboBox[2].addItem(MyArrays.getSubUnities()[i]);
         }
         //DNI TEXTFIELD 3
         labels[6].setBounds(240, 95, 100, 20);
@@ -235,8 +235,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[9].setBounds(130, 200, 70, 20);
         labels[9].setText("Aptitud");
         comboBox[3].setBounds(130, 225, 80, 20);
-        for (int i = 0; i < MyArrays.getAptitudLength(); i++) {
-            comboBox[3].addItem(MyArrays.getAptitud(i));
+        for (int i = 0; i < MyArrays.getAptitudeLength(); i++) {
+            comboBox[3].addItem(MyArrays.getAptitude(i));
         }
         //Peso TEXT 4
         labels[10].setBounds(15, 250, 70, 20);
@@ -279,7 +279,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 0; i < checkBox.length; i++) {
             checkBox[i] = new JCheckBox(MyArrays.getCheckBox(i));
             checkBox[i].setBounds(X, 400, 50, 20);
-            checkBox[i].setFont(utilidad.getFuenteChecks());
+            checkBox[i].setFont(utilidad.getFontChecks());
             checkBox[i].setOpaque(false);
             checkBox[i].setFocusPainted(false);
             checkBox[i].setBorderPaintedFlat(true);
@@ -291,7 +291,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
         //LABEL ULTIMO ANEXO 27
         JLabel ultA27 = new JLabel("<HTML><U>Ultimo Anexo 27</U></HTML>");
-        ultA27.setFont(utilidad.getFuenteLabelGrande());
+        ultA27.setFont(utilidad.getFontLabelBig());
         ultA27.setForeground(Color.black);
         ultA27.setBounds(15, 165, 130, 30);
         container.add(ultA27);
@@ -315,7 +315,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             comboBox[1].removeAllItems();
             int categoria = comboBox[0].getSelectedIndex();
 
-            for (String i : MyArrays.getGrados(categoria)) {
+            for (String i : MyArrays.getGrades(categoria)) {
                 comboBox[1].addItem(i);
             }
             if (categoria == 2 || categoria == 3) {
@@ -355,8 +355,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             if (Validar()) {
                 dispose();
                 Transmitter emisor = new Transmitter(0);
-                emisor.setInformacion(this);
-                emisor.actualizar(tabla);
+                emisor.sendInformation(this);
+                emisor.update(tabla);
                 emisor = null;
                 Vaciar();
                 System.gc();
@@ -372,8 +372,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                 if (Validar()) {
                     dispose();
                     Transmitter enviar = new Transmitter(id);
-                    enviar.setInformacion(this);
-                    enviar.actualizar(tabla);
+                    enviar.sendInformation(this);
+                    enviar.update(tabla);
                     enviar = null;
                     try {
                         tabla.getTables(tabla.getTabbedPane().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);
@@ -397,8 +397,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                 } else {
                     dispose();
                     Deleter eliminar = new Deleter(id);
-                    eliminar.eliminar(PersonnelPanel.TABLE_NAME);
-                    eliminar.actualizar(tabla);
+                    eliminar.delete(PersonnelPanel.TABLE_NAME);
+                    eliminar.update(tabla);
                     eliminar = null;
                     Vaciar();
                     System.gc();
@@ -412,7 +412,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(null, personal.getCompleteName()
                         + " ya cuenta con un Parte de Sanidad activo.");
             } else {
-                formParte.nuevoParte(this);
+                formParte.newSick(this);
             }
         }
     }
@@ -424,7 +424,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
     }
 
     public void obtenerDatos(int id, int puntero) {
-        setTitle("Modificar Informacion");
+        setTitle("Modificar Personal");
         botonAgregar.setVisible(false);
         botonModificar.setVisible(true);
         botonEliminar.setVisible(true);
@@ -435,7 +435,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         this.puntero = puntero;
 
         Receiver obtener = new Receiver(id);
-        obtener.getInformacion(this);
+        obtener.obtainInformation(this);
 
         int categoria = comboBox[0].getSelectedIndex();
         int grado = comboBox[1].getSelectedIndex();
@@ -497,7 +497,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         MyDates validar = new MyDates(MyDates.USER_DATE_FORMAT);
         for (int i = 0; i < 2; i++) {
             String date = ((JTextField)dateChooser[i].getDateEditor().getUiComponent()).getText();
-            if (!date.equals("") && !validar.fechaValida(date)) {
+            if (!date.equals("") && !validar.validDate(date)) {
                 labels[labelIndex].setForeground(Color.red);
                 String mensaje = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
                         + "<br>Si no conoce la fecha puede dejar el campo vacio.</center></html>";
@@ -532,6 +532,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         id = 0;
         personal = null;
         parteDeEnfermo = false;
+        setTitle("Agregar Personal");
 
         botonAgregar.setVisible(true);
         botonModificar.setVisible(false);
@@ -566,12 +567,12 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO CALCULAR IMC------------------
-    private String[] calcularIMC(double peso, double altura) {
+    private String[] calcularIMC(double weight, double height) {
         String index = "0";
         String IMCFinal;
-        double IMC = peso / (altura * altura);
-        DecimalFormat redondear = new DecimalFormat("0.00");
-        IMCFinal = redondear.format(IMC);
+        double IMC = weight / (height * height);
+        DecimalFormat roundOut = new DecimalFormat("0.00");
+        IMCFinal = roundOut.format(IMC);
         //ciclo para cambiar "," POR "." en el resultado del decimal format
         for (int i = 0; i < IMCFinal.length(); i++) {
             if (IMCFinal.charAt(i) == ',') {
@@ -593,9 +594,9 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         if (IMC < 17.5) {
             index = "5";
         }
-        String[] datos = {IMCFinal, index};
-        redondear = null;
-        return datos;
+        String[] data = {IMCFinal, index};
+        roundOut = null;
+        return data;
     }
 
     //---------------------SETTERS Y GETTERS----------------------------

@@ -5,13 +5,11 @@ import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
-import javax.swing.JTextField;
 import panels.ReCountPanel;
 import personnel.Personnel;
 import mytools.MyDates;
 import dialogs.PersonnelFormulary;
 import dialogs.SickFormulary;
-import java.time.LocalDate;
 
 public class Receiver extends DataBase {
 
@@ -26,55 +24,55 @@ public class Receiver extends DataBase {
         this.id = 0;
     }
 
-    public void getInformacion(PersonnelFormulary formulario) {
+    public void obtainInformation(PersonnelFormulary sickFormulary) {
 
         String[] text = MyArrays.getTextField();
         String[] combo = MyArrays.getComboBox();
         String[] date = MyArrays.getDateChooser();
         String[] check = MyArrays.getCheckBox();
 
-        String receptor;
+        String receiver;
 
-        MyDates fecha = new MyDates(MyDates.USER_DATE_FORMAT);
+        MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
 
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT * FROM Personal WHERE id = " + this.id);
             ResultSet rs = pst.executeQuery();
             //SOLICITO LOS DATOS QUE VAN A LOS TEXTFIELD
             for (int i = 0; i < text.length; i++) {
-                receptor = rs.getString(text[i]);
-                formulario.getTextField(i).setText(receptor != null ? receptor : "");
+                receiver = rs.getString(text[i]);
+                sickFormulary.getTextField(i).setText(receiver != null ? receiver : "");
             }
             //SOLICITO LOS DATOS QUE VAN A LOS COMBO BOX
             for (int i = 0; i < combo.length; i++) {
                 if (i < 2) {
-                    formulario.getComboBox(i).setSelectedIndex(rs.getInt(combo[i]));
+                    sickFormulary.getComboBox(i).setSelectedIndex(rs.getInt(combo[i]));
                 } else {
-                    receptor = rs.getString(combo[i]);
-                    formulario.getComboBox(i).setSelectedItem(receptor != null ? receptor : "");
+                    receiver = rs.getString(combo[i]);
+                    sickFormulary.getComboBox(i).setSelectedItem(receiver != null ? receiver : "");
                 }
             }
             //SOLICITO LOS DATOS QUE VAN A LOS DATE CHOOSER
             for (int i = 0; i < date.length; i++) {
-                receptor = rs.getString(date[i]);
-                if (receptor != null) {
-                    formulario.getDateChooser(i).setDate(fecha.toDate(receptor));
+                receiver = rs.getString(date[i]);
+                if (receiver != null) {
+                    sickFormulary.getDateChooser(i).setDate(myDates.toDate(receiver));
                 }
             }
             //SOLICITO LOS DATOS QUE VAN A LOS CHECK BOX
             for (int i = 0; i < check.length; i++) {
-                formulario.getCheckBox(i).setSelected((rs.getString(check[i]) != null));
+                sickFormulary.getCheckBox(i).setSelected((rs.getString(check[i]) != null));
             }
-            boolean enabled = formulario.getCheckBox(4).isSelected() || formulario.getCheckBox(5).isSelected();
-            formulario.getTextField(9).setEnabled(enabled);
+            boolean enabled = sickFormulary.getCheckBox(4).isSelected() || sickFormulary.getCheckBox(5).isSelected();
+            sickFormulary.getTextField(9).setEnabled(enabled);
             //SOLICITO LOS VALORES DE LOS RADIOBUTTON
             if (rs.getString("Sexo").equals("M")) {
-                formulario.getM().setSelected(true);
+                sickFormulary.getM().setSelected(true);
             } else {
-                formulario.getF().setSelected(true);
+                sickFormulary.getF().setSelected(true);
             }
             //SOLICITO VALORES FLAG 
-            formulario.setParteDeEnfermo(1 == rs.getInt("Parte"));
+            sickFormulary.setParteDeEnfermo(1 == rs.getInt("Parte"));
 
             //fin de la solicitud a la base de datos
             super.getConnection().close();
@@ -83,12 +81,12 @@ public class Receiver extends DataBase {
                     + "\nContactese con el desarrolador del programa para solucionar el problema.");
         }
 
-        fecha = null;
+        myDates = null;
         super.nullConnection();
 
     }
 
-    public void getInformacion(SickFormulary formParte) {
+    public void obtainInformation(SickFormulary sickFormulary) {
         try {
             // Recupero los datos del parte de enfermo para su formulario
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT id_personal, Categoria, Grado, Apellido,"
@@ -97,34 +95,34 @@ public class Receiver extends DataBase {
                     + "WHERE Parte.id = " + this.id);
             ResultSet rs = pst.executeQuery();
 
-            MyDates fecha = new MyDates(MyDates.USER_DATE_FORMAT);
+            MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
             //recupero las fechas
-            String desde = rs.getString("Desde");
-            String hasta = rs.getString("Hasta");
+            String since = rs.getString("Desde");
+            String until = rs.getString("Hasta");
             
-            formParte.setFlagDesde(fecha.toDate(desde));
-            formParte.setFlagHasta(fecha.toDate(hasta));            
-            formParte.getDateDesde().setDate(fecha.toDate(desde));
-            formParte.getDateHasta().setDate(fecha.toDate(hasta));
+            sickFormulary.setFlagSince(myDates.toDate(since));
+            sickFormulary.setFlagUntil(myDates.toDate(until));            
+            sickFormulary.getDateSince().setDate(myDates.toDate(since));
+            sickFormulary.getDateUntil().setDate(myDates.toDate(until));
             //recupero el resto de la informacion
-            formParte.getComboTipoParte().setSelectedIndex(rs.getInt("TipoParte"));
-            formParte.getNorasSiras().setSelectedItem(rs.getString("NorasSiras"));
-            formParte.getTextDiagnostico().setText(rs.getString("Diagnostico"));
-            formParte.getTextObservaciones().setText(rs.getString("Observacion"));
-            formParte.getTextCIE().setText(rs.getString("CIE") != null ? rs.getString("CIE") : "");
+            sickFormulary.getComboSickType().setSelectedIndex(rs.getInt("TipoParte"));
+            sickFormulary.getNorasSiras().setSelectedItem(rs.getString("NorasSiras"));
+            sickFormulary.getTextDiag().setText(rs.getString("Diagnostico"));
+            sickFormulary.getTextObs().setText(rs.getString("Observacion"));
+            sickFormulary.getTextCIE().setText(rs.getString("CIE") != null ? rs.getString("CIE") : "");
 
             //utilizo los datos de personal para crear el objeto Personal
-            int id_personal = rs.getInt("id_personal");
-            int categoria = rs.getInt("Categoria");
-            int grado = rs.getInt("Grado");
-            String nombre = rs.getString("Apellido") + " " + rs.getString("Nombre");
-            String destino = rs.getString("Destino") != null ? rs.getString("Destino") : "";
-            char sexo = rs.getString("Sexo").charAt(0);
+            int id_personnel = rs.getInt("id_personal");
+            int categorie = rs.getInt("Categoria");
+            int grade = rs.getInt("Grado");
+            String name = rs.getString("Apellido") + " " + rs.getString("Nombre");
+            String subUnity = rs.getString("Destino") != null ? rs.getString("Destino") : "";
+            char genre = rs.getString("Sexo").charAt(0);
             int dni = rs.getInt("DNI");
             //creo el objeto personal en la clase formularioParte
-            formParte.setPersonal(new Personnel(id_personal, categoria, grado, nombre, destino, sexo, dni));
+            sickFormulary.setPersonnel(new Personnel(id_personnel, categorie, grade, name, subUnity, genre, dni));
 
-            fecha = null;
+            myDates = null;
             super.getConnection().close();
 
             //FIN DEL METODO
@@ -134,12 +132,12 @@ public class Receiver extends DataBase {
         }
     }
 
-    public void getInformacion(ReCountPanel recuento, long dni, boolean todos) {
+    public void obtainInformation(ReCountPanel reCount, long dni, boolean all) {
         try {
-            recuento.getTableModel().setRowCount(0);
+            reCount.getTableModel().setRowCount(0);
             String statement;
 
-            if (todos) {
+            if (all) {
                 statement = "SELECT * FROM RecuentoParte";
             } else {
                 statement = "SELECT * FROM RecuentoParte  WHERE DNI LIKE '%" + dni + "%'";
@@ -150,34 +148,34 @@ public class Receiver extends DataBase {
 
             if (rs.next()) {
                 int num = 0;
-                Object[] fila = new Object[recuento.getTable().getColumnCount()];
+                Object[] row = new Object[reCount.getTable().getColumnCount()];
                 do {
-                    fila[0] = ++num;
-                    fila[1] = rs.getString("Grado");
-                    fila[2] = rs.getString("NombreCompleto");
-                    fila[3] = rs.getString("Destino");
-                    fila[4] = rs.getString("DNI");
-                    fila[5] = rs.getString("Diagnostico");
-                    fila[6] = rs.getString("CIE");
-                    fila[7] = rs.getString("Desde");
-                    fila[8] = rs.getString("Hasta");
-                    fila[9] = rs.getString("Dias");
-                    fila[10] = rs.getString("Observacion");
-                    fila[11] = rs.getString("TipoParte");
-                    fila[12] = rs.getString("NorasSiras");
+                    row[0] = ++num;
+                    row[1] = rs.getString("Grado");
+                    row[2] = rs.getString("NombreCompleto");
+                    row[3] = rs.getString("Destino");
+                    row[4] = rs.getString("DNI");
+                    row[5] = rs.getString("Diagnostico");
+                    row[6] = rs.getString("CIE");
+                    row[7] = rs.getString("Desde");
+                    row[8] = rs.getString("Hasta");
+                    row[9] = rs.getString("Dias");
+                    row[10] = rs.getString("Observacion");
+                    row[11] = rs.getString("TipoParte");
+                    row[12] = rs.getString("NorasSiras");
 
-                    recuento.getTableModel().addRow(fila);
-                    Arrays.fill(fila, null);
+                    reCount.getTableModel().addRow(row);
+                    Arrays.fill(row, null);
 
                 } while (rs.next());
 
-                recuento.updateWindow();
+                reCount.updateWindow();
 
             } else {
-                String mensaje = todos ? "No se encontro informacion almacenada en el recuento"
+                String mensaje = all ? "No se encontro informacion almacenada en el recuento"
                         : "No han habido resultados con ese numero de DNI.";
                 JOptionPane.showMessageDialog(null, mensaje);
-                recuento.updateWindow();
+                reCount.updateWindow();
             }
 
         } catch (Exception e) {

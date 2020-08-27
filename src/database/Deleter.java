@@ -13,10 +13,10 @@ public class Deleter extends DataBase {
         this.id = id;
     }    
 
-    public void eliminar(String tablaBDD) {
+    public void delete(String tableNameDB) {
         try {
                                     
-            PreparedStatement pst = super.getConnection().prepareStatement("DELETE FROM " + tablaBDD + " where ID = " + this.id);
+            PreparedStatement pst = super.getConnection().prepareStatement("DELETE FROM " + tableNameDB + " where ID = " + this.id);
             pst.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Personal eliminado del registro con exito.");

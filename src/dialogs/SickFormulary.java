@@ -21,25 +21,25 @@ public class SickFormulary extends JDialog implements ActionListener {
     private static final String EXCEPTUADO = "Tareas Adm";
     private static final String MATERNIDAD = "Lic. por Maternidad";
     
-    private JLabel informacion;
-    private JLabel labelDiagnostico, labelObservaciones, labelDesde, labelHasta, labelCie,
-            labelTipoParte, labelNorasSiras, sugerenciaDiag;
+    private JLabel labelPersonnelData;
+    private JLabel labelDiag, labelObs, labelSince, labelUntil, labelCIE,
+            labelSickType, labelNorasSiras, labelSuggestion;
    
-    private JComboBox comboTipoParte, comboNorasSiras;
-    private JTextField textDiagnostico, textObservaciones, textCIE;
-    private JDateChooser dateDesde, dateHasta;
-    private JButton botonAgregar, botonModificar, botonAlta;
+    private JComboBox comboSickType, comboNorasSiras;
+    private JTextField textDiag, textObs, textCIE;
+    private JDateChooser dateSince, dateUntil;
+    private JButton buttonAdd, buttonUpdate, buttonHeal;
 
-    private int idParte;
-    private boolean modificar;
-    private boolean modificoTipoParte;
-    private int flagTipoParte;
-    private Date flagDesde;
-    private Date flagHasta;
+    private int idSick;
+    private boolean beingModified;
+    private boolean beingModifiedSickType;
+    private int flagSickType;
+    private Date flagSince;
+    private Date flagUntil;
 
-    private Personnel personal;
+    private Personnel personnel;
 
-    private SickPanel parte;
+    private SickPanel sickPanel;
     private PersonnelFormulary formulario;
     private MainFrame mainFrame;
 
@@ -51,7 +51,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                vaciar();
+                empty();
             }
         });
     }
@@ -59,14 +59,14 @@ public class SickFormulary extends JDialog implements ActionListener {
     private void componentes() {
         //PROPIEDADES DEL FRAME
         //------------------------------
-        Utilities utilidad = mainFrame.getUtility();
-        Icons iconos = mainFrame.getIcons();
+        Utilities utility = mainFrame.getUtility();
+        Icons icons = mainFrame.getIcons();
         //PROPIEDADES DEL FRAME        
         setSize(450, 345);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Nuevo Parte");
-        setIconImage(iconos.getIconoSanidad().getImage());
+        setIconImage(icons.getIconHealthService().getImage());
         //Fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -82,7 +82,7 @@ public class SickFormulary extends JDialog implements ActionListener {
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        container.setBackground(utilidad.getColorFondo());
+        container.setBackground(utility.getColorBackground());
         Dimension dimension = new Dimension(450, 345);
         container.setPreferredSize(dimension);
         container.setLayout(null);
@@ -91,33 +91,33 @@ public class SickFormulary extends JDialog implements ActionListener {
         //--------------------------------------
         //COMPONENTES PRINCIPALES
         //Labels con informacion
-        informacion = new JLabel();
-        informacion.setBounds(15, 5, 355, 80);
-        informacion.setFont(utilidad.getFuenteLabelGrande());
-        informacion.setForeground(Color.black);
-        container.add(informacion);
+        labelPersonnelData = new JLabel();
+        labelPersonnelData.setBounds(15, 5, 355, 80);
+        labelPersonnelData.setFont(utility.getFontLabelBig());
+        labelPersonnelData.setForeground(Color.black);
+        container.add(labelPersonnelData);
 
         //combobox
-        JLabel labelComboTipoParte = new JLabel("Tipo de Parte");
-        labelComboTipoParte.setBounds(15, 90, 160, 20);
-        labelComboTipoParte.setForeground(Color.black);
-        labelComboTipoParte.setFont(utilidad.getFuenteLabelsFormulario());
-        add(labelComboTipoParte);
-        comboTipoParte = new JComboBox();
-        comboTipoParte.addItem("Enfermo");
-        comboTipoParte.addItem("Exceptuado");
-        comboTipoParte.addItem("Maternidad");
-        comboTipoParte.setBounds(15, 110, 160, 20);
-        comboTipoParte.addActionListener(this);
-        container.add(comboTipoParte);
-        labelTipoParte = new JLabel("<html>Al modificar el tipo de parte se enviara al recuento la "
+        JLabel labelComboSickType = new JLabel("Tipo de Parte");
+        labelComboSickType.setBounds(15, 90, 160, 20);
+        labelComboSickType.setForeground(Color.black);
+        labelComboSickType.setFont(utility.getFontLabelFormulary());
+        add(labelComboSickType);
+        comboSickType = new JComboBox();
+        comboSickType.addItem("Enfermo");
+        comboSickType.addItem("Exceptuado");
+        comboSickType.addItem("Maternidad");
+        comboSickType.setBounds(15, 110, 160, 20);
+        comboSickType.addActionListener(this);
+        container.add(comboSickType);
+        labelSickType = new JLabel("<html>Al modificar el tipo de parte se enviara al recuento la "
                 + "informacion actualmente guardada y se creara un nuevo parte. Revise esa informacion antes de proceder y "
                 + "recuerde modificar las fechas 'Desde' y 'Hasta' para el nuevo parte.<html>");
-        labelTipoParte.setBounds(180, 55, 250, 80);
-        labelTipoParte.setFont(utilidad.getFuenteLabelInfo());
-        labelTipoParte.setForeground(Color.orange);
-        labelTipoParte.setVisible(false);
-        container.add(labelTipoParte);
+        labelSickType.setBounds(180, 55, 250, 80);
+        labelSickType.setFont(utility.getFuenteLabelInfo());
+        labelSickType.setForeground(Color.orange);
+        labelSickType.setVisible(false);
+        container.add(labelSickType);
 
         comboNorasSiras = new JComboBox();
         comboNorasSiras.addItem("NORAS");
@@ -127,91 +127,91 @@ public class SickFormulary extends JDialog implements ActionListener {
         labelNorasSiras = new JLabel("NORAS / SIRAS");
         labelNorasSiras.setBounds(240, 220, 160, 20);
         labelNorasSiras.setForeground(Color.black);
-        labelNorasSiras.setFont(utilidad.getFuenteLabelsFormulario());
+        labelNorasSiras.setFont(utility.getFontLabelFormulary());
         container.add(labelNorasSiras);
         //datechooser
-        labelDesde = new JLabel("Desde *");
-        labelDesde.setBounds(15, 135, 200, 20);
-        labelDesde.setFont(utilidad.getFuenteLabelsFormulario());
-        labelDesde.setForeground(Color.black);
-        container.add(labelDesde);
-        dateDesde = new JDateChooser();
-        dateDesde.setBounds(15, 155, 100, 20);
-        dateDesde.setForeground(Color.black);
-        dateDesde.setFont(utilidad.getFuenteTextFields());
-        dateDesde.setDateFormatString(MyDates.USER_DATE_FORMAT);
-        container.add(dateDesde);
-        labelHasta = new JLabel("Hasta *");
-        labelHasta.setBounds(130, 135, 200, 20);
-        labelHasta.setFont(utilidad.getFuenteLabelsFormulario());
-        labelHasta.setForeground(Color.black);
-        container.add(labelHasta);
-        dateHasta = new JDateChooser();
-        dateHasta.setBounds(130, 155, 100, 20);
-        dateHasta.setForeground(Color.black);
-        dateHasta.setFont(utilidad.getFuenteTextFields());
-        dateHasta.setDateFormatString(MyDates.USER_DATE_FORMAT);
-        container.add(dateHasta);
+        labelSince = new JLabel("Desde *");
+        labelSince.setBounds(15, 135, 200, 20);
+        labelSince.setFont(utility.getFontLabelFormulary());
+        labelSince.setForeground(Color.black);
+        container.add(labelSince);
+        dateSince = new JDateChooser();
+        dateSince.setBounds(15, 155, 100, 20);
+        dateSince.setForeground(Color.black);
+        dateSince.setFont(utility.getFontTextFields());
+        dateSince.setDateFormatString(MyDates.USER_DATE_FORMAT);
+        container.add(dateSince);
+        labelUntil = new JLabel("Hasta *");
+        labelUntil.setBounds(130, 135, 200, 20);
+        labelUntil.setFont(utility.getFontLabelFormulary());
+        labelUntil.setForeground(Color.black);
+        container.add(labelUntil);
+        dateUntil = new JDateChooser();
+        dateUntil.setBounds(130, 155, 100, 20);
+        dateUntil.setForeground(Color.black);
+        dateUntil.setFont(utility.getFontTextFields());
+        dateUntil.setDateFormatString(MyDates.USER_DATE_FORMAT);
+        container.add(dateUntil);
         //textfield
-        labelObservaciones = new JLabel("Observaciones *");
-        labelObservaciones.setBounds(240, 135, 150, 20);
-        labelObservaciones.setFont(utilidad.getFuenteLabelsFormulario());
-        labelObservaciones.setForeground(Color.black);
-        container.add(labelObservaciones);
-        textObservaciones = new JTextField();
-        textObservaciones.setBounds(240, 155, 170, 20);
-        textObservaciones.setFont(utilidad.getFuenteTextFields());
-        textObservaciones.setText(ENFERMO);
-        container.add(textObservaciones);
-        labelDiagnostico = new JLabel("Diagnostico *");
-        labelDiagnostico.setBounds(15, 175, 200, 20);
-        labelDiagnostico.setFont(utilidad.getFuenteLabelsFormulario());
-        labelDiagnostico.setForeground(Color.black);
-        container.add(labelDiagnostico);
-        textDiagnostico = new JTextField();
-        textDiagnostico.setBounds(15, 195, 215, 20);
-        textDiagnostico.setFont(utilidad.getFuenteTextFields());
-        container.add(textDiagnostico);
+        labelObs = new JLabel("Observaciones *");
+        labelObs.setBounds(240, 135, 150, 20);
+        labelObs.setFont(utility.getFontLabelFormulary());
+        labelObs.setForeground(Color.black);
+        container.add(labelObs);
+        textObs = new JTextField();
+        textObs.setBounds(240, 155, 170, 20);
+        textObs.setFont(utility.getFontTextFields());
+        textObs.setText(ENFERMO);
+        container.add(textObs);
+        labelDiag = new JLabel("Diagnostico *");
+        labelDiag.setBounds(15, 175, 200, 20);
+        labelDiag.setFont(utility.getFontLabelFormulary());
+        labelDiag.setForeground(Color.black);
+        container.add(labelDiag);
+        textDiag = new JTextField();
+        textDiag.setBounds(15, 195, 215, 20);
+        textDiag.setFont(utility.getFontTextFields());
+        container.add(textDiag);
 
-        labelCie = new JLabel("CIE");
-        labelCie.setBounds(240, 175, 100, 20);
-        labelCie.setFont(utilidad.getFuenteLabelsFormulario());
-        labelCie.setForeground(Color.black);
-        container.add(labelCie);
+        labelCIE = new JLabel("CIE");
+        labelCIE.setBounds(240, 175, 100, 20);
+        labelCIE.setFont(utility.getFontLabelFormulary());
+        labelCIE.setForeground(Color.black);
+        container.add(labelCIE);
         textCIE = new JTextField();
         textCIE.setBounds(240, 195, 170, 20);
-        textCIE.setFont(utilidad.getFuenteTextFields());
+        textCIE.setFont(utility.getFontTextFields());
         container.add(textCIE);
 
-        sugerenciaDiag = new JLabel("Diagnosticos sugeridos: 'Embarazo' |"
+        labelSuggestion = new JLabel("Diagnosticos sugeridos: 'Embarazo' |"
                 + " (0-3 meses) 'Lactancia' |"
                 + " (3-12 meses) 'Maternidad'");
-        sugerenciaDiag.setBounds(10, 275, 435, 30);
-        sugerenciaDiag.setForeground(Color.black);
-        sugerenciaDiag.setVisible(false);
-        add(sugerenciaDiag);
+        labelSuggestion.setBounds(10, 275, 435, 30);
+        labelSuggestion.setForeground(Color.black);
+        labelSuggestion.setVisible(false);
+        add(labelSuggestion);
         //BOTONES---------------------------------------------------------------
-        botonAgregar = new JButton("<html>Guardar</html>", iconos.getIconoSave());
-        botonAgregar.setBounds(15, 235, 90, 30);
-        botonAgregar.setHorizontalAlignment(SwingConstants.LEFT);
-        botonAgregar.addActionListener(this);
-        container.add(botonAgregar);
-        botonModificar = new JButton("<html>Guardar</html>", iconos.getIconoSave());
-        botonModificar.setBounds(15, 235, 90, 30);
-        botonModificar.setHorizontalAlignment(SwingConstants.LEFT);
-        botonModificar.addActionListener(this);
-        botonModificar.setVisible(false);
-        container.add(botonModificar);
-        botonAlta = new JButton("<html>Alta</html>",iconos.getIconoAlta());
-        botonAlta.setBounds(125, 235, 90, 30);
-        botonAlta.addActionListener(this);
-        botonAlta.setVisible(false);
-        container.add(botonAlta);
+        buttonAdd = new JButton("<html>Guardar</html>", icons.getIconoSave());
+        buttonAdd.setBounds(15, 235, 90, 30);
+        buttonAdd.setHorizontalAlignment(SwingConstants.LEFT);
+        buttonAdd.addActionListener(this);
+        container.add(buttonAdd);
+        buttonUpdate = new JButton("<html>Guardar</html>", icons.getIconoSave());
+        buttonUpdate.setBounds(15, 235, 90, 30);
+        buttonUpdate.setHorizontalAlignment(SwingConstants.LEFT);
+        buttonUpdate.addActionListener(this);
+        buttonUpdate.setVisible(false);
+        container.add(buttonUpdate);
+        buttonHeal = new JButton("<html>Alta</html>",icons.getIconHealed());
+        buttonHeal.setBounds(125, 235, 90, 30);
+        buttonHeal.addActionListener(this);
+        buttonHeal.setVisible(false);
+        container.add(buttonHeal);
 
         //--------------------------------------
         this.getContentPane().add(container);
-        utilidad = null;
-        iconos = null;
+        utility = null;
+        icons = null;
     }
 
     //--------------------------------------------------------------------------
@@ -219,272 +219,273 @@ public class SickFormulary extends JDialog implements ActionListener {
     @Override
     //----------BOTON AGREGAR-----------------------
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == botonAgregar) {
+        if (e.getSource() == buttonAdd) {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 if (validar()) {
-                    Transmitter emisor = new Transmitter(personal.getId(), 0);
-                    emisor.setInformacion(this);
-                    emisor.actualizar(parte);
-                    parte.updateWindow();
+                    Transmitter transmitter = new Transmitter(personnel.getId(), 0);
+                    transmitter.sendInformation(this);
+                    transmitter.update(sickPanel);
+                    sickPanel.updateWindow();
                     formulario.setParteDeEnfermo(true);
-                    vaciar();
-                    emisor = null;
+                    empty();
+                    transmitter = null;
                 }
             }
         }
         //---------------BOTON MODIFICARR---------------------------
-        if (e.getSource() == botonModificar) {
+        if (e.getSource() == buttonUpdate) {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar el Parte?",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 if (validar()) {
-                    Transmitter emisor = new Transmitter(personal.getId(), this.idParte);
-                    if (flagTipoParte == comboTipoParte.getSelectedIndex()) {
-                        emisor.setInformacion(this);
+                    Transmitter transmitter = new Transmitter(personnel.getId(), this.idSick);
+                    if (flagSickType == comboSickType.getSelectedIndex()) {
+                        transmitter.sendInformation(this);
                     } else {
-                        emisor.setRecuento(this, false);
+                        transmitter.sendReCountInfo(this, false);
                     }
-                    emisor.actualizar(parte);
-                    parte.updateWindow();
+                    transmitter.update(sickPanel);
+                    sickPanel.updateWindow();
                     dispose();
-                    vaciar();
-                    emisor = null;
+                    empty();
+                    transmitter = null;
                 }
             }
         }
         //-------------------BOTON ALTA-----------------------
-        if (e.getSource() == botonAlta) {
+        if (e.getSource() == buttonHeal) {
             int confirmar = JOptionPane.showConfirmDialog(null,
                     "<html><center>¿Esta seguro que desea dar de Alta a "
-                    + personal.getCompleteName() + "?<br>"
+                    + personnel.getCompleteName() + "?<br>"
                     + "Recuerde que la fecha de 'Hasta' debe coincidir con la del Alta Medica.</center></html>",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (confirmar == JOptionPane.YES_OPTION) {
                 if (validar()) {
-                    Transmitter emisor = new Transmitter(personal.getId(), this.idParte);
-                    emisor.setRecuento(this, true);
-                    emisor.actualizar(parte);
-                    parte.updateWindow();;
+                    Transmitter emisor = new Transmitter(personnel.getId(), this.idSick);
+                    emisor.sendReCountInfo(this, true);
+                    emisor.update(sickPanel);
+                    sickPanel.updateWindow();;
                     dispose();
                     emisor = null;
-                    vaciar();
+                    empty();
                 }
             }
         }
         //---------------COMBO TIPO PARTE---------------------------
-        if (e.getSource() == comboTipoParte) {
+        if (e.getSource() == comboSickType) {
             //si se cambia el tipo de parte se borran las fechas
-            if (modificar && flagTipoParte != comboTipoParte.getSelectedIndex()) {
-                modificoTipoParte = true;
-                labelTipoParte.setVisible(true);
-                botonAlta.setVisible(false);
-                ((JTextField) dateDesde.getDateEditor().getUiComponent()).setText("");
-                ((JTextField) dateHasta.getDateEditor().getUiComponent()).setText("");
+            if (beingModified && flagSickType != comboSickType.getSelectedIndex()) {
+                beingModifiedSickType = true;
+                labelSickType.setVisible(true);
+                buttonHeal.setVisible(false);
+                ((JTextField) dateSince.getDateEditor().getUiComponent()).setText("");
+                ((JTextField) dateUntil.getDateEditor().getUiComponent()).setText("");
 
                 //sino, se colocan las actuales    
-            } else if(modificar){
-                modificoTipoParte = false;
-                labelTipoParte.setVisible(false);
-                botonAlta.setVisible(true);
-                dateDesde.setDate(flagDesde);
-                dateHasta.setDate(flagHasta);
+            } else if(beingModified){
+                beingModifiedSickType = false;
+                labelSickType.setVisible(false);
+                buttonHeal.setVisible(true);
+                dateSince.setDate(flagSince);
+                dateUntil.setDate(flagUntil);
 
             }
             //----
             //se cambia el campo observacion si se cambia el tipo de parte
-            if (comboTipoParte.getSelectedIndex() == 0) {
-                textObservaciones.setText(ENFERMO);
-                sugerenciaDiag.setVisible(false);
+            if (comboSickType.getSelectedIndex() == 0) {
+                textObs.setText(ENFERMO);
+                labelSuggestion.setVisible(false);
             }
-            if (comboTipoParte.getSelectedIndex() == 1) {
-                textObservaciones.setText(EXCEPTUADO);
-                sugerenciaDiag.setVisible(false);
+            if (comboSickType.getSelectedIndex() == 1) {
+                textObs.setText(EXCEPTUADO);
+                labelSuggestion.setVisible(false);
             }
-            if (comboTipoParte.getSelectedIndex() == 2) {
-                textObservaciones.setText(MATERNIDAD);
-                sugerenciaDiag.setVisible(true);
+            if (comboSickType.getSelectedIndex() == 2) {
+                textObs.setText(MATERNIDAD);
+                labelSuggestion.setVisible(true);
             }
 
         }
     }
 
     //-------------------------METODO VACIAR------------------------------------
-    private void vaciar() {
+    private void empty() {
         setTitle("Agregar Nuevo Parte");
-        botonAgregar.setVisible(true);
-        botonAlta.setVisible(false);
-        botonModificar.setVisible(false);
+        buttonAdd.setVisible(true);
+        buttonHeal.setVisible(false);
+        buttonUpdate.setVisible(false);
 
 
-        modificar = false;
-        modificoTipoParte = false;
+        beingModified = false;
+        beingModifiedSickType = false;
 
-        personal = null;
+        personnel = null;
 
-        informacion.setText("");
+        labelPersonnelData.setText("");
 
-        comboTipoParte.setSelectedIndex(0);
-        textDiagnostico.setText("");
-        textObservaciones.setText(ENFERMO);
+        comboSickType.setSelectedIndex(0);
+        textDiag.setText("");
+        textObs.setText(ENFERMO);
         textCIE.setText("");
-        ((JTextField) dateDesde.getDateEditor().getUiComponent()).setText("");
-        ((JTextField) dateHasta.getDateEditor().getUiComponent()).setText("");        
-        labelTipoParte.setVisible(false);
+        ((JTextField) dateSince.getDateEditor().getUiComponent()).setText("");
+        ((JTextField) dateUntil.getDateEditor().getUiComponent()).setText("");        
+        labelSickType.setVisible(false);
 
         dispose();
         System.gc();
     }
 
     //------------------------METODOS PARA NUEVO PARTE--------------------------
-    public void nuevoParte(PersonnelFormulary formulario) {
+    public void newSick(PersonnelFormulary formulario) {
         this.formulario = formulario;
-        this.personal = formulario.getPersonal();
-        informacion.setText(personal.toString());
+        this.personnel = formulario.getPersonal();
+        labelPersonnelData.setText(personnel.toString());
 
         setVisible(true);
     }
 
     //------------METODOS PARA MODIFICAR PARTES ACTUALES-----------------------
-    public void obtenerDatos(int idParte) {
-        this.idParte = idParte;
+    public void obtainData(int idParte) {
+        this.idSick = idParte;
 
         setTitle("Modificar Parte");
-        botonAgregar.setVisible(false);
-        botonAlta.setVisible(true);
-        botonModificar.setVisible(true);
+        buttonAdd.setVisible(false);
+        buttonHeal.setVisible(true);
+        buttonUpdate.setVisible(true);
 
-        Receiver receptor = new Receiver(this.idParte);
-        receptor.getInformacion(this);
+        Receiver receiver = new Receiver(this.idSick);
+        receiver.obtainInformation(this);
 
-        flagTipoParte = comboTipoParte.getSelectedIndex();
-        modificar = true;
-        modificoTipoParte = false;
+        flagSickType = comboSickType.getSelectedIndex();
+        beingModified = true;
+        beingModifiedSickType = false;
 
-        informacion.setText(personal.toString());
+        labelPersonnelData.setText(personnel.toString());
 
         setVisible(true);
+        receiver = null;
     }
 
     //----------------------METODO VALIDAR--------------------------------------
     private boolean validar() {
-        labelDiagnostico.setForeground(Color.black);
-        labelObservaciones.setForeground(Color.black);
-        labelDesde.setForeground(Color.black);
-        labelHasta.setForeground(Color.black);
+        labelDiag.setForeground(Color.black);
+        labelObs.setForeground(Color.black);
+        labelSince.setForeground(Color.black);
+        labelUntil.setForeground(Color.black);
                
         //validando campos vacios
-        boolean campoDiag = textDiagnostico.getText().equals("");
-        boolean campoObs = textObservaciones.getText().equals("");
-        boolean campoDesde = ((JTextField) dateDesde.getDateEditor().getUiComponent()).getText().equals("");
-        boolean campoHasta = ((JTextField) dateHasta.getDateEditor().getUiComponent()).getText().equals("");        
-        if (campoDiag || campoObs || campoDesde || campoHasta) {
-            labelDiagnostico.setForeground(campoDiag ? Color.red : Color.black);
-            labelObservaciones.setForeground(campoObs ? Color.red : Color.black);
-            labelDesde.setForeground(campoDesde ? Color.red : Color.black);
-            labelHasta.setForeground(campoHasta ? Color.red : Color.black);
+        boolean fieldDiag = textDiag.getText().equals("");
+        boolean fieldObs = textObs.getText().equals("");
+        boolean fieldSince = ((JTextField) dateSince.getDateEditor().getUiComponent()).getText().equals("");
+        boolean fieldUntil = ((JTextField) dateUntil.getDateEditor().getUiComponent()).getText().equals("");        
+        if (fieldDiag || fieldObs || fieldSince || fieldUntil) {
+            labelDiag.setForeground(fieldDiag ? Color.red : Color.black);
+            labelObs.setForeground(fieldObs ? Color.red : Color.black);
+            labelSince.setForeground(fieldSince ? Color.red : Color.black);
+            labelUntil.setForeground(fieldUntil ? Color.red : Color.black);
             JOptionPane.showMessageDialog(null, "Debe llenar todos los campos obligatorios");
             return false;
         }
         //validando fechas mal escritas
-        MyDates validar = new MyDates("dd/MM/yyyy");
-        String fechaDesde = ((JTextField) dateDesde.getDateEditor().getUiComponent()).getText();
-        String fechaHasta = ((JTextField) dateHasta.getDateEditor().getUiComponent()).getText();
-        if (!validar.fechaValida(fechaHasta) || !validar.fechaValida(fechaDesde)) {
-            labelDesde.setForeground(campoDiag ? Color.red : Color.black);
-            labelHasta.setForeground(campoDiag ? Color.red : Color.black);
+        MyDates myDates = new MyDates("dd/MM/yyyy");
+        String sinceDate = ((JTextField) dateSince.getDateEditor().getUiComponent()).getText();
+        String untilDate = ((JTextField) dateUntil.getDateEditor().getUiComponent()).getText();
+        if (!myDates.validDate(untilDate) || !myDates.validDate(sinceDate)) {
+            labelSince.setForeground(fieldDiag ? Color.red : Color.black);
+            labelUntil.setForeground(fieldDiag ? Color.red : Color.black);
             String mensaje = "<html><center>Fecha ingresada invalida, "
                     + "ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020</center></html>";
             JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
-            validar = null;
+            myDates = null;
             return false;
         }
         //validando la coherencia de las fechas Desde y Hasta ingresadas por el usuario
-        if (modificoTipoParte) {
-            if (!validar.fechaParteValida(dateDesde.getDate(),dateHasta.getDate(),flagDesde)) {
+        if (beingModifiedSickType) {
+            if (!myDates.sickValidDate(dateSince.getDate(),dateUntil.getDate(),flagSince)) {
                 return false;
             }
         } else {
-            if (!validar.fechaParteValida(dateDesde.getDate(), dateHasta.getDate())){
+            if (!myDates.sickValidDate(dateSince.getDate(), dateUntil.getDate())){
                 return false;
             }
         }
         //validando que no se le agrege parte de maternidad a personal M
-        if (personal.getGenre() == 'M') {
-            if (comboTipoParte.getSelectedIndex() == 2) {
+        if (personnel.getGenre() == 'M') {
+            if (comboSickType.getSelectedIndex() == 2) {
                 JOptionPane.showMessageDialog(null, "No puede agregar parte de \"Maternidad\" a un Personal Masculino.");
                 return false;
             }
         }
 
-        validar = null;
+        myDates = null;
         return true;
     }
 
     //----------------------SETTER Y GETTERS------------------------------------
-    public void setPersonal(Personnel personal) {
-        this.personal = personal;
+    public void setPersonnel(Personnel personnel) {
+        this.personnel = personnel;
     }
 
-    public void setParte(SickPanel parte) {
-        this.parte = parte;
+    public void setSickPanel(SickPanel sickPanel) {
+        this.sickPanel = sickPanel;
     }
 
     public void setFormulario(PersonnelFormulary formulario) {
         this.formulario = formulario;
     }
 
-    public Personnel getPersonal() {
-        return personal;
+    public Personnel getPersonnel() {
+        return personnel;
     }
 
-    public JComboBox getComboTipoParte() {
-        return comboTipoParte;
+    public JComboBox getComboSickType() {
+        return comboSickType;
     }
 
     public JComboBox getNorasSiras() {
         return comboNorasSiras;
     }
 
-    public JTextField getTextDiagnostico() {
-        return textDiagnostico;
+    public JTextField getTextDiag() {
+        return textDiag;
     }
 
-    public JTextField getTextObservaciones() {
-        return textObservaciones;
+    public JTextField getTextObs() {
+        return textObs;
     }
 
     public JTextField getTextCIE() {
         return textCIE;
     }
 
-    public JDateChooser getDateDesde() {
-        return dateDesde;
+    public JDateChooser getDateSince() {
+        return dateSince;
     }
 
     public Date getFlagDesde() {
-        return flagDesde;
+        return flagSince;
     }
 
-    public void setFlagDesde(Date flagDesde) {
-        this.flagDesde = flagDesde;
+    public void setFlagSince(Date flagDesde) {
+        this.flagSince = flagDesde;
     }
 
-    public Date getFlagHasta() {
-        return flagHasta;
+    public Date getFlagUntil() {
+        return flagUntil;
     }
 
-    public void setFlagHasta(Date flagHasta) {
-        this.flagHasta = flagHasta;
+    public void setFlagUntil(Date flagUntil) {
+        this.flagUntil = flagUntil;
     }
 
-    public JDateChooser getDateHasta() {
-        return dateHasta;
+    public JDateChooser getDateUntil() {
+        return dateUntil;
     }
 
-    public void setFlagTipoParte(int flagTipoParte) {
-        this.flagTipoParte = flagTipoParte;
+    public void setFlagSickType(int flagSickType) {
+        this.flagSickType = flagSickType;
     }
 
 }

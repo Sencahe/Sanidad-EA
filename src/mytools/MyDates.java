@@ -16,13 +16,13 @@ public class MyDates {
 
     private DateTimeFormatter dateTimeFormatter;
     private SimpleDateFormat simpleDateFormat;
-    private LocalDate fechaHoy;
+    private LocalDate todayLocalDate;
 
     //Constructor que al ser invocado obtiene la fecha de hoy y de parametro el formato de fecha
-    public MyDates(String formatoFecha) {
-        this.dateTimeFormatter = DateTimeFormatter.ofPattern(formatoFecha);
-        this.simpleDateFormat = new SimpleDateFormat(formatoFecha);
-        this.fechaHoy = LocalDate.now();
+    public MyDates(String dateFormat) {
+        this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateFormat);
+        this.simpleDateFormat = new SimpleDateFormat(dateFormat);
+        this.todayLocalDate = LocalDate.now();
     }
 
     //-------------------------------------------------------------------------
@@ -72,17 +72,17 @@ public class MyDates {
     //metodo para obtener la edad a partir de la fecha pasada como parametro
     public int getEdad(String bornDate) {
         LocalDate localDate = LocalDate.parse(bornDate);
-        Period periodo = Period.between(localDate, fechaHoy);
+        Period periodo = Period.between(localDate, todayLocalDate);
         return (periodo.getYears());
     }
 
-    public int getDias(String date) {
+    public int getDays(String date) {
         LocalDate localDate = LocalDate.parse(date);
-        int days = (int) ChronoUnit.DAYS.between(localDate, fechaHoy);
+        int days = (int) ChronoUnit.DAYS.between(localDate, todayLocalDate);
         return days + 1;
     }
 
-    public int getPeriodoDias(LocalDate since, LocalDate until) {
+    public int getPeriodOfDays(LocalDate since, LocalDate until) {
         return ((int) ChronoUnit.DAYS.between(since, until)) + 1;
 
     }
@@ -95,7 +95,7 @@ public class MyDates {
     }
 
     //------------------METODOS QUE VALIDAN LAS FECHAS--------------------------
-    public boolean fechaValida(String fecha) {
+    public boolean validDate(String fecha) {
         try {
             this.dateTimeFormatter.parse(fecha);
             return true;
@@ -105,13 +105,13 @@ public class MyDates {
     }
 
     //valida la fecha entre el desde y el hasta 
-    public boolean fechaParteValida(Date desde, Date hasta) {
-        LocalDate fechaDesde = toLocalDate(desde);
-        LocalDate fechaHasta = toLocalDate(hasta);
-        if (fechaDesde.isAfter(fechaHasta) || fechaDesde.isEqual(fechaHasta)) {
+    public boolean sickValidDate(Date since, Date until) {
+        LocalDate sinceDate = toLocalDate(since);
+        LocalDate untilDate = toLocalDate(until);
+        if (sinceDate.isAfter(untilDate) || sinceDate.isEqual(untilDate)) {
             JOptionPane.showMessageDialog(null, "La fecha 'Desde' no puede ser posterior o igual a la fecha 'Hasta'.");
             return false;
-        } else if (fechaHasta.isBefore(this.fechaHoy)) {
+        } else if (untilDate.isBefore(this.todayLocalDate)) {
             JOptionPane.showMessageDialog(null, "La fecha 'Hasta' no puede ser anterior a la fecha de hoy.");
             return false;
         }
@@ -119,15 +119,15 @@ public class MyDates {
     }
 
     //valida la fecha entre el desde y el hasta, ademas compara que el desde no sea menor que el incial
-    public boolean fechaParteValida(Date desde, Date hasta, Date flagDesde) {
-        LocalDate fechaDesde = toLocalDate(desde);
-        LocalDate fechaFlagDesde = toLocalDate(flagDesde);
-        if (fechaDesde.isBefore(fechaFlagDesde) || (fechaDesde.isEqual(fechaFlagDesde))) {
+    public boolean sickValidDate(Date since, Date until, Date flagSince) {
+        LocalDate sinceDate = toLocalDate(since);
+        LocalDate flagSinceDate = toLocalDate(flagSince);
+        if (sinceDate.isBefore(flagSinceDate) || (sinceDate.isEqual(flagSinceDate))) {
             JOptionPane.showMessageDialog(null, "Si modifica el tipo de Parte, "
-                    + "la fecha 'Desde' no puede ser anterior o igual a la fecha inicial: " + flagDesde);
+                    + "la fecha 'Desde' no puede ser anterior o igual a la fecha inicial: " + flagSince);
             return false;
         } else {
-            return fechaParteValida(desde, hasta);
+            return MyDates.this.sickValidDate(since, until);
         }
     }
 

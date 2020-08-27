@@ -43,7 +43,7 @@ public class ListGenerator extends JDialog implements ActionListener {
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Generar Lista");
-        setIconImage(iconos.getIconoSanidad().getImage());
+        setIconImage(iconos.getIconHealthService().getImage());
         //fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -60,7 +60,7 @@ public class ListGenerator extends JDialog implements ActionListener {
 
             }
         };
-        container.setBackground(utilidad.getColorFondo());
+        container.setBackground(utilidad.getColorBackground());
         Dimension dimension = new Dimension(280, 230);
         container.setPreferredSize(dimension);
         container.setLayout(null);
@@ -68,7 +68,7 @@ public class ListGenerator extends JDialog implements ActionListener {
         //------------------------------------------------------
         message = new JLabel("Ingrese el titulo para la lista");
         message.setBounds(30, 10, 200, 30);
-        message.setFont(utilidad.getFuenteLabelGrande());
+        message.setFont(utilidad.getFontLabelBig());
         container.add(message);
 
         textTitle = new JTextField();
@@ -86,20 +86,20 @@ public class ListGenerator extends JDialog implements ActionListener {
 
         civilians = new JLabel("Incluir civiles");
         civilians.setBounds(80, 75, 200, 30);
-        civilians.setFont(utilidad.getFuenteLabelsFormulario());
+        civilians.setFont(utilidad.getFontLabelFormulary());
         container.add(civilians);
 
         bg = new ButtonGroup();
         yes = new JRadioButton("Si");
         yes.setBounds(75, 100, 50, 30);
-        yes.setFont(utilidad.getFuenteLabelsFormulario());
+        yes.setFont(utilidad.getFontLabelFormulary());
         yes.setOpaque(false);
         yes.setFocusPainted(false);
         bg.add(yes);
         container.add(yes);
         no = new JRadioButton("No");
         no.setBounds(120, 100, 50, 30);
-        no.setFont(utilidad.getFuenteLabelsFormulario());
+        no.setFont(utilidad.getFontLabelFormulary());
         no.setOpaque(false);
         no.setSelected(true);
         no.setFocusPainted(false);
@@ -130,7 +130,7 @@ public class ListGenerator extends JDialog implements ActionListener {
             boolean addCivilians = yes.isSelected();
 
             Report report = new Report();
-            report.generarReporteLista(tabla, title, addCivilians);
+            report.createListReport(tabla, title, addCivilians);
             report = null;
             dispose();
         }

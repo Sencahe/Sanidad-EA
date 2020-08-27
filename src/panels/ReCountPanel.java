@@ -29,6 +29,9 @@ import mytools.Icons;
 public class ReCountPanel extends JPanel implements ActionListener {
 
     public static final String TABLE_NAME = "RecuentoParte";
+    
+    public static final int NAME_COLUMN = 3;
+    public static final int DIAG_COLUMN = 5;
 
     private JButton buttonSickPanel;
     private JButton buttonGetByDNI, buttonGetAll, buttonClean, buttonSearchByName;
@@ -64,7 +67,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         Icons icons = mainFrame.getIcons();
 
         //PROPIEDADES DEL PANEL-------------------------------------------------
-        setBackground(utility.getColorFondo());
+        setBackground(utility.getColorBackground());
         dimension = new Dimension(1505, 580);
         setPreferredSize(dimension);
         setLayout(null);
@@ -74,38 +77,8 @@ public class ReCountPanel extends JPanel implements ActionListener {
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         //TABLA CON RECUENTO----------------------------------------------------
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        table = new JTable(model);
-        table.setGridColor(Color.black);
-        table.setBackground(utility.getColorTabla());
-        table.setFont(utility.getFuenteTabla());
-        table.setRowHeight(16);
-        JTableHeader header = table.getTableHeader();
-        header.setFont(utility.getFuenteHeader());
-        header.setBackground(utility.getColorTabla());
-        header.setPreferredSize(new Dimension(40, 27));
-        ((DefaultTableCellRenderer) header.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        //creacion de las columnas
-        for (int i = 0; i < MyArrays.getColumnasRecuentoLength(); i++) {
-            model.addColumn(MyArrays.getColumnasRecuento(i));
-        }
-        //tamaño de las columnas y filas
-        for (int i = 0; i < MyArrays.getColumnasRecuentoLength(); i++) {
-            table.getColumnModel().getColumn(i).setMinWidth(MyArrays.getTamañoColumnasRecuento(i));
-            table.getColumnModel().getColumn(i).setMaxWidth(MyArrays.getTamañoColumnasRecuento(i));
-            table.getColumnModel().getColumn(i).setPreferredWidth(MyArrays.getTamañoColumnasRecuento(i));
-            //centrado del contenido de las columnas
-            if (i != 2 && i != 5) {
-                table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-            }
-        }
+        table = utility.customTable(this, 3, 5);
+ 
         //scroll
         scrollTable = new JScrollPane(table);
         scrollTable.setBounds(40, 100, 1367, 27);
@@ -144,18 +117,18 @@ public class ReCountPanel extends JPanel implements ActionListener {
         //LABELS----------------------------------------------------------------
         labelGetByDNI = new JLabel("Ingrese el DNI para buscar en el recuento:");
         labelGetByDNI.setBounds(40, 60, 300, 30);
-        labelGetByDNI.setFont(utility.getFuenteLabelGrande());
+        labelGetByDNI.setFont(utility.getFontLabelBig());
         labelGetByDNI.setForeground(Color.black);
         add(labelGetByDNI);
         labelSearchByName = new JLabel("Buscar por nombre:");
         labelSearchByName.setBounds(690, 60, 170, 30);
-        labelSearchByName.setFont(utility.getFuenteLabelGrande());
+        labelSearchByName.setFont(utility.getFontLabelBig());
         labelSearchByName.setForeground(Color.black);
         labelSearchByName.setVisible(false);
         add(labelSearchByName);
         labelInfoSearchByName = new JLabel("<html>La lista completa del recuento esta "
                 + "ordenada en funcion al momento que se les dio de alta medica en el sistema.</html>");
-        labelInfoSearchByName.setBounds(690, 30, 280, 30);
+        labelInfoSearchByName.setBounds(690, 15, 210, 45);
         labelInfoSearchByName.setForeground(Color.black);
         labelInfoSearchByName.setVisible(false);
         add(labelInfoSearchByName);
@@ -184,21 +157,22 @@ public class ReCountPanel extends JPanel implements ActionListener {
         add(buttonSearchByName);
         buttonSickPanel = utility.customButton();
         buttonSickPanel.setText("<html><center>Volver al Parte</center></html>");
-        buttonSickPanel.setBounds(40, 15, 100, 35);
+        buttonSickPanel.setBounds(10, 15, 110, 35);
         buttonSickPanel.addActionListener(this);
         add(buttonSickPanel);
+        //----------
         JLabel reporte = new JLabel("Generar Reportes");
-        reporte.setFont(utility.getFuenteLabelGrande());
+        reporte.setFont(utility.getFontLabelBig());
         reporte.setForeground(Color.white);
-        reporte.setBounds(1000, 15, 150, 32);
+        reporte.setBounds(900, 15, 150, 32);
         add(reporte);
         JLabel pdf = new JLabel();
-        pdf.setIcon(icons.getIconoPdf());
-        pdf.setBounds(1150, 15, 32, 32);
+        pdf.setIcon(icons.getIconPdf());
+        pdf.setBounds(1050, 15, 32, 32);
         add(pdf);
         buttonReport = utility.customButton();
         buttonReport.setText("<html><center>Recuento<br>Partes</center></html>");
-        buttonReport.setBounds(1190, 15, 110, 35);
+        buttonReport.setBounds(1090, 15, 110, 35);
         buttonReport.addActionListener(this);
         add(buttonReport);
 
@@ -233,7 +207,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
         if (e.getSource() == buttonGetAll) {
             Receiver receiver = new Receiver();
-            receiver.getInformacion(this, 0, true);
+            receiver.obtainInformation(this, 0, true);
             if (table.getRowCount() > 0) {
                 labelInfoSearchByName.setVisible(true);
                 labelSearchByName.setVisible(true);
@@ -268,7 +242,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(null, "No hay informacion mostrada, busque por DNI o presione el boton \"Todos\"");
             } else {
                 Report report = new Report();
-                report.generarReporteRecuento(this);
+                report.createReCountReport(this);
                 report = null;
             }
 
@@ -285,7 +259,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
             buttonSearchByName.setVisible(false);
             labelInfoSearchByName.setVisible(false);
             Receiver receptor = new Receiver();
-            receptor.getInformacion(this, dni, false);
+            receptor.obtainInformation(this, dni, false);
             receptor = null;
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "El numero ingresado es incorrecto.");
