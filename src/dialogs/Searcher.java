@@ -117,7 +117,7 @@ public class Searcher extends JDialog implements ActionListener {
         // Label con mensaje resultado----------------------
         labelMessage = new JLabel();
         labelMessage.setFont(utility.getFuenteMsgBuscador());
-        labelMessage.setBounds(100, 100, 250, 40);
+        labelMessage.setBounds(100, 110, 250, 40);
         add(labelMessage);
         // label informativo
         labelFound = new JLabel("Ingrese palabra para buscar por Apellido y Nombre");

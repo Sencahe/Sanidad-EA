@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 public class DataBase {
     
-    private static final String SQLITE_URL = "jdbc:sqlite:DB.sqlite";
+    private static final String SQLITE_URL = "jdbc:sqlite:backup/DB.sqlite";
 
     private Connection cn;
 
@@ -56,8 +56,8 @@ public class DataBase {
     }
 
     //--------------------------------------------------------------------------
-    //------------------------METODO ACTUALIZAR---------------------------------
-    //-------------------------TABLA PERSONAL-----------------------------------
+    //--------------------------METODO ACTUALIZAR-------------------------------
+    //---------------------------TABLA PERSONAL---------------------------------
     public void update(PersonnelPanel personnelPanel) {
         //OBJETOS auxiliares----------------------------------------------------
         MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);

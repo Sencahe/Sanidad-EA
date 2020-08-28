@@ -248,12 +248,12 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     //--------------------------------------------------------------------------
     //-----------------------METODOS / FUNCIONES--------------------------------
     private void modifyPersonnel(int id, int puntero) {
-        formulary.obtenerDatos(id, puntero);
+        formulary.obtainData(id, puntero);
     }
 
     private void openFormulary(int cat) {
-        formulary.setCategoria(cat);
-        formulary.nuevoFormulario();
+        formulary.setCategorie(cat);
+        formulary.newPersonnel();
     }
 
     public void update(int filter, int showBySubUnity, int rowOrdering) {

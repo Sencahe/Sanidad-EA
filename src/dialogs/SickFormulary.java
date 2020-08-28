@@ -228,7 +228,7 @@ public class SickFormulary extends JDialog implements ActionListener {
                     transmitter.sendInformation(this);
                     transmitter.update(sickPanel);
                     sickPanel.updateWindow();
-                    formulario.setParteDeEnfermo(true);
+                    formulario.setSick(true);
                     empty();
                     transmitter = null;
                 }
@@ -340,7 +340,7 @@ public class SickFormulary extends JDialog implements ActionListener {
     //------------------------METODOS PARA NUEVO PARTE--------------------------
     public void newSick(PersonnelFormulary formulario) {
         this.formulario = formulario;
-        this.personnel = formulario.getPersonal();
+        this.personnel = formulario.getPersonnel();
         labelPersonnelData.setText(personnel.toString());
 
         setVisible(true);

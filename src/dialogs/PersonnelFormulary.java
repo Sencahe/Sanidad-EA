@@ -31,21 +31,21 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     private JLabel[] labels;
 
-    private JButton botonCalcularIMC, botonAgregar, botonEliminar, botonModificar, botonParte;
-    private JLabel labelParte;
+    private JButton buttonCalcIMC, buttonAdd, buttonDelete, buttonModify, buttonSick;
+    private JLabel labelSick;
 
     private int id;
-    private int puntero; //variable que sirve de referencia para la fila seleccionada al abrir el frame   
-    private boolean parteDeEnfermo;
+    private int pointer; //variable que sirve de referencia para la fila seleccionada al abrir el frame   
+    private boolean sick;
 
-    private PersonnelPanel tabla;
-    private SickFormulary formParte;
-    private Personnel personal;
+    private PersonnelPanel personnelPanel;
+    private SickFormulary sickFormulary;
+    private Personnel personnel;
     private MainFrame mainFrame;
 
     public PersonnelFormulary(Frame parent, boolean modal) {
         super(parent, modal);
-        this.parteDeEnfermo = false;
+        this.sick = false;
         this.mainFrame = (MainFrame) parent;
         components();
 
@@ -53,7 +53,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                Vaciar();
+                empty();
                 dispose();
                 System.gc();
             }
@@ -62,14 +62,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     private void components() {
         //---------------------------------------
-        Utilities utilidad = mainFrame.getUtility();
-        Icons iconos = mainFrame.getIcons();
+        Utilities utilitie = mainFrame.getUtility();
+        Icons icons = mainFrame.getIcons();
         //PROPIEDADES DEL FRAME-------------------------------------------------
         setSize(500, 550);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Agregar Personal");
-        setIconImage(iconos.getIconHealthService().getImage());
+        setIconImage(icons.getIconHealthService().getImage());
         //fondo del frame
         JPanel container = new JPanel() {
             @Override
@@ -86,41 +86,41 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
             }
         };
-        container.setBackground(utilidad.getColorBackground());
+        container.setBackground(utilitie.getColorBackground());
         Dimension dimension = new Dimension(480, 500);
         container.setPreferredSize(dimension);
         container.setLayout(null);
         dimension = null;
         //BOTONES PRINCIPALES         
-        botonAgregar = new JButton("<html>Guardar</html>", iconos.getIconoSave());
-        botonAgregar.setBounds(385, 360, 85, 30);
-        botonAgregar.addActionListener(this);
-        container.add(botonAgregar);
-        botonModificar = new JButton("<html>Guardar</html>", iconos.getIconoSave());
-        botonModificar.setBounds(385, 320, 85, 30);
-        botonModificar.addActionListener(this);
-        botonModificar.setVisible(false);
-        container.add(botonModificar);
-        botonEliminar = new JButton("<html>Eliminar</html>", iconos.getIconDelete());
-        botonEliminar.setBounds(385, 360, 85, 30);
-        botonEliminar.addActionListener(this);
-        botonEliminar.setVisible(false);
-        container.add(botonEliminar);
-        botonCalcularIMC = new JButton("<html><center>Calcular IMC</center><html>", iconos.getIconCalculator());
-        botonCalcularIMC.setBounds(45, 305, 85, 30);
-        botonCalcularIMC.addActionListener(this);
-        container.add(botonCalcularIMC);
-        labelParte = new JLabel("<html>Parte de Sanidad<html>");
-        labelParte.setBounds(370, 395, 150, 30);
-        labelParte.setFont(utilidad.getFontLabelFormulary());
-        labelParte.setForeground(Color.black);
-        labelParte.setVisible(false);
-        container.add(labelParte);
-        botonParte = new JButton("<html>Agregar</html>", iconos.getIconPlus());
-        botonParte.setBounds(385, 420, 85, 30);
-        botonParte.addActionListener(this);
-        botonParte.setVisible(false);
-        container.add(botonParte);
+        buttonAdd = new JButton("<html>Guardar</html>", icons.getIconoSave());
+        buttonAdd.setBounds(385, 360, 85, 30);
+        buttonAdd.addActionListener(this);
+        container.add(buttonAdd);
+        buttonModify = new JButton("<html>Guardar</html>", icons.getIconoSave());
+        buttonModify.setBounds(385, 320, 85, 30);
+        buttonModify.addActionListener(this);
+        buttonModify.setVisible(false);
+        container.add(buttonModify);
+        buttonDelete = new JButton("<html>Eliminar</html>", icons.getIconDelete());
+        buttonDelete.setBounds(385, 360, 85, 30);
+        buttonDelete.addActionListener(this);
+        buttonDelete.setVisible(false);
+        container.add(buttonDelete);
+        buttonCalcIMC = new JButton("<html><center>Calcular IMC</center><html>", icons.getIconCalculator());
+        buttonCalcIMC.setBounds(45, 305, 85, 30);
+        buttonCalcIMC.addActionListener(this);
+        container.add(buttonCalcIMC);
+        labelSick = new JLabel("<html>Parte de Sanidad<html>");
+        labelSick.setBounds(370, 395, 150, 30);
+        labelSick.setFont(utilitie.getFontLabelFormulary());
+        labelSick.setForeground(Color.black);
+        labelSick.setVisible(false);
+        container.add(labelSick);
+        buttonSick = new JButton("<html>Agregar</html>", icons.getIconPlus());
+        buttonSick.setBounds(385, 420, 85, 30);
+        buttonSick.addActionListener(this);
+        buttonSick.setVisible(false);
+        container.add(buttonSick);
         // DECLARACION DE COMPONENTES DEL FRAME MAS ALGUNAS PROPIEDADES---------
         textField = new JTextField[MyArrays.getTextFieldLength()];
         comboBox = new JComboBox[MyArrays.getComboBoxLength()];
@@ -130,15 +130,15 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         //propiedades text field 
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
-            textField[i].setFont(utilidad.getFontTextFields());
+            textField[i].setFont(utilitie.getFontTextFields());
             if (i == 0 || i == 1) {
                 TextPrompt holder = new TextPrompt("Campo obligatorio", textField[i]);
-                holder.setFont(utilidad.getFontHolder());
+                holder.setFont(utilitie.getFontHolder());
                 holder.setForeground(Color.GRAY);
                 holder = null;
             }
             if (i >= 4 && i <= 6) {
-                textField[i].addKeyListener(utilidad.bloquearLetras);
+                textField[i].addKeyListener(utilitie.bloquearLetras);
                 textField[i].setDocument(new JTextFieldLimit(6));
             }
             container.add(textField[i]);
@@ -152,7 +152,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 0; i < dateChooser.length; i++) {
             dateChooser[i] = new JDateChooser();
             dateChooser[i].setForeground(Color.black);
-            dateChooser[i].setFont(utilidad.getFontTextFields());
+            dateChooser[i].setFont(utilitie.getFontTextFields());
             dateChooser[i].setDateFormatString(MyDates.USER_DATE_FORMAT);
             container.add(dateChooser[i]);
         }
@@ -160,7 +160,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 0; i < labels.length; i++) {
             labels[i] = new JLabel();
             labels[i].setForeground(Color.black);
-            labels[i].setFont(utilidad.getFontLabelFormulary());
+            labels[i].setFont(utilitie.getFontLabelFormulary());
             container.add(labels[i]);
         }
         //RadioButtons
@@ -175,14 +175,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         M.setOpaque(false);
         M.setFocusPainted(false);
         M.setForeground(Color.black);
-        M.setFont(utilidad.getFontLabelFormulary());
+        M.setFont(utilitie.getFontLabelFormulary());
         M.setSelected(true);
         bg.add(M);
         container.add(M);
         F.setBounds(360, 10, 40, 20);
         F.setOpaque(false);
         F.setFocusPainted(false);
-        F.setFont(utilidad.getFontLabelFormulary());
+        F.setFont(utilitie.getFontLabelFormulary());
         bg.add(F);
         container.add(F);
         //Categoria COMBO 0
@@ -222,7 +222,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[6].setText("DNI *");
         textField[3].setBounds(240, 120, 80, 20);
         textField[3].setDocument(new JTextFieldLimit(9));
-        textField[3].addKeyListener(utilidad.soloNumeros);
+        textField[3].addKeyListener(utilitie.soloNumeros);
         //Nacimiento DATE CHOOSER 0  
         labels[7].setBounds(335, 95, 150, 20);
         labels[7].setText("Fecha de Nacimiento");
@@ -271,15 +271,15 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         textField[9].setBounds(195, 445, 140, 20);
         textField[9].setEnabled(false);
         //DM TEXTFIELD10
-        labels[17].setBounds(15, 465, 120, 20);
-        labels[17].setText("D.M.");
+        labels[18].setBounds(15, 465, 120, 20);
+        labels[18].setText("D.M.");
         textField[10].setBounds(15, 485, 140, 20);
         //CheckBoxes D 0 - H 1 - A 2 - T 3 - ACT 4 - INF 5
         int X = 15;
         for (int i = 0; i < checkBox.length; i++) {
             checkBox[i] = new JCheckBox(MyArrays.getCheckBox(i));
             checkBox[i].setBounds(X, 400, 50, 20);
-            checkBox[i].setFont(utilidad.getFontChecks());
+            checkBox[i].setFont(utilitie.getFontChecks());
             checkBox[i].setOpaque(false);
             checkBox[i].setFocusPainted(false);
             checkBox[i].setBorderPaintedFlat(true);
@@ -291,14 +291,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
         //LABEL ULTIMO ANEXO 27
         JLabel ultA27 = new JLabel("<HTML><U>Ultimo Anexo 27</U></HTML>");
-        ultA27.setFont(utilidad.getFontLabelBig());
+        ultA27.setFont(utilitie.getFontLabelBig());
         ultA27.setForeground(Color.black);
         ultA27.setBounds(15, 165, 130, 30);
         container.add(ultA27);
         ultA27 = null;
         //----------------------------------------------------------------------        
-        utilidad = null;
-        iconos = null;
+        utilitie = null;
+        icons = null;
         this.getContentPane().add(container);
     }
 
@@ -309,20 +309,19 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //EVENTO AL CAMBIAR DE CATEGORIA
         if (e.getSource() == comboBox[0]) {
-            textField[2].setText("");
             textField[2].setEnabled(true);
             comboBox[2].setEnabled(true);
             comboBox[1].removeAllItems();
-            int categoria = comboBox[0].getSelectedIndex();
+            int categorie = comboBox[0].getSelectedIndex();
 
-            for (String i : MyArrays.getGrades(categoria)) {
+            for (String i : MyArrays.getGrades(categorie)) {
                 comboBox[1].addItem(i);
             }
-            if (categoria == 2 || categoria == 3) {
+            if (categorie == 2 || categorie == 3) {
                 textField[2].setEnabled(false);
-                textField[2].setText(categoria == 2 ? "Operacional" : "Civil");
+                textField[2].setText(categorie == 2 ? "Operacional" : "Civil");
             }
-            if (categoria == 3) {
+            if (categorie == 3) {
                 comboBox[2].setSelectedIndex(1);
                 comboBox[2].setEnabled(false);
             }
@@ -335,14 +334,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             }
         }
         //EVENTO BOTON CALCULAR IMC
-        if (e.getSource() == botonCalcularIMC) {
+        if (e.getSource() == buttonCalcIMC) {
             for (int i = 0; i < 2; i++) {
                 textField[i + 4].setForeground(Color.black);
             }
             try {
-                String[] datosIMC = calcularIMC(Double.parseDouble(textField[4].getText()), Double.parseDouble(textField[5].getText()));
-                textField[6].setText(datosIMC[0]);
-                comboBox[4].setSelectedIndex(Integer.parseInt(datosIMC[1]));
+                String[] dataIMC = calculateIMC(Double.parseDouble(textField[4].getText()), Double.parseDouble(textField[5].getText()));
+                textField[6].setText(dataIMC[0]);
+                comboBox[4].setSelectedIndex(Integer.parseInt(dataIMC[1]));
             } catch (Exception ex) {
                 for (int i = 0; i < 2; i++) {
                     textField[i + 4].setForeground(Color.red);
@@ -351,109 +350,109 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             }
         }
         //EVENTO BOTON AGREGAR
-        if (e.getSource() == botonAgregar) {
-            if (Validar()) {
+        if (e.getSource() == buttonAdd) {
+            if (Validate()) {
                 dispose();
                 Transmitter emisor = new Transmitter(0);
                 emisor.sendInformation(this);
-                emisor.update(tabla);
+                emisor.update(personnelPanel);
                 emisor = null;
-                Vaciar();
+                empty();
                 System.gc();
             }
         }
         //EVENTO BOTON MODIFICAR
-        if (e.getSource() == botonModificar) {
+        if (e.getSource() == buttonModify) {
 
             int opcion = JOptionPane.showConfirmDialog(null,
                     "¿Esta seguro que desea guardar los cambios?",
                     "Guardar Cambios", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_NO_OPTION) {
-                if (Validar()) {
+                if (Validate()) {
                     dispose();
                     Transmitter enviar = new Transmitter(id);
                     enviar.sendInformation(this);
-                    enviar.update(tabla);
+                    enviar.update(personnelPanel);
                     enviar = null;
                     try {
-                        tabla.getTables(tabla.getTabbedPane().getSelectedIndex()).setRowSelectionInterval(puntero, puntero);
+                        personnelPanel.getTables(personnelPanel.getTabbedPane().getSelectedIndex()).setRowSelectionInterval(pointer, pointer);
                     } catch (Exception ex) {
                     }
-                    Vaciar();
+                    empty();
                     System.gc();
                 }
             }
         }
         //EVENTO BOTON ELIMINAR
-        if (e.getSource() == botonEliminar) {
+        if (e.getSource() == buttonDelete) {
             int opcion = JOptionPane.showConfirmDialog(null,
                     "¿Esta seguro que desea eliminar esta informacion?",
                     "Eliminar informacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
-                if (parteDeEnfermo) {
-                    JOptionPane.showMessageDialog(null, "<html><center>" + personal.getCompleteName()
+                if (sick) {
+                    JOptionPane.showMessageDialog(null, "<html><center>" + personnel.getCompleteName()
                             + " tiene un Parte de Sanidad activo.<br>"
                             + "Debe darlo de alta en el sistema antes de poder eliminarlo.</center></html>");
                 } else {
                     dispose();
                     Deleter eliminar = new Deleter(id);
                     eliminar.delete(PersonnelPanel.TABLE_NAME);
-                    eliminar.update(tabla);
+                    eliminar.update(personnelPanel);
                     eliminar = null;
-                    Vaciar();
+                    empty();
                     System.gc();
                 }
 
             }
         }
         //EVENTO BOTON PARTE DE ENFERMO
-        if (e.getSource() == botonParte) {
-            if (parteDeEnfermo) {
-                JOptionPane.showMessageDialog(null, personal.getCompleteName()
+        if (e.getSource() == buttonSick) {
+            if (sick) {
+                JOptionPane.showMessageDialog(null, personnel.getCompleteName()
                         + " ya cuenta con un Parte de Sanidad activo.");
             } else {
-                formParte.newSick(this);
+                sickFormulary.newSick(this);
             }
         }
     }
 
     //-------------------------------------------------------------------------
     //-------------------METODOS PARA ABRIR FORMULARIO--------------------------
-    public void nuevoFormulario() {
+    public void newPersonnel() {
         setVisible(true);
     }
 
-    public void obtenerDatos(int id, int puntero) {
+    public void obtainData(int id, int pointer) {
         setTitle("Modificar Personal");
-        botonAgregar.setVisible(false);
-        botonModificar.setVisible(true);
-        botonEliminar.setVisible(true);
-        botonParte.setVisible(true);
-        labelParte.setVisible(true);
+        buttonAdd.setVisible(false);
+        buttonModify.setVisible(true);
+        buttonDelete.setVisible(true);
+        buttonSick.setVisible(true);
+        labelSick.setVisible(true);
 
         this.id = id;
-        this.puntero = puntero;
+        this.pointer = pointer;
 
-        Receiver obtener = new Receiver(id);
-        obtener.obtainInformation(this);
+        Receiver receiver = new Receiver(id);
+        receiver.obtainInformation(this);
 
-        int categoria = comboBox[0].getSelectedIndex();
-        int grado = comboBox[1].getSelectedIndex();
-        String destino = String.valueOf(comboBox[2].getSelectedItem());
-        String nombre = textField[0].getText() + " " + textField[1].getText();
-        char sexo = M.isSelected() ? 'M' : 'F';
+        int categorie = comboBox[0].getSelectedIndex();
+        int grade = comboBox[1].getSelectedIndex();
+        String subUnity = String.valueOf(comboBox[2].getSelectedItem());
+        String name = textField[0].getText() + " " + textField[1].getText();
+        char genre = M.isSelected() ? 'M' : 'F';
         int dni = !textField[3].getText().equals("") ? Integer.parseInt(textField[3].getText()) : 0;
 
-        personal = new Personnel(this.id, categoria, grado, nombre, destino, sexo, dni);
+        personnel = new Personnel(this.id, categorie, grade, name, subUnity, genre, dni);
 
         this.setVisible(true);
 
-        obtener = null;
+        receiver = null;
     }
 
     //------------------------------------------------------
     //-----------------METODO VALIDAR-----------------------
-    private boolean Validar() {
+    private boolean Validate() {
         int labelIndex;
         labels[2].setForeground(Color.black);
         labels[3].setForeground(Color.black);
@@ -465,49 +464,49 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[12].setForeground(Color.black);
 
         //VALIDAR CAMPOS OBLIGATORIOS  
-        String campos[] = {textField[0].getText().trim(), textField[1].getText().trim(), textField[3].getText().trim()};
-        if ("".equals(campos[0]) || "".equals(campos[1]) || "".equals(campos[2])) {
-            if ("".equals(campos[0])) {
+        String[] fields = {textField[0].getText().trim(), textField[1].getText().trim(), textField[3].getText().trim()};
+        if ("".equals(fields[0]) || "".equals(fields[1]) || "".equals(fields[2])) {
+            if ("".equals(fields[0])) {
                 labels[2].setForeground(Color.red);
             }
-            if ("".equals(campos[1])) {
+            if ("".equals(fields[1])) {
                 labels[3].setForeground(Color.red);
             }
-            if ("".equals(campos[2])) {
+            if ("".equals(fields[2])) {
                 labels[6].setForeground(Color.red);
             }
-            String mensaje = "<html><center>Debe llenar los campos obligatorios.</center></html>";
-            JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
+            String message = "<html><center>Debe llenar los campos obligatorios.</center></html>";
+            JOptionPane.showMessageDialog(null, new JLabel(message, JLabel.CENTER), "Advertencia", 1);
             return false;
         }
-        campos = null;
+        fields = null;
         //VALIDAR DNI
         if (!textField[3].getText().equals("")) {
             try {
                 Integer.parseInt(textField[3].getText());
             } catch (Exception e) {
                 labels[6].setForeground(Color.red);
-                String mensaje = "<html><center>Numero de DNI invalido.</center></html>";
-                JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
+                String message = "<html><center>Numero de DNI invalido.</center></html>";
+                JOptionPane.showMessageDialog(null, new JLabel(message, JLabel.CENTER), "Advertencia", 1);
                 return false;
             }
         }
         //VALIDAR LA FECHA
         labelIndex = 7;
-        MyDates validar = new MyDates(MyDates.USER_DATE_FORMAT);
+        MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
         for (int i = 0; i < 2; i++) {
             String date = ((JTextField)dateChooser[i].getDateEditor().getUiComponent()).getText();
-            if (!date.equals("") && !validar.validDate(date)) {
+            if (!date.equals("") && !myDates.validDate(date)) {
                 labels[labelIndex].setForeground(Color.red);
-                String mensaje = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
+                String message = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
                         + "<br>Si no conoce la fecha puede dejar el campo vacio.</center></html>";
-                JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
-                validar = null;
+                JOptionPane.showMessageDialog(null, new JLabel(message, JLabel.CENTER), "Advertencia", 1);
+                myDates = null;
                 return false;
             }
             labelIndex++;
         }
-        validar = null;
+        myDates = null;
         //VALIDAR PESO, ALTURA E IMC
         labelIndex = 10;
         for (int i = 4; i < 4 + 3; i++) {
@@ -516,8 +515,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                     Double.parseDouble(textField[i].getText());
                 } catch (Exception e) {
                     labels[labelIndex].setForeground(Color.red);
-                    String mensaje = "<html><center>Numero ingresado incorrecto.</center></html>";
-                    JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
+                    String message = "<html><center>Numero ingresado incorrecto.</center></html>";
+                    JOptionPane.showMessageDialog(null, new JLabel(message, JLabel.CENTER), "Advertencia", 1);
                     return false;
                 }
             }
@@ -528,17 +527,17 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO VACIAR-----------------------
-    private void Vaciar() {
+    private void empty() {
         id = 0;
-        personal = null;
-        parteDeEnfermo = false;
+        personnel = null;
+        sick = false;
         setTitle("Agregar Personal");
 
-        botonAgregar.setVisible(true);
-        botonModificar.setVisible(false);
-        botonEliminar.setVisible(false);
-        botonParte.setVisible(false);
-        labelParte.setVisible(false);
+        buttonAdd.setVisible(true);
+        buttonModify.setVisible(false);
+        buttonDelete.setVisible(false);
+        buttonSick.setVisible(false);
+        labelSick.setVisible(false);
 
         for (JTextField i : textField) {
             i.setText("");
@@ -567,7 +566,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO CALCULAR IMC------------------
-    private String[] calcularIMC(double weight, double height) {
+    private String[] calculateIMC(double weight, double height) {
         String index = "0";
         String IMCFinal;
         double IMC = weight / (height * height);
@@ -600,7 +599,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
     }
 
     //---------------------SETTERS Y GETTERS----------------------------
-    public void setCategoria(int index) {
+    public void setCategorie(int index) {
         this.comboBox[0].setSelectedIndex(index);
     }
 
@@ -656,36 +655,36 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         return bg;
     }
 
-    public void setParteDeEnfermo(boolean parteDeEnfermo) {
-        this.parteDeEnfermo = parteDeEnfermo;
+    public void setSick(boolean sick) {
+        this.sick = sick;
     }
 
     public boolean getParteDeEnfermo() {
-        return this.parteDeEnfermo;
+        return this.sick;
     }
 
-    public Personnel getPersonal() {
-        return personal;
+    public Personnel getPersonnel() {
+        return personnel;
     }
 
-    public void setPersonal(Personnel personal) {
-        this.personal = personal;
+    public void setPersonnel(Personnel personnel) {
+        this.personnel = personnel;
     }
 
-    public PersonnelPanel getTabla() {
-        return tabla;
+    public PersonnelPanel getPersonnelPanel() {
+        return personnelPanel;
     }
 
-    public void setTabla(PersonnelPanel tabla) {
-        this.tabla = tabla;
+    public void setPersonnelPanel(PersonnelPanel personnelPanel) {
+        this.personnelPanel = personnelPanel;
     }
 
-    public SickFormulary getFormParte() {
-        return formParte;
+    public SickFormulary getSickFormulary() {
+        return sickFormulary;
     }
 
-    public void setFormParte(SickFormulary formParte) {
-        this.formParte = formParte;
+    public void setSickFormulary(SickFormulary sickFormulary) {
+        this.sickFormulary = sickFormulary;
     }
 
 }

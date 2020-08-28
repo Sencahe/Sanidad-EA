@@ -72,7 +72,7 @@ public class Receiver extends DataBase {
                 sickFormulary.getF().setSelected(true);
             }
             //SOLICITO VALORES FLAG 
-            sickFormulary.setParteDeEnfermo(1 == rs.getInt("Parte"));
+            sickFormulary.setSick(1 == rs.getInt("Parte"));
 
             //fin de la solicitud a la base de datos
             super.getConnection().close();
