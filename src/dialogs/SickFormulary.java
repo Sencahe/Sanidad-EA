@@ -40,14 +40,14 @@ public class SickFormulary extends JDialog implements ActionListener {
     private Personnel personnel;
 
     private SickPanel sickPanel;
-    private PersonnelFormulary formulario;
+    private PersonnelFormulary personnelFormulary;
     private MainFrame mainFrame;
 
     public SickFormulary(Frame parent, boolean modal) {
         super(parent, modal);
         this.mainFrame = (MainFrame) parent;
 
-        componentes();
+        components();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -56,7 +56,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         });
     }
 
-    private void componentes() {
+    private void components() {
         //PROPIEDADES DEL FRAME
         //------------------------------
         Utilities utility = mainFrame.getUtility();
@@ -223,12 +223,12 @@ public class SickFormulary extends JDialog implements ActionListener {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea agregar un nuevo Parte?",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
-                if (validar()) {
+                if (validation()) {
                     Transmitter transmitter = new Transmitter(personnel.getId(), 0);
                     transmitter.sendInformation(this);
                     transmitter.update(sickPanel);
                     sickPanel.updateWindow();
-                    formulario.setSick(true);
+                    personnelFormulary.setSick(true);
                     empty();
                     transmitter = null;
                 }
@@ -239,7 +239,7 @@ public class SickFormulary extends JDialog implements ActionListener {
             int opcion = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea modificar el Parte?",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
-                if (validar()) {
+                if (validation()) {
                     Transmitter transmitter = new Transmitter(personnel.getId(), this.idSick);
                     if (flagSickType == comboSickType.getSelectedIndex()) {
                         transmitter.sendInformation(this);
@@ -262,7 +262,7 @@ public class SickFormulary extends JDialog implements ActionListener {
                     + "Recuerde que la fecha de 'Hasta' debe coincidir con la del Alta Medica.</center></html>",
                     "Confirmacion", JOptionPane.YES_NO_OPTION);
             if (confirmar == JOptionPane.YES_OPTION) {
-                if (validar()) {
+                if (validation()) {
                     Transmitter emisor = new Transmitter(personnel.getId(), this.idSick);
                     emisor.sendReCountInfo(this, true);
                     emisor.update(sickPanel);
@@ -280,8 +280,8 @@ public class SickFormulary extends JDialog implements ActionListener {
                 beingModifiedSickType = true;
                 labelSickType.setVisible(true);
                 buttonHeal.setVisible(false);
-                ((JTextField) dateSince.getDateEditor().getUiComponent()).setText("");
-                ((JTextField) dateUntil.getDateEditor().getUiComponent()).setText("");
+                dateSince.setDate(null);
+                dateUntil.setDate(null);
 
                 //sino, se colocan las actuales    
             } else if(beingModified){
@@ -339,7 +339,7 @@ public class SickFormulary extends JDialog implements ActionListener {
 
     //------------------------METODOS PARA NUEVO PARTE--------------------------
     public void newSick(PersonnelFormulary formulario) {
-        this.formulario = formulario;
+        this.personnelFormulary = formulario;
         this.personnel = formulario.getPersonnel();
         labelPersonnelData.setText(personnel.toString());
 
@@ -369,7 +369,10 @@ public class SickFormulary extends JDialog implements ActionListener {
     }
 
     //----------------------METODO VALIDAR--------------------------------------
-    private boolean validar() {
+    
+
+    
+    private boolean validation() {
         labelDiag.setForeground(Color.black);
         labelObs.setForeground(Color.black);
         labelSince.setForeground(Color.black);
@@ -389,19 +392,18 @@ public class SickFormulary extends JDialog implements ActionListener {
             return false;
         }
         //validando fechas mal escritas
-        MyDates myDates = new MyDates("dd/MM/yyyy");
-        String sinceDate = ((JTextField) dateSince.getDateEditor().getUiComponent()).getText();
-        String untilDate = ((JTextField) dateUntil.getDateEditor().getUiComponent()).getText();
-        if (!myDates.validDate(untilDate) || !myDates.validDate(sinceDate)) {
+       
+
+        if (dateSince.getDate() == null || dateUntil.getDate() == null) {
             labelSince.setForeground(fieldDiag ? Color.red : Color.black);
             labelUntil.setForeground(fieldDiag ? Color.red : Color.black);
             String mensaje = "<html><center>Fecha ingresada invalida, "
                     + "ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020</center></html>";
             JOptionPane.showMessageDialog(null, new JLabel(mensaje, JLabel.CENTER), "Advertencia", 1);
-            myDates = null;
             return false;
         }
         //validando la coherencia de las fechas Desde y Hasta ingresadas por el usuario
+         MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
         if (beingModifiedSickType) {
             if (!myDates.sickValidDate(dateSince.getDate(),dateUntil.getDate(),flagSince)) {
                 return false;
@@ -432,8 +434,8 @@ public class SickFormulary extends JDialog implements ActionListener {
         this.sickPanel = sickPanel;
     }
 
-    public void setFormulario(PersonnelFormulary formulario) {
-        this.formulario = formulario;
+    public void setPersonnelFormulary(PersonnelFormulary personnelFormulary) {
+        this.personnelFormulary = personnelFormulary;
     }
 
     public Personnel getPersonnel() {

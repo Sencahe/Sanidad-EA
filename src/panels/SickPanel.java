@@ -16,8 +16,10 @@ import mytools.Icons;
 
 
 public class SickPanel extends JPanel implements ActionListener {
-
+    
+    
     public static final String TABLE_NAME = "Parte";
+    public static final int EXPIRED_TABLE = 3;
     
     public static final int NAME_COLUMN = 3;
     public static final int DIAG_COLUMN = 5;
@@ -59,16 +61,15 @@ public class SickPanel extends JPanel implements ActionListener {
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.getVerticalScrollBar().setUnitIncrement(16);
 
-        //TABLAS DEL PARTE------------------------------------------------------
-        String[] titlesName = {"PARTE DE ENFERMO", "PARTE DE EXCEPTUADO",
-            "PARTE DE MATERNIDAD", "PERSONAL QUE NO PASO NOVEDAD"};
-        tables = new JTable[titlesName.length];
-        scrolls = new JScrollPane[titlesName.length];
-        titles = new JLabel[titlesName.length];       
+        //TABLAS DEL PARTE------------------------------------------------------       
+        tables = new JTable[MyArrays.getSickTypesLength()];
+        scrolls = new JScrollPane[MyArrays.getSickTypesLength()];
+        titles = new JLabel[MyArrays.getSickTypesLength()];       
         for (int i = 0; i < 4; i++) {
             //creacion del table model y de la tabla
-            tables[i] = utility.customTable(this, 3, 5);
+            tables[i] = utility.customTable(this, 3, 5);          
             tables[i].setDefaultRenderer(Object.class, utility.sickCellRenderer());
+            tables[i].setSelectionForeground(new Color(187,187,187));
             //eventos al presionar teclas en las tablas
             tables[i].getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
             tables[i].getActionMap().put("Enter", new AbstractAction() {
@@ -111,7 +112,7 @@ public class SickPanel extends JPanel implements ActionListener {
                 }
             });
             //Titulo, Scrolls          
-            titles[i] = new JLabel(titlesName[i]);
+            titles[i] = new JLabel(MyArrays.getSickTypes(i));
             titles[i].setFont(utility.getFontLabelTitle());
             titles[i].setForeground(Color.black);
             scrolls[i] = new JScrollPane(tables[i]);
@@ -214,7 +215,7 @@ public class SickPanel extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             int heigth = 27 + tables[i].getRowCount() * 16;
             titles[i].setBounds(145, y - 40, 400, 40);
-            scrolls[i].setBounds(100, y, 1131, heigth);
+            scrolls[i].setBounds(100, y, 1136, heigth);
             y += heigth + 55;
         }
         dimension.setSize(1505, y);
@@ -229,9 +230,6 @@ public class SickPanel extends JPanel implements ActionListener {
         }
     }
     
-    public void paintRow(int index){
-        
-    }
 
     //--------------------------------------------------------------------------
     //---------------------ACCESOS RAPIDOS--------------------------------------

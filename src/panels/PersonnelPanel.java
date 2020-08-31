@@ -13,7 +13,6 @@ import javax.swing.table.*;
 import database.Report;
 import dialogs.Configurator;
 import dialogs.ListGenerator;
-import java.util.HashMap;
 import mytools.Icons;
 
 public class PersonnelPanel extends JPanel implements ActionListener {

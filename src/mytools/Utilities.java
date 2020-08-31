@@ -191,7 +191,10 @@ public class Utilities {
                 int dias = myDates.getDays(date) - 1;
                 if (dias >= 0) {
                     c.setForeground(Color.red);
+                } else {
+                    c.setForeground(Color.black);
                 }
+             
 
                 return c;
             }

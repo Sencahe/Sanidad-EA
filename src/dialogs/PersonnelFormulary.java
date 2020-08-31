@@ -351,7 +351,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         }
         //EVENTO BOTON AGREGAR
         if (e.getSource() == buttonAdd) {
-            if (Validate()) {
+            if (validation()) {
                 dispose();
                 Transmitter emisor = new Transmitter(0);
                 emisor.sendInformation(this);
@@ -368,7 +368,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                     "¿Esta seguro que desea guardar los cambios?",
                     "Guardar Cambios", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_NO_OPTION) {
-                if (Validate()) {
+                if (validation()) {
                     dispose();
                     Transmitter enviar = new Transmitter(id);
                     enviar.sendInformation(this);
@@ -452,7 +452,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO VALIDAR-----------------------
-    private boolean Validate() {
+    private boolean validation() {
         int labelIndex;
         labels[2].setForeground(Color.black);
         labels[3].setForeground(Color.black);
@@ -493,20 +493,17 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         }
         //VALIDAR LA FECHA
         labelIndex = 7;
-        MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
-        for (int i = 0; i < 2; i++) {
-            String date = ((JTextField)dateChooser[i].getDateEditor().getUiComponent()).getText();
-            if (!date.equals("") && !myDates.validDate(date)) {
+        for (int i = 0; i < dateChooser.length; i++) {    
+            String date = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
+            if (!date.equals("") && dateChooser[i].getDate() == null) {
                 labels[labelIndex].setForeground(Color.red);
                 String message = "<html><center>Fecha ingresada invalida, ejemplo de fecha valida: 01/01/2020 y/o 1/1/2020"
                         + "<br>Si no conoce la fecha puede dejar el campo vacio.</center></html>";
                 JOptionPane.showMessageDialog(null, new JLabel(message, JLabel.CENTER), "Advertencia", 1);
-                myDates = null;
                 return false;
             }
             labelIndex++;
         }
-        myDates = null;
         //VALIDAR PESO, ALTURA E IMC
         labelIndex = 10;
         for (int i = 4; i < 4 + 3; i++) {
@@ -546,7 +543,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             i.setSelectedIndex(0);
         }
         for (JDateChooser i : dateChooser) {
-            ((JTextField) i.getDateEditor().getUiComponent()).setText("");
+            i.setDate(null);
         }
         for (JCheckBox i : checkBox) {
             i.setSelected(false);

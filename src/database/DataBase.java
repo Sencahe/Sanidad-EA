@@ -223,7 +223,7 @@ public class DataBase {
             ResultSet rs = pst.executeQuery();
 
             //variables y objetos para recuperar la informacion y desplegarla en las tablas de Parte
-            int num[] = new int[MyArrays.getCategoriesLength()];
+            int num[] = new int[MyArrays.getSickTypesLength()];
             Object[] row = new Object[MyArrays.getSickColumnsLength()];
 
             int categorie;
@@ -263,12 +263,13 @@ public class DataBase {
                 sin tener que modificar su tipo de parte 
                 */                
                 if (myDates.getDays(until)-1 > 0) {
-                    row[0] = ++num[3];
-                    sickPanel.getTableModel(3).addRow(row);
+                    row[0] = ++num[SickPanel.EXPIRED_TABLE];
+                    sickPanel.getTableModel(SickPanel.EXPIRED_TABLE).addRow(row);
                 } else {
                     row[0] = ++num[sickType];
                     sickPanel.getTableModel(sickType).addRow(row);
                 }
+                
                 Arrays.fill(row, null);
             }
             cn.close();

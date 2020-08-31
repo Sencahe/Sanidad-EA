@@ -93,7 +93,7 @@ public class MainFrame extends JFrame implements ActionListener {
         personnelFormulary.setPersonnelPanel(personnelPanel);
         personnelFormulary.setSickFormulary(sickFormulary);
         sickFormulary.setSickPanel(sickPanel);
-        sickFormulary.setFormulario(personnelFormulary);
+        sickFormulary.setPersonnelFormulary(personnelFormulary);
         searcher.setPersonnelPanel(personnelPanel);
         searcher.setConfigurator(configurator);
         imc.setPersonnelPanel(personnelPanel);

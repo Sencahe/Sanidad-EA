@@ -247,7 +247,7 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add("PARTE DIARIO DE SANIDAD DE LA UNIDAD DEL " + day + " DE " + month.toUpperCase() + " DE " + year + "\n\n");
+            p3.add("PARTE DIARIO DE SANIDAD DE LA UNIDAD DEL " + day + " DE " + month.toUpperCase() + " DE " + year );
             document.add(p3);
             Paragraph p5 = new Paragraph();
             p5.setFont(FontFactory.getFont("Times-Roman", 10, Font.BOLD, BaseColor.BLACK));
@@ -255,7 +255,7 @@ public class Report extends DataBase {
             //ciclos para llenar las tabla
             for (int i = 0; i < pdfTable.length; i++) { //itera sobre todas las tablas
 
-                p5.add(MyArrays.getSickTypes(i).toUpperCase() + "\n\n");
+                p5.add("\n" + MyArrays.getSickTypes(i).toUpperCase() + "\n\n");
                 document.add(p5);
                 p5.remove(0);
 
