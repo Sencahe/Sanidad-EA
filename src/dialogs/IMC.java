@@ -33,7 +33,7 @@ public class IMC extends JDialog implements ActionListener {
         super(parent, modal);
         this.mainFrame = (MainFrame) parent;
         //Propiedades del frame       
-        setSize(205, 180);
+        setSize(205, 190);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);

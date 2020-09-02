@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements ActionListener {
     //
     private JMenuItem[] itemsOrderBy;
 
-    private JMenuItem itemRef, itemBuscar, itemConfig, itemAbout;
+    private JMenuItem itemRef, itemSearch, itemConfig, itemAbout;
 
     //icono para los menuItems
     private ImageIcon check;
@@ -178,7 +178,7 @@ public class MainFrame extends JFrame implements ActionListener {
             itemsAptitude[i].addActionListener(this);
             menuFilterAptitude.add(itemsAptitude[i]);
         }
-        itemsAptitude[0].setText("Todos");
+        itemsAptitude[0].setText("Sin asignar");
         //Patologias
         menuPathologies = new JMenu("Patologias");
         menuFilter.add(menuPathologies);
@@ -209,7 +209,7 @@ public class MainFrame extends JFrame implements ActionListener {
             itemSubUnities[i].addActionListener(this);
             menuSubUnities.add(itemSubUnities[i]);
         }
-        itemSubUnities[0].setText("Todos");
+        itemSubUnities[0].setText("Sin asignar");
         JPopupMenu.Separator separador3 = new JPopupMenu.Separator();
         menuFilter.add(separador3);
         separador3 = null;
@@ -226,10 +226,10 @@ public class MainFrame extends JFrame implements ActionListener {
         //MENU BUSCAR-------------------------------------- 
         menuSearch = new JMenu("Buscar");
         menuBar.add(menuSearch);
-        itemBuscar = new JMenuItem("<html>Buscar... Ctrl+G");
-        itemBuscar.addActionListener(this);
-        itemBuscar.setIcon(iconos.getIconoSearchChico());
-        menuSearch.add(itemBuscar);
+        itemSearch = new JMenuItem("<html>Buscar... Ctrl+G");
+        itemSearch.addActionListener(this);
+        itemSearch.setIcon(iconos.getIconoSearchChico());
+        menuSearch.add(itemSearch);
         //MENU Config--------------------------------- 
         menuConfig = new JMenu("Configuracion");
         menuBar.add(menuConfig);
@@ -314,7 +314,8 @@ public class MainFrame extends JFrame implements ActionListener {
                     personnelPanel.update(3, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                     personnelPanel.setFiltered(true);
                 } else {
-                    personnelPanel.update(0, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
+                    personnelPanel.setAptitudeFilter("NULL");
+                    personnelPanel.update(3, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                     personnelPanel.setFiltered(true);
                 }
                 deleteChecksFilters();
@@ -351,7 +352,7 @@ public class MainFrame extends JFrame implements ActionListener {
         // destinos
         for (int i = 0; i < itemSubUnities.length; i++) {
             if (e.getSource() == itemSubUnities[i]) {
-                personnelPanel.update(personnelPanel.getFilter(), i, personnelPanel.getRowOrdering());
+                personnelPanel.update(personnelPanel.getFilter(), i == 0 ? -1:i, personnelPanel.getRowOrdering());
                 personnelPanel.setFiltered(true);
                 eliminarChecksShowBy();
                 menuSubUnities.setIcon(check);
@@ -370,7 +371,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         //MENU BUSCAR--------------------------------------------
-        if (e.getSource() == itemBuscar) {
+        if (e.getSource() == itemSearch) {
             searcher.setVisible(true);
             System.gc();
         }

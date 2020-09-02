@@ -13,7 +13,7 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 public class DataBase {
-    
+
     private static final String SQLITE_URL = "jdbc:sqlite:backup/DB.sqlite";
 
     private Connection cn;
@@ -63,12 +63,12 @@ public class DataBase {
         MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
         String[][] grades = MyArrays.getGrades();
         int filter = personnelPanel.getFilter();
-        
+
         //VACIADO DE LA TABLA ACTUAL--------------------------------------------
         for (int i = 0; i < MyArrays.getCategoriesLength(); i++) {
             personnelPanel.getTableModel(i).setRowCount(0);
         }
-        
+
         //FILTRAR TABLA---------------------------------------------------------           
         StringBuffer statement = new StringBuffer("SELECT * FROM Personal");
         switch (filter) {
@@ -84,9 +84,10 @@ public class DataBase {
                 statement.append("\"");
                 break;
             case 3:
-                statement.append(" WHERE Aptitud = \"");
-                statement.append(personnelPanel.getAptitudeFilter());
-                statement.append("\"");
+                boolean unassigned = personnelPanel.getAptitudeFilter().equals("NULL");
+                statement.append(unassigned ? " WHERE Aptitud IS NULL" : " WHERE Aptitud = \"");
+                statement.append(unassigned ? "" : personnelPanel.getAptitudeFilter());
+                statement.append(unassigned ? "" : "\"");
                 break;
             case 4:
                 statement.append(" WHERE ");
@@ -110,14 +111,16 @@ public class DataBase {
                 statement.append(" OR T IS NOT NULL OR Act IS NOT NULL OR Inf IS NOT NULL");
                 break;
         }
-        
+
         // MOSTRAR POR DESTINOS-------------------------------------------------        
         if (personnelPanel.getShowBySubUnity() != 0) {
-            statement.append(filter > 0 ? " AND Destino = \"" : " WHERE Destino = \"");
-            statement.append(MyArrays.getSubUnities(personnelPanel.getShowBySubUnity()));
-            statement.append("\"");
+            statement.append(filter > 0 ? " AND " : " WHERE ");
+            boolean unassigned = personnelPanel.getShowBySubUnity() == -1;
+            statement.append(unassigned ? "Destino IS NULL" : "Destino =\"");
+            statement.append(unassigned ? "" : MyArrays.getSubUnities(personnelPanel.getShowBySubUnity()));
+            statement.append(unassigned ? "" : "\"");
         }
-        
+
         //ORDENAR LA TABLA------------------------------------------------------ 
         statement.append(MyArrays.getOrderPersonnel(personnelPanel.getRowOrdering()));
 
@@ -175,7 +178,7 @@ public class DataBase {
             pst = null;
             statement = null;
             myDates = null;
-            
+
             //Al finalizar el llenado de la tablas se actualizan los labels con el conteo
             String[] categories = MyArrays.getCategories();
             int rowCount;
@@ -261,15 +264,15 @@ public class DataBase {
                 significa que NO PASO NOVEDAD, es decir que no se presento en la 
                 fecha de control. En consecuencia se lo colocara en esa tabla
                 sin tener que modificar su tipo de parte 
-                */                
-                if (myDates.getDays(until)-1 > 0) {
+                 */
+                if (myDates.getDays(until) - 1 > 0) {
                     row[0] = ++num[SickPanel.EXPIRED_TABLE];
                     sickPanel.getTableModel(SickPanel.EXPIRED_TABLE).addRow(row);
                 } else {
                     row[0] = ++num[sickType];
                     sickPanel.getTableModel(sickType).addRow(row);
                 }
-                
+
                 Arrays.fill(row, null);
             }
             cn.close();
