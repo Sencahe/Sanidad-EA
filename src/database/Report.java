@@ -123,7 +123,7 @@ public class Report extends DataBase {
             float columnsWidth[] = new float[6];
             for (int i = 0; i < columnsWidth.length; i++) {
                 if (i != 5) {
-                    float scaledWidth = (MyArrays.getPersonnelColumnsSize(i) * 65) / 100;
+                    float scaledWidth = (MyArrays.getPersonnelColumnsSize(i) * 70) / 100;
                     columnsWidth[i] = scaledWidth;
                 } else {
                     float scaledWidth = 150;

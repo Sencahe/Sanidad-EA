@@ -16,7 +16,6 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
-import java.util.Date;
 import panels.PersonnelPanel;
 
 public class PersonnelFormulary extends JDialog implements ActionListener {
@@ -319,7 +318,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             }
             if (categorie == 2 || categorie == 3) {
                 textField[2].setEnabled(false);
-                textField[2].setText(categorie == 2 ? "Operacional" : "Civil");
+                textField[2].setText(categorie == 2 ? "OP" : "Civil");
             }
             if (categorie == 3) {
                 comboBox[2].setSelectedIndex(1);
@@ -483,7 +482,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         //VALIDAR DNI
         if (!textField[3].getText().equals("")) {
             try {
-                Integer.parseInt(textField[3].getText());
+                Integer.parseInt(textField[3].getText().trim());
             } catch (Exception e) {
                 labels[6].setForeground(Color.red);
                 String message = "<html><center>Numero de DNI invalido.</center></html>";
@@ -509,7 +508,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 4; i < 4 + 3; i++) {
             if (!"".equals(textField[i].getText())) {
                 try {
-                    Double.parseDouble(textField[i].getText());
+                    Double.parseDouble(textField[i].getText().trim());
                 } catch (Exception e) {
                     labels[labelIndex].setForeground(Color.red);
                     String message = "<html><center>Numero ingresado incorrecto.</center></html>";

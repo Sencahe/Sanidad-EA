@@ -30,7 +30,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
     public static final String TABLE_NAME = "RecuentoParte";
     
-    public static final int NAME_COLUMN = 3;
+    public static final int NAME_COLUMN = 2;
     public static final int DIAG_COLUMN = 5;
 
     private JButton buttonSickPanel;
@@ -77,7 +77,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         //TABLA CON RECUENTO----------------------------------------------------
-        table = utility.customTable(this, 3, 5);
+        table = utility.customTable(this, NAME_COLUMN, DIAG_COLUMN);
  
         //scroll
         scrollTable = new JScrollPane(table);

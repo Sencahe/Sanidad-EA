@@ -7,8 +7,8 @@ public class MyArrays {
     // ARREGLOS PARA LOS JTABLE
     private static String[] personnelColumns = {"Nro", "Grado", "Arm/Serv", "Apellido y Nombre", "Destino", "DNI", "Anexo 27",
         "Edad", "Peso", "Altura", "IMC", "PPS", "Aptitud", "D", "H", "A", "T", "Act", "Inf", "Observaciones", "id"};
-    //                                      Nr Grd A/S AyN Dest DNI A27 Age Kgs Alt IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
-    private static int[] personnelColumnsSize = {40, 55, 75, 240, 68, 70, 75, 45, 50, 50, 50, 110, 65, 30, 30, 30, 30, 36, 36, 275, 40};
+    //                                            Nr Grd A/S AyN Dest DNI A27 Age Kgs Alt IMC PPS APT  D   H   A   T  Inf  Act  OBS  id
+    private static int[] personnelColumnsSize = {40, 60, 75, 240, 68, 70, 75, 45, 50, 50, 50, 110, 65, 30, 30, 30, 30, 36, 36, 270, 40};
 
     private static String[] sickColumns = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
@@ -44,8 +44,8 @@ public class MyArrays {
     //=================================================================================
     private static String[] categories = {"Oficiales", "SubOficiales", "Soldados", "Civiles"};
     private static String[][] grades = {
-        {"ST", "TT", "TP", "CT", "MY", "TC", "CR"},
-        {"CB", "C1", "SG", "S1", "SA", "SP", "SM"},
+        {"ST ec","ST", "TT ec","TT","TP ec", "TP", "CT", "MY", "TC", "CR"},
+        {"CB Art 11","CB ec","CB", "CI Art 11","CI ec","CI", "SG", "SI", "SA", "SP", "SM"},
         {"VS \"ec\"", "VS", "VP"},
         {"A/C"}};
     private static String[] subUnities = {"", "Cdo Ser", "Bda Mil", "Ca A", "Ca B", "Ca C", "Ca E"};
