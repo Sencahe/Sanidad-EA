@@ -73,7 +73,7 @@ public class DataBase {
         StringBuffer statement = new StringBuffer("SELECT * FROM Personal");
         switch (filter) {
             case 1:
-                statement.append(" WHERE (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,5,2)||SUBSTR(Anexo27,7,2)) <= ");
+                statement.append(" WHERE (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) <= ");
                 statement.append("\"");
                 statement.append(myDates.getYearAgo());
                 statement.append("\"");

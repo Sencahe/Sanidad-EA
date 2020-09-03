@@ -104,7 +104,7 @@ public class IMC extends JDialog implements ActionListener {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    filtrarTabla();
+                    filter();
                 }
             }
         });
@@ -120,11 +120,12 @@ public class IMC extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == filter) {
-           filtrarTabla();
+           filter();
+           dispose();
         }
     }
 
-    private void filtrarTabla() {
+    private void filter() {
         try {
             double inputIMC = Double.parseDouble(imc.getText());
 

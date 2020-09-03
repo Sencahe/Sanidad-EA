@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 public class MyDates {
 
@@ -90,7 +91,7 @@ public class MyDates {
     public int getYearAgo() {
         LocalDate yearAgo = LocalDate.now().minusYears(1);
         String year = String.valueOf(yearAgo);
-        year = year.substring(0, 4) + year.substring(5, 7) + year.substring(8, 10);
+        year = year.substring(0, 4) + year.substring(5, 7) + year.substring(8, 10); 
         return Integer.parseInt(year);
     }
 
