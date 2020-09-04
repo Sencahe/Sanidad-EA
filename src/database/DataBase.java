@@ -78,7 +78,7 @@ public class DataBase {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
             statement.append("(SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) <= ");
             statement.append("\"");
-            statement.append(myDates.getYearAgo());
+            statement.append(personnelPanel.getStudiesFilter());
             statement.append("\"");
         }
         if (filterList.contains(PersonnelPanel.FILTER_PPS)) {
@@ -90,8 +90,8 @@ public class DataBase {
         if (filterList.contains(PersonnelPanel.FILTER_APTITUDE)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
             boolean unassigned = personnelPanel.getAptitudeFilter().equals("NULL");
-            statement.append(unassigned ? "Aptitud IS NULL" : "Aptitud = ");
-            statement.append(unassigned ? "" : personnelPanel.getAptitudeFilter());
+            statement.append(unassigned ? "Aptitud IS NULL" : personnelPanel.getAptitudeFilter());
+            statement.append(unassigned ? "" : "");
         }
         if (filterList.contains(PersonnelPanel.FILTER_PATHOLOGY)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
@@ -132,7 +132,6 @@ public class DataBase {
         //ORDENAR LA TABLA------------------------------------------------------ 
         statement.append(MyArrays.getOrderPersonnel(personnelPanel.getRowOrdering()));
 
-        System.out.println(statement);
         //CONSULTA A BASE DE DATOS----------------------------------------------        
         try {
             if (cn == null || cn.isClosed()) {

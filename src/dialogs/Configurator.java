@@ -140,6 +140,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         if (e.getSource() == buttonSave) {
             savedValues(true);
         }
+        
     }
 
     //-------------------------EVENTO CHECK BOXES-------------------------------

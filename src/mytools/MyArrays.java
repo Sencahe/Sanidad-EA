@@ -12,8 +12,8 @@ public class MyArrays {
 
     private static String[] sickColumns = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
-    //                                         Nro Grd  AyN Dest Diag cie Dsd  Hst Dias Exp  Obs id
-    private static int[] sickColumnsSize = {40, 60, 240, 60, 220, 70, 75, 75, 45, 110, 140, 40};
+    //                                     Nro Grd  AyN Dest Diag cie Dsd Hst Dias Exp Obs id
+    private static int[] sickColumnsSize = {40, 65, 240, 60, 220, 70, 75, 75, 45, 110, 135, 40};
     //
     private static String[] reCountColumns = {"Nro","Grado","Apellido Y Nombre","Destino",
         "DNI","Diagnostico","CIE","Desde","Hasta","Dias","Observacion","Parte","N / S"};
@@ -61,8 +61,8 @@ public class MyArrays {
         "De menor a mayor grado",
         "Orden Alfabetico A-Z",
         "Orden Alfabetico Z-A",
-        "Anexo 27 mas antiguo",
-        "Anexo 27 mas moderno"};
+        "Anexo 27 mas moderno",
+        "Anexo 27 mas antiguo"};
     
     private static String[] orderPersonnel = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC",
         " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",

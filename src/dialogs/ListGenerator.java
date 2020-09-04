@@ -20,7 +20,7 @@ import java.awt.event.KeyEvent;
 public class ListGenerator extends JDialog implements ActionListener {
 
     private MainFrame mainFrame;
-    private PersonnelPanel tabla;
+    private PersonnelPanel personnelPanel;
 
     private JLabel message, civilians;
     private JTextField textTitle;
@@ -130,14 +130,14 @@ public class ListGenerator extends JDialog implements ActionListener {
             boolean addCivilians = yes.isSelected();
 
             Report report = new Report();
-            report.createListReport(tabla, title, addCivilians);
+            report.createListReport(personnelPanel, title, addCivilians);
             report = null;
             dispose();
         }
     }
 
-    public void setTabla(PersonnelPanel tabla) {
-        this.tabla = tabla;
+    public void setPersonnelPanel(PersonnelPanel personnelPanel) {
+        this.personnelPanel = personnelPanel;
     }
 
 }
