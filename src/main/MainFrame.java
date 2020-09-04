@@ -81,7 +81,7 @@ public class MainFrame extends JFrame implements ActionListener {
         imc = new IMC(this, true);
         configurator = new Configurator(this, true);
         listGenerator = new ListGenerator(this, true);
-        about = new About(this,true);
+        about = new About(this, true);
 
         personnelPanel.setFormulary(personnelFormulary);
         personnelPanel.setSearcher(searcher);
@@ -172,22 +172,27 @@ public class MainFrame extends JFrame implements ActionListener {
         //Aptitud
         menuFilterAptitude = new JMenu("Aptitud");
         menuFilter.add(menuFilterAptitude);
-        itemsAptitude = new JMenuItem[MyArrays.getAptitudeLength()];
-        for (int i = 0; i < itemsAptitude.length; i++) {
-            itemsAptitude[i] = new JMenuItem(MyArrays.getAptitude(i));
+        itemsAptitude = new JMenuItem[MyArrays.getAptitudeLength() + 1];
+        int cicle = itemsAptitude.length;
+        for (int i = 0; i < cicle; i++) {
+            if (i == cicle - 1) {
+                JPopupMenu.Separator aptSeparator = new JPopupMenu.Separator();
+                menuFilterAptitude.add(aptSeparator);
+            }
+            itemsAptitude[i] = new JMenuItem(i != cicle - 1 ? MyArrays.getAptitude(i) : "");
             itemsAptitude[i].addActionListener(this);
             menuFilterAptitude.add(itemsAptitude[i]);
         }
         itemsAptitude[0].setText("Sin asignar");
+        itemsAptitude[itemsAptitude.length - 1].setText("APTO B Y NO APTO");
         //Patologias
         menuPathologies = new JMenu("Patologias");
         menuFilter.add(menuPathologies);
         itemsPathologies = new JMenuItem[MyArrays.getPathologiesLength()];
         for (int i = 0; i < itemsPathologies.length; i++) {
             if (i == itemsPathologies.length - 1) {
-                JPopupMenu.Separator separadorPatologias = new JPopupMenu.Separator();
-                menuPathologies.add(separadorPatologias);
-                separadorPatologias = null;
+                JPopupMenu.Separator patSeparator = new JPopupMenu.Separator();
+                menuPathologies.add(patSeparator);
             }
             itemsPathologies[i] = new JMenuItem(MyArrays.getPathologies(i));
             itemsPathologies[i].addActionListener(this);
@@ -199,7 +204,6 @@ public class MainFrame extends JFrame implements ActionListener {
         menuFilter.add(itemObs);
         JPopupMenu.Separator separador2 = new JPopupMenu.Separator();
         menuFilter.add(separador2);
-        separador2 = null;
         //Destinos
         menuSubUnities = new JMenu("Mostrar por destino");
         menuFilter.add(menuSubUnities);
@@ -212,7 +216,6 @@ public class MainFrame extends JFrame implements ActionListener {
         itemSubUnities[0].setText("Sin asignar");
         JPopupMenu.Separator separador3 = new JPopupMenu.Separator();
         menuFilter.add(separador3);
-        separador3 = null;
         //ordenamiento de la tabla
         menuOrderBy = new JMenu("Ordenar por...");
         menuFilter.add(menuOrderBy);
@@ -277,7 +280,9 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         //----------------------BARRA MENU--------------------------------------
-        //MENU FILTRAR--------------------------------FILTROS-------------------
+        //MENU FILTRAR--------------------------------
+        //FILTROS--------------------
+        //
         //Lista completa
         if (e.getSource() == itemRefreshList) {
             personnelPanel.update(0, 0, 0);
@@ -286,9 +291,9 @@ public class MainFrame extends JFrame implements ActionListener {
         }
         // anexo vencido
         if (e.getSource() == ItemCaducatedStudies) {
-            personnelPanel.update(1, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
+            personnelPanel.update(PersonnelPanel.FILTER_A27, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
             personnelPanel.setFiltered(true);
-            deleteChecksFilters();
+
             ItemCaducatedStudies.setIcon(check);
         }
         // programa peso saludable
@@ -296,11 +301,13 @@ public class MainFrame extends JFrame implements ActionListener {
             if (e.getSource() == itemsPPS[i]) {
                 if (i != 0) {
                     personnelPanel.setPPSFilter(itemsPPS[i].getText());
-                    personnelPanel.update(2, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
+                    personnelPanel.update(PersonnelPanel.FILTER_PPS, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                     personnelPanel.setFiltered(true);
-                    deleteChecksFilters();
+                    
+                    deleteChecksPPS();
                     menuFilterPPS.setIcon(check);
                     itemsPPS[i].setIcon(check);
+                    
                 } else {
                     imc.setVisible(true);
                 }
@@ -309,16 +316,17 @@ public class MainFrame extends JFrame implements ActionListener {
         // aptitudes
         for (int i = 0; i < itemsAptitude.length; i++) {
             if (e.getSource() == itemsAptitude[i]) {
-                if (i != 0) {
-                    personnelPanel.setAptitudeFilter(itemsAptitude[i].getText());
-                    personnelPanel.update(3, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
-                    personnelPanel.setFiltered(true);
+                if (i != 0 && i < itemsAptitude.length - 1) {
+                    personnelPanel.setAptitudeFilter("\"" + itemsAptitude[i].getText() + "\"");
+                } else if (i == itemsAptitude.length - 1) {
+                    personnelPanel.setAptitudeFilter("\"APTO B\" OR Aptitud = \"NO APTO\"");
                 } else {
                     personnelPanel.setAptitudeFilter("NULL");
-                    personnelPanel.update(3, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
-                    personnelPanel.setFiltered(true);
                 }
-                deleteChecksFilters();
+                personnelPanel.update(PersonnelPanel.FILTER_APTITUDE, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
+                personnelPanel.setFiltered(true);
+                
+                deleteChecksAptitude();
                 menuFilterAptitude.setIcon(check);
                 itemsAptitude[i].setIcon(check);
             }
@@ -328,41 +336,46 @@ public class MainFrame extends JFrame implements ActionListener {
             if (e.getSource() == itemsPathologies[i]) {
                 if (i < itemsPathologies.length - 1 && i != 0) {
                     personnelPanel.setPathologyColumn(MyArrays.getCheckBox(i - 1));
-                    personnelPanel.update(4, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
-                    personnelPanel.setFiltered(true);
+                    personnelPanel.update(PersonnelPanel.FILTER_PATHOLOGY, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 } else if (i != 0) {
-                    personnelPanel.update(5, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
-                    personnelPanel.setFiltered(true);
+                    personnelPanel.update(PersonnelPanel.FILTER_AJM, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 } else {
-                    personnelPanel.update(8, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
-                    personnelPanel.setFiltered(true);
+                    personnelPanel.update(PersonnelPanel.FILTER_ALL_PATHOLOGIES, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
+
                 }
-                deleteChecksFilters();
+                personnelPanel.setFiltered(true);
+                
+                
+                deleteChecksPathologies();
                 menuPathologies.setIcon(check);
                 itemsPathologies[i].setIcon(check);
             }
         }
         // observaciones 
         if (e.getSource() == itemObs) {
-            personnelPanel.update(6, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
+            personnelPanel.update(PersonnelPanel.FILTER_OBS, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
             personnelPanel.setFiltered(true);
-            deleteChecksFilters();
+
             itemObs.setIcon(check);
         }
+        //-----------------------------------
+        // MOSTRAR POR----------------------
         // destinos
         for (int i = 0; i < itemSubUnities.length; i++) {
             if (e.getSource() == itemSubUnities[i]) {
-                personnelPanel.update(personnelPanel.getFilter(), i == 0 ? -1:i, personnelPanel.getRowOrdering());
+                personnelPanel.update(-1, i == 0 ? -1 : i, personnelPanel.getRowOrdering());
                 personnelPanel.setFiltered(true);
                 eliminarChecksShowBy();
                 menuSubUnities.setIcon(check);
                 itemSubUnities[i].setIcon(check);
             }
         }
+        //----------------------------------
+        //ORDENAR---------------------------
         //ordenar por
         for (int i = 0; i < itemsOrderBy.length; i++) {
             if (e.getSource() == itemsOrderBy[i]) {
-                personnelPanel.update(personnelPanel.getFilter(), personnelPanel.getShowBySubUnity(), i);
+                personnelPanel.update(-1, personnelPanel.getShowBySubUnity(), i);
                 personnelPanel.setFiltered(true);
                 deleteChecksOrderBy();
                 menuOrderBy.setIcon(check);
@@ -386,28 +399,41 @@ public class MainFrame extends JFrame implements ActionListener {
             System.gc();
         }
         //MENU ABOUT----------------------------------------------
-        if(e.getSource() == itemAbout){
+        if (e.getSource() == itemAbout) {
             about.setVisible(true);
         }
     }
-
-    public void deleteChecksFilters() {
+    
+    
+    public void deleteCheckCaducatedStudy(){
         ItemCaducatedStudies.setIcon(null);
-
-        menuFilterPPS.setIcon(null);
+    }
+    
+    public void deleteChecksPPS(){
+         menuFilterPPS.setIcon(null);
         for (int i = 0; i < itemsPPS.length; i++) {
             itemsPPS[i].setIcon(null);
         }
+    }
+         
+    public void deleteChecksAptitude(){
         menuFilterAptitude.setIcon(null);
         for (int i = 0; i < itemsAptitude.length; i++) {
             itemsAptitude[i].setIcon(null);
         }
+    }
+    
+    public void deleteChecksPathologies(){
         menuPathologies.setIcon(null);
         for (int i = 0; i < itemsPathologies.length; i++) {
             itemsPathologies[i].setIcon(null);
         }
+    }
+    
+    public void deleteCheckObs(){
         itemObs.setIcon(null);
     }
+
 
     public void eliminarChecksShowBy() {
         for (int i = 0; i < itemSubUnities.length; i++) {
@@ -423,7 +449,11 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public void deleteChecks() {
         //FILTROS
-        deleteChecksFilters();
+        deleteCheckCaducatedStudy();
+        deleteChecksPPS();
+        deleteChecksAptitude();
+        deleteChecksPathologies();
+        deleteCheckObs();
         //DESTINOS
         menuSubUnities.setIcon(null);
         eliminarChecksShowBy();

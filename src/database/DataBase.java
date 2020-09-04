@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 
@@ -62,7 +63,6 @@ public class DataBase {
         //OBJETOS auxiliares----------------------------------------------------
         MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
         String[][] grades = MyArrays.getGrades();
-        int filter = personnelPanel.getFilter();
 
         //VACIADO DE LA TABLA ACTUAL--------------------------------------------
         for (int i = 0; i < MyArrays.getCategoriesLength(); i++) {
@@ -71,50 +71,58 @@ public class DataBase {
 
         //FILTRAR TABLA---------------------------------------------------------           
         StringBuffer statement = new StringBuffer("SELECT * FROM Personal");
-        switch (filter) {
-            case 1:
-                statement.append(" WHERE (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) <= ");
-                statement.append("\"");
-                statement.append(myDates.getYearAgo());
-                statement.append("\"");
-                break;
-            case 2:
-                statement.append(" WHERE PPS = \"");
-                statement.append(personnelPanel.getPPSFilter());
-                statement.append("\"");
-                break;
-            case 3:
-                boolean unassigned = personnelPanel.getAptitudeFilter().equals("NULL");
-                statement.append(unassigned ? " WHERE Aptitud IS NULL" : " WHERE Aptitud = \"");
-                statement.append(unassigned ? "" : personnelPanel.getAptitudeFilter());
-                statement.append(unassigned ? "" : "\"");
-                break;
-            case 4:
-                statement.append(" WHERE ");
-                statement.append(personnelPanel.getPathologyColumn());
-                statement.append(" IS NOT NULL");
-                break;
-            case 5:
-                statement.append(" WHERE (Act IS NOT NULL OR Inf IS NOT NULL)");
-                break;
-            case 6:
-                statement.append(" WHERE Observaciones IS NOT NULL ");
-                break;
-            case 7:
-                statement.append(" WHERE IMC ");
-                statement.append(personnelPanel.getIMCoperator());
-                statement.append(" ");
-                statement.append(personnelPanel.getIMCfilter());
-                break;
-            case 8:
-                statement.append(" WHERE D IS NOT NULL OR H IS NOT NULL OR A IS NOT NULL");
-                statement.append(" OR T IS NOT NULL OR Act IS NOT NULL OR Inf IS NOT NULL");
-                break;
+        int initStatement = statement.length();
+        ArrayList<Integer> filterList = personnelPanel.getFilterList();
+
+        if (filterList.contains(PersonnelPanel.FILTER_A27)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("(SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) <= ");
+            statement.append("\"");
+            statement.append(myDates.getYearAgo());
+            statement.append("\"");
         }
+        if (filterList.contains(PersonnelPanel.FILTER_PPS)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("PPS = \"");
+            statement.append(personnelPanel.getPPSFilter());
+            statement.append("\"");
+        }
+        if (filterList.contains(PersonnelPanel.FILTER_APTITUDE)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            boolean unassigned = personnelPanel.getAptitudeFilter().equals("NULL");
+            statement.append(unassigned ? "Aptitud IS NULL" : "Aptitud = ");
+            statement.append(unassigned ? "" : personnelPanel.getAptitudeFilter());
+        }
+        if (filterList.contains(PersonnelPanel.FILTER_PATHOLOGY)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append(personnelPanel.getPathologyColumn());
+            statement.append(" IS NOT NULL");
+        }
+        if (filterList.contains(PersonnelPanel.FILTER_AJM)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("(Act IS NOT NULL OR Inf IS NOT NULL)");
+        }
+        if (filterList.contains(PersonnelPanel.FILTER_OBS)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("Observaciones IS NOT NULL");
+        }
+        if (filterList.contains(PersonnelPanel.FILTER_IMC)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("IMC ");
+            statement.append(personnelPanel.getIMCoperator());
+            statement.append(" ");
+            statement.append(personnelPanel.getIMCfilter());
+        }
+        if (filterList.contains(PersonnelPanel.FILTER_ALL_PATHOLOGIES)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("(D IS NOT NULL OR H IS NOT NULL OR A IS NOT NULL");
+            statement.append(" OR T IS NOT NULL OR Act IS NOT NULL OR Inf IS NOT NULL)");
+        }
+
 
         // MOSTRAR POR DESTINOS-------------------------------------------------        
         if (personnelPanel.getShowBySubUnity() != 0) {
-            statement.append(filter > 0 ? " AND " : " WHERE ");
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
             boolean unassigned = personnelPanel.getShowBySubUnity() == -1;
             statement.append(unassigned ? "Destino IS NULL" : "Destino =\"");
             statement.append(unassigned ? "" : MyArrays.getSubUnities(personnelPanel.getShowBySubUnity()));
@@ -124,6 +132,7 @@ public class DataBase {
         //ORDENAR LA TABLA------------------------------------------------------ 
         statement.append(MyArrays.getOrderPersonnel(personnelPanel.getRowOrdering()));
 
+        System.out.println(statement);
         //CONSULTA A BASE DE DATOS----------------------------------------------        
         try {
             if (cn == null || cn.isClosed()) {

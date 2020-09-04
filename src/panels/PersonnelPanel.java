@@ -13,6 +13,7 @@ import javax.swing.table.*;
 import database.Report;
 import dialogs.Configurator;
 import dialogs.ListGenerator;
+import java.util.ArrayList;
 import mytools.Icons;
 
 public class PersonnelPanel extends JPanel implements ActionListener {
@@ -37,11 +38,23 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private JScrollPane[] scrolls;
 
     private JLabel[] labelsSummary;
-
+    
+    
     //FILTROS DE LA TABLA
+    private ArrayList<Integer> filterList;
+    
+    public static final int FILTER_A27 = 1,
+                            FILTER_PPS = 2,
+                            FILTER_APTITUDE = 3,
+                            FILTER_PATHOLOGY = 4,
+                            FILTER_AJM = 5,
+                            FILTER_OBS = 6,
+                            FILTER_IMC = 7,
+                            FILTER_ALL_PATHOLOGIES = 8;
+    
+    
     private boolean filtered;
 
-    private int filter;
     private int showBySubUnity;
     private int rowOrdering;
 
@@ -58,11 +71,11 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private Configurator config;
     private ListGenerator listGenerator;
 
-    //table model
-    private DefaultTableModel[] model;
-
-    public PersonnelPanel(MainFrame mainFrame) {
+    
+    public PersonnelPanel(MainFrame mainFrame) {       
         this.mainFrame = mainFrame;
+        filterList = new ArrayList<Integer>();
+        
         components();
         shortcuts();
     }
@@ -95,7 +108,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         // TABLAS PRINCIPALES 
         scrolls = new JScrollPane[MyArrays.getCategoriesLength()];
         tables = new JTable[MyArrays.getCategoriesLength()];
-        model = new DefaultTableModel[MyArrays.getCategoriesLength()];
         //objeto para centrar las celdas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -256,7 +268,13 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     }
 
     public void update(int filter, int showBySubUnity, int rowOrdering) {
-        this.filter = filter;
+        if(filter == 0){
+            filterList.clear();
+        } else if(filter > 0){
+            if(!filterList.contains(filter)){
+                filterList.add(filter);
+            }
+        }
         this.showBySubUnity = showBySubUnity;
         this.rowOrdering = rowOrdering;
         DataBase db = new DataBase();
@@ -375,13 +393,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.filtered = filtered;
     }
 
-    public int getFilter() {
-        return filter;
-    }
-
-    public void setFilter(int filter) {
-        this.filter = filter;
-    }
 
     public int getShowBySubUnity() {
         return showBySubUnity;
@@ -410,6 +421,11 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     public String getAptitudeFilter() {
         return aptitudeFilter;
     }
+
+    public ArrayList<Integer> getFilterList() {
+        return filterList;
+    }    
+ 
 
     public void setAptitudeFilter(String aptitudeFilter) {
         this.aptitudeFilter = aptitudeFilter;

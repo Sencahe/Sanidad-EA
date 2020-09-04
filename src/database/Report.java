@@ -113,7 +113,7 @@ public class Report extends DataBase {
 
     public void createListReport(PersonnelPanel personnelPanel, String title, boolean civilians) {
         int cicles = civilians ? 4 : 3;
-        defaults("Lista.pdf");
+        defaults(title + ".pdf");
         try {
             //tamaño de la hoja                    
             document.setPageSize(PageSize.LEGAL);

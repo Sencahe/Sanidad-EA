@@ -54,10 +54,22 @@ public class MyArrays {
     
     private static String[] sickTypes = {"PARTES DE ENFERMO", "PARTES DE EXCEPTUADO","PARTES DE MATERNIDAD","PERSONAL QUE NO PASO NOVEDAD"};
     //=================================================================================
+    
     private static String[] pathologies = {"Todas","Diabetes", "Hipertension", "Asma (Problemas resp.)", "Tabaquismo", "AJM"};
-    private static String[] orderPersonnelMenu = {"De mayor a menor grado", "De menor a mayor grado", "Orden Alfabetico A-Z", "Orden Alfabetico Z-A"};
-    private static String[] orderPersonnel = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC", " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",
-        " ORDER BY Apellido ASC, Nombre ASC, Grado DESC", " ORDER BY Apellido DESC, Nombre DESC, Grado DESC"};
+    
+    private static String[] orderPersonnelMenu = {"De mayor a menor grado", 
+        "De menor a mayor grado",
+        "Orden Alfabetico A-Z",
+        "Orden Alfabetico Z-A",
+        "Anexo 27 mas antiguo",
+        "Anexo 27 mas moderno"};
+    
+    private static String[] orderPersonnel = {" ORDER BY Grado DESC, Apellido ASC, Nombre ASC",
+        " ORDER BY Grado ASC, Apellido ASC, Nombre ASC",
+        " ORDER BY Apellido ASC, Nombre ASC, Grado DESC", 
+        " ORDER BY Apellido DESC, Nombre DESC, Grado DESC",
+        " ORDER BY (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) DESC, Grado DESC, Apellido ASC, Nombre ASC",
+        " ORDER BY (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) ASC, Grado DESC, Apellido ASC, Nombre ASC"};
     
     //=================================================================================
     private static String[] months = {"","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"};

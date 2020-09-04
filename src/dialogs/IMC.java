@@ -134,7 +134,7 @@ public class IMC extends JDialog implements ActionListener {
 
             personnelPanel.update(7, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
 
-            mainFrame.deleteChecksFilters();
+            mainFrame.deleteChecksPPS();
             mainFrame.getMenuFilterPPS().setIcon(mainFrame.getCheck());
             mainFrame.getItemIMC().setIcon(mainFrame.getCheck());
 
