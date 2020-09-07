@@ -419,7 +419,7 @@ public class Report extends DataBase {
                     "IMC 1", "Fecha", "IMC 2", "Fecha", "IMC 3", "Fecha", "IMC 4", "Fecha",
                     "IMC 5", "Fecha", "IMC 6", "Fecha"};
                 //                                            control y fecha
-                int[] columnsSize = {40, 65, 240, 68, 70, 50, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70};
+                int[] columnsSize = {40, 60, 240, 68, 70, 50, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70};
                 //float[] para el tamaño escalado de las columnas de la tabla 
                 float columnsWidth[] = new float[columnasRecuento.length];
                 for (int i = 0; i < columnsWidth.length; i++) {

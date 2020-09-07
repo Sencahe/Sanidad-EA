@@ -94,13 +94,6 @@ public class MyDates {
         year = year.substring(0, 4) + year.substring(5, 7) + year.substring(8, 10); 
         return Integer.parseInt(year);
     }
-    
-    public int getCustomYearAgo(Date customDate){
-        LocalDate customYear = toLocalDate(customDate);
-        String year = String.valueOf(customYear);
-        year = year.substring(0, 4) + year.substring(5, 7) + year.substring(8, 10); 
-        return Integer.parseInt(year);
-    }
 
     //------------------METODOS QUE VALIDAN LAS FECHAS--------------------------
 

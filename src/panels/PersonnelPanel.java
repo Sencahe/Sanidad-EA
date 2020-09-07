@@ -13,7 +13,6 @@ import javax.swing.table.*;
 import database.Report;
 import dialogs.Configurator;
 import dialogs.ListGenerator;
-import dialogs.CaducatedStudies;
 import java.util.ArrayList;
 import mytools.Icons;
 
@@ -60,7 +59,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private int rowOrdering;
 
     private double IMCfilter;
-    private int studiesFilter;
     private String IMCoperator;
     private String PPSFilter;
     private String aptitudeFilter;
@@ -72,7 +70,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private Searcher searcher;
     private Configurator config;
     private ListGenerator listGenerator;
-    private CaducatedStudies caducatedStudies;
 
     
     public PersonnelPanel(MainFrame mainFrame) {       
@@ -458,14 +455,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.IMCoperator = IMCoperator;
     }
 
-    public int getStudiesFilter() {
-        return studiesFilter;
-    }
-
-    public void setStudiesFilter(int studiesFilter) {
-        this.studiesFilter = studiesFilter;
-    }
-    
     public void setConfig(Configurator config) {
         this.config = config;
     }
@@ -474,8 +463,4 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.listGenerator = listGenerator;
     }
 
-    public void setCaducatedStudies(CaducatedStudies caducatedStudies) {
-        this.caducatedStudies = caducatedStudies;
-    }
-       
 }
