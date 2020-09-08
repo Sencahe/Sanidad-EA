@@ -131,9 +131,11 @@ public class IMC extends JDialog implements ActionListener {
 
             personnelPanel.setIMCfilter(inputIMC);
             personnelPanel.setIMCoperator(radioHigher.isSelected() ? ">=" : "<=");
+            
 
             personnelPanel.update(7, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
 
+            personnelPanel.setFiltered(true); 
             mainFrame.deleteChecksPPS();
             mainFrame.getMenuFilterPPS().setIcon(mainFrame.getCheck());
             mainFrame.getItemIMC().setIcon(mainFrame.getCheck());

@@ -13,7 +13,10 @@ import javax.swing.table.*;
 import database.Report;
 import dialogs.Configurator;
 import dialogs.ListGenerator;
+import dialogs.CaducatedStudies;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.logging.Logger;
 import mytools.Icons;
 
 public class PersonnelPanel extends JPanel implements ActionListener {
@@ -50,7 +53,8 @@ public class PersonnelPanel extends JPanel implements ActionListener {
                             FILTER_AJM = 5,
                             FILTER_OBS = 6,
                             FILTER_IMC = 7,
-                            FILTER_ALL_PATHOLOGIES = 8;
+                            FILTER_ALL_PATHOLOGIES = 8,
+                            FILTER_GENRE = 9;
     
     
     private boolean filtered;
@@ -59,10 +63,14 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private int rowOrdering;
 
     private double IMCfilter;
+    private int studiesFilter;
+    private int studiesFilter2;
+    private boolean betweenTwoDates;
     private String IMCoperator;
     private String PPSFilter;
     private String aptitudeFilter;
     private String pathologyColumn;
+    private char genreFilter;
 
     //OBJETOS PARA LAS VENTANAS
     private MainFrame mainFrame;
@@ -70,10 +78,12 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private Searcher searcher;
     private Configurator config;
     private ListGenerator listGenerator;
+    private CaducatedStudies caducatedStudies;
 
     
     public PersonnelPanel(MainFrame mainFrame) {       
         this.mainFrame = mainFrame;
+        this.betweenTwoDates = false;
         filterList = new ArrayList<Integer>();
         
         components();
@@ -273,7 +283,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         } else if(filter > 0){
             if(!filterList.contains(filter)){
                 filterList.add(filter);
-            }
+            } 
         }
         this.showBySubUnity = showBySubUnity;
         this.rowOrdering = rowOrdering;
@@ -455,6 +465,14 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.IMCoperator = IMCoperator;
     }
 
+    public int getStudiesFilter() {
+        return studiesFilter;
+    }
+
+    public void setStudiesFilter(int studiesFilter) {
+        this.studiesFilter = studiesFilter;
+    }
+    
     public void setConfig(Configurator config) {
         this.config = config;
     }
@@ -463,4 +481,33 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.listGenerator = listGenerator;
     }
 
+    public void setCaducatedStudies(CaducatedStudies caducatedStudies) {
+        this.caducatedStudies = caducatedStudies;
+    }
+
+    public int getStudiesFilter2() {
+        return studiesFilter2;
+    }
+
+    public void setStudiesFilter2(int studiesFilter2) {
+        this.studiesFilter2 = studiesFilter2;
+    }
+
+    public boolean isBetweenTwoDates() {
+        return betweenTwoDates;
+    }
+
+    public void setBetweenTwoDates(boolean betweenTwoDates) {
+        this.betweenTwoDates = betweenTwoDates;
+    }
+
+    public char getGenreFilter() {
+        return genreFilter;
+    }
+
+    public void setGenreFilter(char genreFilter) {
+        this.genreFilter = genreFilter;
+    }
+       
+    
 }

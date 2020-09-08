@@ -34,7 +34,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
     public static final int DIAG_COLUMN = 5;
 
     private JButton buttonSickPanel;
-    private JButton buttonGetByDNI, buttonGetAll, buttonClean, buttonSearchByName;
+    private JButton buttonGetByDNI, buttonGetAll, buttonClean, buttonSearchByName, buttonDateFilter;
     private JButton buttonReport;
     
     private JLabel labelGetByDNI, labelSearchByName, labelInfoSearchByName;
@@ -151,10 +151,16 @@ public class ReCountPanel extends JPanel implements ActionListener {
         add(buttonClean);
         buttonSearchByName = utility.customButton();
         buttonSearchByName.setText("<html>Buscar</html>");
-        buttonSearchByName.setBounds(1005, 61, 70, 25);
+        buttonSearchByName.setBounds(1005, 61, 80, 25);
         buttonSearchByName.addActionListener(this);
         buttonSearchByName.setVisible(false);
-        add(buttonSearchByName);
+        add(buttonSearchByName); 
+        buttonDateFilter = utility.customButton();
+        buttonDateFilter.setText("<html>Por Fecha</html>");
+        buttonDateFilter.setBounds(1095, 61, 105, 25);
+        buttonDateFilter.addActionListener(this);
+        buttonDateFilter.setVisible(false);
+        add(buttonDateFilter);
         buttonSickPanel = utility.customButton();
         buttonSickPanel.setText("<html><center>Volver al Parte</center></html>");
         buttonSickPanel.setBounds(10, 15, 110, 35);
@@ -213,6 +219,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
                 labelSearchByName.setVisible(true);
                 textSearchByName.setVisible(true);
                 buttonSearchByName.setVisible(true);
+                buttonDateFilter.setVisible(true);
             }
             receiver = null;
         }
@@ -223,6 +230,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
             labelSearchByName.setVisible(false);
             labelInfoSearchByName.setVisible(false);
             textSearchByName.setVisible(false);
+            buttonDateFilter.setVisible(false);
         }
         if (e.getSource() == buttonSickPanel) {
             pointer = 0;
@@ -233,6 +241,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
             labelSearchByName.setVisible(false);
             labelInfoSearchByName.setVisible(false);
             textSearchByName.setVisible(false);
+            buttonDateFilter.setVisible(false);
         }
         if (e.getSource() == buttonSearchByName) {
             searchByName();

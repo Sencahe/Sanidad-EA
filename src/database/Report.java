@@ -111,8 +111,8 @@ public class Report extends DataBase {
         System.gc();
     }
 
-    public void createListReport(PersonnelPanel personnelPanel, String title, boolean civilians) {
-        int cicles = civilians ? 4 : 3;
+    public void createListReport(PersonnelPanel personnelPanel, String title, boolean jump[]) {
+
         defaults(title + ".pdf");
         try {
             //tamaño de la hoja                    
@@ -160,22 +160,25 @@ public class Report extends DataBase {
             //ciclos para llenar las tabla            
             String content;
             int num = 0;
-            for (int i = 0; i < cicles; i++) { //itera sobre todas las tablas
-                for (int j = 0; j < personnelPanel.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
-                    for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
-                        if (k == 0) {
-                            content = String.valueOf(++num);
-                        } else if (k == 5) {
-                            content = "";
-                        } else {
-                            content = String.valueOf(personnelPanel.getTables(i).getValueAt(j, k));
-                        }
-                        Paragraph para = new Paragraph();
-                        para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));
-                        para.add(!content.equals("null") ? content : "");
-                        pdfTable.addCell(para);
-                        para = null;
+            for (int i = 0; i < 4; i++) { //itera sobre todas las tablas
+                if (jump[i]) {
+                    //se puede iterar sobre esa columna
+                    for (int j = 0; j < personnelPanel.getTables(i).getRowCount(); j++) { //itera sobre las filas                   
+                        for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
+                            if (k == 0) {
+                                content = String.valueOf(++num);
+                            } else if (k == 5) {
+                                content = "";
+                            } else {
+                                content = String.valueOf(personnelPanel.getTables(i).getValueAt(j, k));
+                            }
+                            Paragraph para = new Paragraph();
+                            para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));
+                            para.add(!content.equals("null") ? content : "");
+                            pdfTable.addCell(para);
+                            para = null;
 
+                        }
                     }
                 }
             }
@@ -247,7 +250,7 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add("PARTE DIARIO DE SANIDAD DE LA UNIDAD DEL " + day + " DE " + month.toUpperCase() + " DE " + year );
+            p3.add("PARTE DIARIO DE SANIDAD DE LA UNIDAD DEL " + day + " DE " + month.toUpperCase() + " DE " + year);
             document.add(p3);
             Paragraph p5 = new Paragraph();
             p5.setFont(FontFactory.getFont("Times-Roman", 10, Font.BOLD, BaseColor.BLACK));
@@ -419,7 +422,7 @@ public class Report extends DataBase {
                     "IMC 1", "Fecha", "IMC 2", "Fecha", "IMC 3", "Fecha", "IMC 4", "Fecha",
                     "IMC 5", "Fecha", "IMC 6", "Fecha"};
                 //                                            control y fecha
-                int[] columnsSize = {40, 60, 240, 68, 70, 50, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70};
+                int[] columnsSize = {40, 65, 240, 68, 70, 50, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70, 60, 70};
                 //float[] para el tamaño escalado de las columnas de la tabla 
                 float columnsWidth[] = new float[columnasRecuento.length];
                 for (int i = 0; i < columnsWidth.length; i++) {
@@ -444,7 +447,7 @@ public class Report extends DataBase {
                 // ciclos para llenar la tabla
                 String content;
                 int num = 0;
-                
+
                 PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT "
                         + " Grado, Apellido,Nombre,Destino,DNI,IMC,Categoria FROM Personal WHERE IMC >= " + imc
                         + " AND Categoria != 3"
@@ -465,7 +468,7 @@ public class Report extends DataBase {
                                     content = rs.getString(i) + " " + rs.getString(++i);
                                     break;
                                 default:
-                                    content = rs.getString(i) != null ? rs.getString(i):"";
+                                    content = rs.getString(i) != null ? rs.getString(i) : "";
                                     break;
                             }
                             Paragraph para = new Paragraph();
@@ -477,9 +480,9 @@ public class Report extends DataBase {
                         for (int i = 0; i < columnasRecuento.length - 6; i++) {
                             pdfTable.addCell("");
                         }
-                        
+
                     } while (rs.next());
-                                      
+
                     document.add(pdfTable);
                     document.add(p4);
                     document.close();

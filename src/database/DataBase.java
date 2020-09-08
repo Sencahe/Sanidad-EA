@@ -76,10 +76,17 @@ public class DataBase {
 
         if (filterList.contains(PersonnelPanel.FILTER_A27)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append(personnelPanel.isBetweenTwoDates() ? "(" : "");
             statement.append("(SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) <= ");
             statement.append("\"");
-            statement.append(myDates.getYearAgo());
+            statement.append(personnelPanel.getStudiesFilter());
             statement.append("\"");
+            if (personnelPanel.isBetweenTwoDates()) {
+                statement.append(" AND (SUBSTR(Anexo27,1,4)||SUBSTR(Anexo27,6,2)||SUBSTR(Anexo27,9,2)) >= ");
+                statement.append("\"");
+                statement.append(personnelPanel.getStudiesFilter2());
+                statement.append("\")");
+            }
         }
         if (filterList.contains(PersonnelPanel.FILTER_PPS)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
@@ -90,8 +97,8 @@ public class DataBase {
         if (filterList.contains(PersonnelPanel.FILTER_APTITUDE)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
             boolean unassigned = personnelPanel.getAptitudeFilter().equals("NULL");
-            statement.append(unassigned ? "Aptitud IS NULL" : "Aptitud = ");
-            statement.append(unassigned ? "" : personnelPanel.getAptitudeFilter());
+            statement.append(unassigned ? "Aptitud IS NULL" : personnelPanel.getAptitudeFilter());
+            statement.append(unassigned ? "" : "");
         }
         if (filterList.contains(PersonnelPanel.FILTER_PATHOLOGY)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
@@ -118,7 +125,11 @@ public class DataBase {
             statement.append("(D IS NOT NULL OR H IS NOT NULL OR A IS NOT NULL");
             statement.append(" OR T IS NOT NULL OR Act IS NOT NULL OR Inf IS NOT NULL)");
         }
-
+        if (filterList.contains(PersonnelPanel.FILTER_GENRE)) {
+            statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
+            statement.append("Sexo = \"" + personnelPanel.getGenreFilter());
+            statement.append("\"");
+        }
 
         // MOSTRAR POR DESTINOS-------------------------------------------------        
         if (personnelPanel.getShowBySubUnity() != 0) {
@@ -132,7 +143,7 @@ public class DataBase {
         //ORDENAR LA TABLA------------------------------------------------------ 
         statement.append(MyArrays.getOrderPersonnel(personnelPanel.getRowOrdering()));
 
-        System.out.println(statement);
+
         //CONSULTA A BASE DE DATOS----------------------------------------------        
         try {
             if (cn == null || cn.isClosed()) {

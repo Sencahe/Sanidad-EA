@@ -94,25 +94,32 @@ public class MyDates {
         year = year.substring(0, 4) + year.substring(5, 7) + year.substring(8, 10); 
         return Integer.parseInt(year);
     }
+    
+    public int getCustomYearAgo(Date customDate){
+        LocalDate customYear = toLocalDate(customDate);
+        String year = String.valueOf(customYear);
+        year = year.substring(0, 4) + year.substring(5, 7) + year.substring(8, 10); 
+        return Integer.parseInt(year);
+    }
 
     //------------------METODOS QUE VALIDAN LAS FECHAS--------------------------
 
     //valida la fecha entre el desde y el hasta 
-    public boolean sickValidDate(Date since, Date until) {
+    public boolean validateBetweenTwoDates(Date since, Date until) {
         LocalDate sinceLocalDate = toLocalDate(since);
         LocalDate untilLocalDate = toLocalDate(until);
         if (sinceLocalDate.isAfter(untilLocalDate) || sinceLocalDate.isEqual(untilLocalDate)) {
             JOptionPane.showMessageDialog(null, "La fecha 'Desde' no puede ser posterior o igual a la fecha 'Hasta'.");
             return false;
-        } else if (untilLocalDate.isBefore(this.todayLocalDate)) {
-            JOptionPane.showMessageDialog(null, "La fecha 'Hasta' no puede ser anterior a la fecha de hoy.");
-            return false;
+//        } else if (untilLocalDate.isBefore(this.todayLocalDate)) {
+//            JOptionPane.showMessageDialog(null, "La fecha 'Hasta' no puede ser anterior a la fecha de hoy.");
+//            return false;
         }
         return true;
     }
 
     //valida la fecha entre el desde y el hasta, ademas compara que el desde no sea menor que el incial
-    public boolean sickValidDate(Date since, Date until, Date flagSince) {
+    public boolean validateBetweenTwoDates(Date since, Date until, Date flagSince) {
         LocalDate sinceLocalDate = toLocalDate(since);
         LocalDate flagSinceLocalDate = toLocalDate(flagSince);
         if (sinceLocalDate.isBefore(sinceLocalDate) || (sinceLocalDate.isEqual(sinceLocalDate))) {
@@ -120,7 +127,7 @@ public class MyDates {
                     + "la fecha 'Desde' no puede ser anterior o igual a la fecha inicial: " + flagSinceLocalDate);
             return false;
         } else {
-            return MyDates.this.sickValidDate(since, until);
+            return MyDates.this.validateBetweenTwoDates(since, until);
         }
     }
 

@@ -405,11 +405,11 @@ public class SickFormulary extends JDialog implements ActionListener {
         //validando la coherencia de las fechas Desde y Hasta ingresadas por el usuario
          MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
         if (beingModifiedSickType) {
-            if (!myDates.sickValidDate(dateSince.getDate(),dateUntil.getDate(),flagSince)) {
+            if (!myDates.validateBetweenTwoDates(dateSince.getDate(),dateUntil.getDate(),flagSince)) {
                 return false;
             }
         } else {
-            if (!myDates.sickValidDate(dateSince.getDate(), dateUntil.getDate())){
+            if (!myDates.validateBetweenTwoDates(dateSince.getDate(), dateUntil.getDate())){
                 return false;
             }
         }

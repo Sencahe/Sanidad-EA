@@ -20,12 +20,12 @@ import java.awt.event.KeyEvent;
 public class ListGenerator extends JDialog implements ActionListener {
 
     private MainFrame mainFrame;
-    private PersonnelPanel tabla;
+    private PersonnelPanel personnelPanel;
 
     private JLabel message, civilians;
     private JTextField textTitle;
-    private ButtonGroup bg;
-    private JRadioButton yes, no;
+    private JCheckBox of, sub, sold, civ;
+
     private JButton generate;
 
     public ListGenerator(Frame parent, boolean modal) {
@@ -36,10 +36,12 @@ public class ListGenerator extends JDialog implements ActionListener {
 
     public void components() {
         //---------------------------------------
-        Utilities utilidad = mainFrame.getUtility();
-        Icons iconos = mainFrame.getIcons();
+//        Utilities utilidad = mainFrame.getUtility();
+//        Icons iconos = mainFrame.getIcons();
+        Utilities utilidad = new Utilities();
+        Icons iconos = new Icons();
         //PROPIEDADES DEL FRAME-------------------------------------------------
-        setSize(280, 210);
+        setSize(300, 210);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Generar Lista");
@@ -72,7 +74,7 @@ public class ListGenerator extends JDialog implements ActionListener {
         container.add(message);
 
         textTitle = new JTextField();
-        textTitle.setBounds(30, 50, 200, 25);
+        textTitle.setBounds(10, 40, 260, 25);
         textTitle.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -84,30 +86,36 @@ public class ListGenerator extends JDialog implements ActionListener {
         });
         container.add(textTitle);
 
-        civilians = new JLabel("Incluir civiles");
-        civilians.setBounds(80, 75, 200, 30);
+        civilians = new JLabel("Incluir");
+        civilians.setBounds(20, 65, 200, 30);
         civilians.setFont(utilidad.getFontLabelFormulary());
         container.add(civilians);
 
-        bg = new ButtonGroup();
-        yes = new JRadioButton("Si");
-        yes.setBounds(75, 100, 50, 30);
-        yes.setFont(utilidad.getFontLabelFormulary());
-        yes.setOpaque(false);
-        yes.setFocusPainted(false);
-        bg.add(yes);
-        container.add(yes);
-        no = new JRadioButton("No");
-        no.setBounds(120, 100, 50, 30);
-        no.setFont(utilidad.getFontLabelFormulary());
-        no.setOpaque(false);
-        no.setSelected(true);
-        no.setFocusPainted(false);
-        bg.add(no);
-        container.add(no);
+        of = new JCheckBox("Oficiales");
+        of.setBounds(10, 90, 75, 30);
+        of.setOpaque(false);
+        of.setSelected(true);
+        add(of);
+
+        sub = new JCheckBox("SubOficiales");
+        sub.setBounds(75, 90, 85, 30);
+        sub.setOpaque(false);
+        sub.setSelected(true);
+        add(sub);
+
+        sold = new JCheckBox("Soldados");
+        sold.setBounds(155, 90, 75, 30);
+        sold.setOpaque(false);
+        sold.setSelected(true);
+        add(sold);
+
+        civ = new JCheckBox("Civiles");
+        civ.setBounds(220, 90, 75, 30);
+        civ.setOpaque(false);
+        add(civ);
 
         generate = new JButton("<html>Generar</html>");
-        generate.setBounds(80, 130, 70, 30);
+        generate.setBounds(95, 130, 70, 30);
         generate.addActionListener(this);
         container.add(generate);
 
@@ -127,17 +135,25 @@ public class ListGenerator extends JDialog implements ActionListener {
     private void createList() {
         if (!textTitle.getText().equals("")) {
             String title = textTitle.getText();
-            boolean addCivilians = yes.isSelected();
+
+            boolean jump[] = new boolean[4];
+
+            jump[0] = of.isSelected();
+            jump[1] = sub.isSelected();
+            jump[2] = sold.isSelected();
+            jump[3] = civ.isSelected();
 
             Report report = new Report();
-            report.createListReport(tabla, title, addCivilians);
+            report.createListReport(personnelPanel, title, jump);
             report = null;
             dispose();
         }
     }
 
-    public void setTabla(PersonnelPanel tabla) {
-        this.tabla = tabla;
+    public void setPersonnelPanel(PersonnelPanel personnelPanel) {
+        this.personnelPanel = personnelPanel;
     }
+
+ 
 
 }
