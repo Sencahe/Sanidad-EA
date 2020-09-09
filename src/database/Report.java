@@ -302,7 +302,7 @@ public class Report extends DataBase {
 
     }
 
-    public void createReCountReport(ReCountPanel reCountPanel) {
+    public void createReCountReport(ReCountPanel reCountPanel, String title) {
 
         defaults("Recuento Parte de Sanidad.pdf");
         try {
@@ -314,7 +314,7 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add("RECUENTO PARTE DE SANIDAD A LA FECHA DEL " + day + " DE " + month.toUpperCase() + " DE" + year + "\n\n\n");
+            p3.add(title);
             document.add(p3);
             p3.remove(0);
 

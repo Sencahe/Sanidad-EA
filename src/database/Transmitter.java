@@ -173,8 +173,8 @@ public class Transmitter extends DataBase {
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("INSERT INTO RecuentoParte"
                     + " (id_personal,Categoria,Grado,NombreCompleto,Destino,DNI,"
-                    + "Diagnostico,CIE,Observacion,NorasSiras,TipoParte,Desde,Hasta,Dias) "
-                    + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + "Diagnostico,CIE,Observacion,NorasSiras,TipoParte,Desde,Hasta,Dias,Alta) "
+                    + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             PreparedStatement pst2 = super.getConnection().prepareStatement("SELECT * FROM Parte "
                     + "WHERE id = " + this.idSick);
@@ -204,6 +204,7 @@ public class Transmitter extends DataBase {
             pst.setString(9, rs.getString("Observacion"));
             pst.setString(10, rs.getString("NorasSiras"));
             pst.setString(11, sickType);
+            
 
             //dependiendo de si es un alta definitiva o no, se guardaran las fechas de distinta manera
             MyDates myDates = new MyDates("dd/MM/yyyy");
@@ -224,7 +225,8 @@ public class Transmitter extends DataBase {
             
             pst.setString(12, myDates.toUserDate(since));
             pst.setString(13, myDates.toUserDate(until));
-            pst.setInt(14, days);         
+            pst.setInt(14, days);   
+            pst.setString(15,until.toString());
             pst.executeUpdate();
             
             pst = super.getConnection().prepareStatement("DELETE FROM PARTE WHERE id = " + this.idSick);           

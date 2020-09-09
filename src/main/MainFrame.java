@@ -478,6 +478,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
     
     public void deleteChecksGenre(){
+        menuFilerGenre.setIcon(null);
         for (int i = 0; i < itemGenre.length; i++) {
             itemGenre[i].setIcon(null);
         }

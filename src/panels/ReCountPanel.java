@@ -1,5 +1,6 @@
 package panels;
 
+import com.toedter.calendar.JDateChooser;
 import database.Receiver;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,36 +15,37 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import dialogs.Configurator;
 import main.MainFrame;
-import mytools.MyArrays;
 import mytools.Utilities;
+import mytools.MyDates;
 import database.Report;
 import mytools.Icons;
 
 public class ReCountPanel extends JPanel implements ActionListener {
 
     public static final String TABLE_NAME = "RecuentoParte";
-    
+
     public static final int NAME_COLUMN = 2;
     public static final int DIAG_COLUMN = 5;
 
     private JButton buttonSickPanel;
-    private JButton buttonGetByDNI, buttonGetAll, buttonClean, buttonSearchByName, buttonDateFilter;
+    private JButton buttonGetByDNI, buttonGetAll, buttonClean, buttonSearchByName;
     private JButton buttonReport;
-    
-    private JLabel labelGetByDNI, labelSearchByName, labelInfoSearchByName;
+
+    private JLabel labelGetByDNI, labelGetByDate, labelGetByDates, labelSearchByName, labelInfoSearchByName;
+    private JDateChooser dateOne, dateTwo;
     private JTextField textGetByDNI, textSearchByName;
     private JTable table;
     private JScrollPane scrollTable;
-    private DefaultTableModel model;
     private Dimension dimension;
 
+    private ButtonGroup bg;
+    private JRadioButton radioDNI, radioSingleDate, radioBetweenDates;
+    private JRadioButton radioBefore, radioAfter;
     //Flags
     int pointer;
     boolean foud;
@@ -78,7 +80,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
         //TABLA CON RECUENTO----------------------------------------------------
         table = utility.customTable(this, NAME_COLUMN, DIAG_COLUMN);
- 
+
         //scroll
         scrollTable = new JScrollPane(table);
         scrollTable.setBounds(40, 100, 1367, 27);
@@ -114,12 +116,42 @@ public class ReCountPanel extends JPanel implements ActionListener {
             }
         });
         add(textSearchByName);
+        //DATE CHOOSER
+        dateOne = new JDateChooser();
+        dateOne.setDateFormatString(MyDates.USER_DATE_FORMAT);
+        dateOne.setBounds(180, 65, 95, 20);
+        dateOne.setForeground(Color.black);
+        dateOne.setFont(utility.getFontTextFields());
+        dateOne.setVisible(false);
+        add(dateOne);
+        dateTwo = new JDateChooser();
+        dateTwo.setDateFormatString(MyDates.USER_DATE_FORMAT);
+        dateTwo.setBounds(285, 65, 95, 20);
+        dateTwo.setForeground(Color.black);
+        dateTwo.setFont(utility.getFontTextFields());
+        dateTwo.setVisible(false);
+        add(dateTwo);
         //LABELS----------------------------------------------------------------
         labelGetByDNI = new JLabel("Ingrese el DNI para buscar en el recuento:");
         labelGetByDNI.setBounds(40, 60, 300, 30);
         labelGetByDNI.setFont(utility.getFontLabelBig());
         labelGetByDNI.setForeground(Color.black);
         add(labelGetByDNI);
+
+        labelGetByDate = new JLabel("Ingrese fecha");
+        labelGetByDate.setBounds(40, 60, 150, 30);
+        labelGetByDate.setFont(utility.getFontLabelBig());
+        labelGetByDate.setForeground(Color.black);
+        labelGetByDate.setVisible(false);
+        add(labelGetByDate);
+
+        labelGetByDates = new JLabel("Ingrese las fechas");
+        labelGetByDates.setBounds(40, 60, 300, 30);
+        labelGetByDates.setFont(utility.getFontLabelBig());
+        labelGetByDates.setForeground(Color.black);
+        labelGetByDates.setVisible(false);
+        add(labelGetByDates);
+
         labelSearchByName = new JLabel("Buscar por nombre:");
         labelSearchByName.setBounds(690, 60, 170, 30);
         labelSearchByName.setFont(utility.getFontLabelBig());
@@ -127,7 +159,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         labelSearchByName.setVisible(false);
         add(labelSearchByName);
         labelInfoSearchByName = new JLabel("<html>La lista completa del recuento esta "
-                + "ordenada en funcion al momento que se les dio de alta medica en el sistema.</html>");
+                + "ordenada en funcion a la fecha de alta (orden ascendiente de antiguedad).</html>");
         labelInfoSearchByName.setBounds(690, 15, 210, 45);
         labelInfoSearchByName.setForeground(Color.black);
         labelInfoSearchByName.setVisible(false);
@@ -154,18 +186,71 @@ public class ReCountPanel extends JPanel implements ActionListener {
         buttonSearchByName.setBounds(1005, 61, 80, 25);
         buttonSearchByName.addActionListener(this);
         buttonSearchByName.setVisible(false);
-        add(buttonSearchByName); 
-        buttonDateFilter = utility.customButton();
-        buttonDateFilter.setText("<html>Por Fecha</html>");
-        buttonDateFilter.setBounds(1095, 61, 105, 25);
-        buttonDateFilter.addActionListener(this);
-        buttonDateFilter.setVisible(false);
-        add(buttonDateFilter);
+        add(buttonSearchByName);
+
         buttonSickPanel = utility.customButton();
         buttonSickPanel.setText("<html><center>Volver al Parte</center></html>");
         buttonSickPanel.setBounds(10, 15, 110, 35);
         buttonSickPanel.addActionListener(this);
         add(buttonSickPanel);
+        //Radio Buttons--------------------------------------------------------      
+        radioDNI = new JRadioButton("Buscar por DNI");
+        radioDNI.setBounds(130, 10, 150, 20);
+        radioDNI.setOpaque(false);
+        radioDNI.setFocusPainted(false);
+        radioDNI.setFont(utility.getFontLabelFormulary());
+        radioDNI.setForeground(Color.black);
+        radioDNI.addActionListener(this);
+        radioDNI.setSelected(true);
+        add(radioDNI);
+
+        radioSingleDate = new JRadioButton("Buscar por fecha");
+        radioSingleDate.setBounds(130, 25, 150, 20);
+        radioSingleDate.setOpaque(false);
+        radioSingleDate.setFocusPainted(false);
+        radioSingleDate.setFont(utility.getFontLabelFormulary());
+        radioSingleDate.setForeground(Color.black);
+        radioSingleDate.addActionListener(this);
+        add(radioSingleDate);
+
+        radioBetweenDates = new JRadioButton("Buscar entre dos fechas");
+        radioBetweenDates.setBounds(130, 40, 180, 20);
+        radioBetweenDates.setOpaque(false);
+        radioBetweenDates.setFocusPainted(false);
+        radioBetweenDates.setFont(utility.getFontLabelFormulary());
+        radioBetweenDates.setForeground(Color.black);
+        radioBetweenDates.addActionListener(this);
+        add(radioBetweenDates);
+
+        radioAfter = new JRadioButton("Posterior a la ingresada");
+        radioAfter.setBounds(310, 25, 200, 20);
+        radioAfter.setOpaque(false);
+        radioAfter.setFocusPainted(false);
+        radioAfter.setFont(utility.getFontLabelFormulary());
+        radioAfter.setForeground(Color.black);
+        radioAfter.addActionListener(this);
+        radioAfter.setVisible(false);
+        add(radioAfter);
+
+        radioBefore = new JRadioButton("Anterior a la ingresada");
+        radioBefore.setBounds(310, 10, 200, 20);
+        radioBefore.setOpaque(false);
+        radioBefore.setFocusPainted(false);
+        radioBefore.setFont(utility.getFontLabelFormulary());
+        radioBefore.setForeground(Color.black);
+        radioBefore.addActionListener(this);
+        radioBefore.setVisible(false);
+        radioBefore.setSelected(true);
+        add(radioBefore);
+
+        bg = new ButtonGroup();
+        bg.add(radioDNI);
+        bg.add(radioSingleDate);
+        bg.add(radioBetweenDates);
+
+        ButtonGroup bg2 = new ButtonGroup();
+        bg2.add(radioBefore);
+        bg2.add(radioAfter);
         //----------
         JLabel reporte = new JLabel("Generar Reportes");
         reporte.setFont(utility.getFontLabelBig());
@@ -207,22 +292,76 @@ public class ReCountPanel extends JPanel implements ActionListener {
     //-----------------------------EVENTOS--------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
+        //RADIO BUTTTONS--------------------------------------------------------
+        if (e.getSource() == radioDNI) {
+            labelGetByDNI.setVisible(true);
+            labelGetByDate.setVisible(false);
+            labelGetByDates.setVisible(false);
+
+            textGetByDNI.setVisible(true);
+            dateOne.setVisible(false);
+            dateTwo.setVisible(false);
+
+            radioAfter.setVisible(false);
+            radioBefore.setVisible(false);
+
+        }
+        if (e.getSource() == radioSingleDate) {
+            labelGetByDNI.setVisible(false);
+            labelGetByDate.setVisible(true);
+            labelGetByDates.setVisible(false);
+
+            textGetByDNI.setVisible(false);
+            dateOne.setVisible(true);
+            dateTwo.setVisible(false);
+
+            radioAfter.setVisible(true);
+            radioBefore.setVisible(true);
+        }
+        if (e.getSource() == radioBetweenDates) {
+            labelGetByDNI.setVisible(false);
+            labelGetByDate.setVisible(false);
+            labelGetByDates.setVisible(true);
+
+            textGetByDNI.setVisible(false);
+            dateOne.setVisible(true);
+            dateTwo.setVisible(true);
+
+            radioAfter.setVisible(false);
+            radioBefore.setVisible(false);
+        }
+
+        //JBUTTONS--------------------------------------------------------------
+        //Buscadores con Base de Datos------------------------------------------
         if (e.getSource() == buttonGetByDNI) {
-            getByDNI();
+            if(radioDNI.isSelected()){
+                getByDNI();
+            } else if(radioSingleDate.isSelected()){
+                getBySingleDate();
+            } else if(radioBetweenDates.isSelected()){
+                getByTwoDates();
+            }
+            
+            
         }
 
         if (e.getSource() == buttonGetAll) {
             Receiver receiver = new Receiver();
-            receiver.obtainInformation(this, 0, true);
+            String statement = "SELECT * FROM RecuentoParte";
+            receiver.obtainInformation(this, statement);
             if (table.getRowCount() > 0) {
                 labelInfoSearchByName.setVisible(true);
                 labelSearchByName.setVisible(true);
                 textSearchByName.setVisible(true);
                 buttonSearchByName.setVisible(true);
-                buttonDateFilter.setVisible(true);
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No hay informacion cargada del recuento en la base de datos");
             }
             receiver = null;
         }
+
+        //Borra base de datos---------------------------------------------------
         if (e.getSource() == buttonClean) {
             ((DefaultTableModel) table.getModel()).setRowCount(0);
             updateWindow();
@@ -230,8 +369,10 @@ public class ReCountPanel extends JPanel implements ActionListener {
             labelSearchByName.setVisible(false);
             labelInfoSearchByName.setVisible(false);
             textSearchByName.setVisible(false);
-            buttonDateFilter.setVisible(false);
+
         }
+
+        // RESTABLECE LA PANTALLA -------------------------------------------------------
         if (e.getSource() == buttonSickPanel) {
             pointer = 0;
             foud = false;
@@ -241,7 +382,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
             labelSearchByName.setVisible(false);
             labelInfoSearchByName.setVisible(false);
             textSearchByName.setVisible(false);
-            buttonDateFilter.setVisible(false);
+
         }
         if (e.getSource() == buttonSearchByName) {
             searchByName();
@@ -250,9 +391,21 @@ public class ReCountPanel extends JPanel implements ActionListener {
             if (table.getRowCount() < 1) {
                 JOptionPane.showMessageDialog(null, "No hay informacion mostrada, busque por DNI o presione el boton \"Todos\"");
             } else {
-                Report report = new Report();
-                report.createReCountReport(this);
-                report = null;
+                boolean keepAsking = true;
+                while (keepAsking) {
+                    String title = JOptionPane.showInputDialog(null, "Ingrese un titulo", "Ingrese un titulo para el recuento", 1);
+                    if (title != null && !title.equals("")) {
+                        Report report = new Report();
+                        report.createReCountReport(this, title);
+                        report = null;
+                        keepAsking = false;
+                    } else if (title == null) {
+                        keepAsking = false;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Debe elegir un titulo.");
+                    }
+                }
+
             }
 
         }
@@ -263,23 +416,78 @@ public class ReCountPanel extends JPanel implements ActionListener {
     private void getByDNI() {
         try {
             long dni = Long.parseLong(textGetByDNI.getText());
-            labelSearchByName.setVisible(false);
-            textSearchByName.setVisible(false);
-            buttonSearchByName.setVisible(false);
-            labelInfoSearchByName.setVisible(false);
+            String stm = "SELECT * FROM RecuentoParte  WHERE DNI LIKE '%" + dni + "%'";
+            hideComponents();
+            
             Receiver receptor = new Receiver();
-            receptor.obtainInformation(this, dni, false);
+            boolean result = receptor.obtainInformation(this, stm);
             receptor = null;
+            if(!result){
+                JOptionPane.showMessageDialog(null, "No han habido resultados con ese numero de DNI.");
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "El numero ingresado es incorrecto.");
         }
+    }
+
+    private void getBySingleDate() {
+        String date = ((JTextField) dateOne.getDateEditor().getUiComponent()).getText();
+        if (!date.equals("") && dateOne.getDate() != null) {
+            MyDates mydates = new MyDates(MyDates.USER_DATE_FORMAT);
+            int sendDate = mydates.getCustomYearAgo(dateOne.getDate());
+            String stm = "SELECT * FROM RecuentoParte WHERE (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ";
+            stm += radioBefore.isSelected() ? " <= \"" + sendDate + "\"": " >= \"" + sendDate + "\"";
+            mydates = null;
+            hideComponents();
+            
+            Receiver receptor = new Receiver();
+            boolean result = receptor.obtainInformation(this, stm);
+            receptor = null;
+            if(!result){
+                JOptionPane.showMessageDialog(null, "No hubieron resultados. Revise la fecha ingresadas");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Fecha incorrecta");
+        }
+    }
+
+    private void getByTwoDates() {
+        String date = ((JTextField) dateOne.getDateEditor().getUiComponent()).getText();
+        String date2 = ((JTextField) dateTwo.getDateEditor().getUiComponent()).getText();
+        if (!date.equals("") && dateOne.getDate() != null && !date2.equals("") && dateTwo.getDate() != null) {
+            MyDates mydates = new MyDates(MyDates.USER_DATE_FORMAT);
+            int sendDate = mydates.getCustomYearAgo(dateOne.getDate());
+            int sendDate2 = mydates.getCustomYearAgo(dateTwo.getDate());
+            String stm = "SELECT * FROM RecuentoParte WHERE ((SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2))"
+                    + " <= \"" + sendDate2 + "\") AND ((SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) >= \"" + sendDate + "\")";
+
+            mydates = null;            
+            hideComponents();
+            
+            System.out.println(stm);
+            Receiver receptor = new Receiver();
+            boolean result = receptor.obtainInformation(this, stm);
+            receptor = null;
+            if(!result){
+                JOptionPane.showMessageDialog(null, "No hubieron resultados. Revise la fecha ingresadas");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Fechas incorrectas");
+        }
+    }
+
+    private void hideComponents() {
+        labelSearchByName.setVisible(false);
+        textSearchByName.setVisible(false);
+        buttonSearchByName.setVisible(false);
+        labelInfoSearchByName.setVisible(false);
     }
 
     private void searchByName() {
         String nombre = "";
         String buscar = textSearchByName.getText().toLowerCase().trim();
         boolean searchNext = true;
-        
+
         while (searchNext) {
             if (pointer == table.getRowCount()) {
                 pointer = 0;

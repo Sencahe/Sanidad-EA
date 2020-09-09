@@ -99,9 +99,9 @@ public class Receiver extends DataBase {
             //recupero las fechas
             String since = rs.getString("Desde");
             String until = rs.getString("Hasta");
-            
+
             sickFormulary.setFlagSince(myDates.toDate(since));
-            sickFormulary.setFlagUntil(myDates.toDate(until));            
+            sickFormulary.setFlagUntil(myDates.toDate(until));
             sickFormulary.getDateSince().setDate(myDates.toDate(since));
             sickFormulary.getDateUntil().setDate(myDates.toDate(until));
             //recupero el resto de la informacion
@@ -132,17 +132,11 @@ public class Receiver extends DataBase {
         }
     }
 
-    public void obtainInformation(ReCountPanel reCount, long dni, boolean all) {
+    public boolean obtainInformation(ReCountPanel reCount, String statement) {
+
+        reCount.getTableModel().setRowCount(0);
+        statement += " ORDER BY (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ASC";
         try {
-            reCount.getTableModel().setRowCount(0);
-            String statement;
-
-            if (all) {
-                statement = "SELECT * FROM RecuentoParte";
-            } else {
-                statement = "SELECT * FROM RecuentoParte  WHERE DNI LIKE '%" + dni + "%'";
-            }
-
             PreparedStatement pst = super.getConnection().prepareStatement(statement);
             ResultSet rs = pst.executeQuery();
 
@@ -171,17 +165,19 @@ public class Receiver extends DataBase {
 
                 reCount.updateWindow();
 
+                return true;
             } else {
-                String mensaje = all ? "No se encontro informacion almacenada en el recuento"
-                        : "No han habido resultados con ese numero de DNI.";
-                JOptionPane.showMessageDialog(null, mensaje);
                 reCount.updateWindow();
+                return false;
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//BDD//Receptor// " + e
                     + "\nContactese con el desarrollador del programa para solucionar el problema.");
+            return false;
         }
+
+        
     }
 
 }
