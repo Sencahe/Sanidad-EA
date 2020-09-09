@@ -13,12 +13,12 @@ public class MyArrays {
     private static String[] sickColumns = {"Nro", "Grado", "Apellido y Nombre", "Destino", "Diagnostico","CIE",
         "Desde", "Hasta", "Dias", "Expediente", "Observacion", "id"};
     //                                     Nro Grd  AyN Dest Diag cie Dsd Hst Dias Exp Obs id
-    private static int[] sickColumnsSize = {40, 65, 240, 60, 220, 70, 75, 75, 45, 110, 135, 40};
+    private static int[] sickColumnsSize = {40, 70, 240, 60, 220, 70, 72, 72, 45, 110, 136, 40};
     //
     private static String[] reCountColumns = {"Nro","Grado","Apellido Y Nombre","Destino",
         "DNI","Diagnostico","CIE","Desde","Hasta","Dias","Observacion","Parte","N / S"};
     
-    private static int[] reCountColumnsSize = {40,50,240,60,70,260,70,90,90,50,190,80,60};
+    private static int[] reCountColumnsSize = {40,65,240,60,70,265,70,80,80,50,190,80,60};
           
     //=================================================================================
     //ARREGLOS PARA RECUPERAR INFORMACION DE LA BASE DE DATOS A LOS JTABLE

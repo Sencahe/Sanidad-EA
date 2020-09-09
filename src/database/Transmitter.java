@@ -184,11 +184,10 @@ public class Transmitter extends DataBase {
             //se guardan los valores Strings de cada dato, ya que esta tabla sirve de archivo
             //en caso de que un personal sea eliminado de la base de datos, quedaran los registros
             //de sus partes los cuales se accederan por el DNI
-            String categorie = MyArrays.getCategories(personnel.getCategorie());
             String grade = MyArrays.getGrades(personnel.getCategorie(), personnel.getGrade());
 
             pst.setInt(1, this.id);
-            pst.setString(2, categorie);
+            pst.setInt(2, personnel.getCategorie());
             pst.setString(3, grade);
             pst.setString(4, personnel.getCompleteName());
             pst.setString(5, personnel.getSubUnity());

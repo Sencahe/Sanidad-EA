@@ -122,9 +122,9 @@ public class MyDates {
     public boolean validateBetweenTwoDates(Date since, Date until, Date flagSince) {
         LocalDate sinceLocalDate = toLocalDate(since);
         LocalDate flagSinceLocalDate = toLocalDate(flagSince);
-        if (sinceLocalDate.isBefore(sinceLocalDate) || (sinceLocalDate.isEqual(sinceLocalDate))) {
+        if (sinceLocalDate.isBefore(flagSinceLocalDate) || (sinceLocalDate.isEqual(flagSinceLocalDate))) {
             JOptionPane.showMessageDialog(null, "Si modifica el tipo de Parte, "
-                    + "la fecha 'Desde' no puede ser anterior o igual a la fecha inicial: " + flagSinceLocalDate);
+                    + "la fecha 'Desde' no puede ser anterior o igual a la fecha inicial: " + toUserDate(flagSinceLocalDate));
             return false;
         } else {
             return MyDates.this.validateBetweenTwoDates(since, until);
