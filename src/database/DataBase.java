@@ -127,7 +127,8 @@ public class DataBase {
         }
         if (filterList.contains(PersonnelPanel.FILTER_GENRE)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
-            statement.append("Sexo = \"" + personnelPanel.getGenreFilter());
+            statement.append("Sexo = \"");
+            statement.append(personnelPanel.getGenreFilter());
             statement.append("\"");
         }
 

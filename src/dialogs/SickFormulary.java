@@ -1,7 +1,6 @@
 package dialogs;
 
 import personnel.Personnel;
-import dialogs.PersonnelFormulary;
 import database.Transmitter;
 import database.Receiver;
 import mytools.MyDates;
@@ -92,14 +91,14 @@ public class SickFormulary extends JDialog implements ActionListener {
         //COMPONENTES PRINCIPALES
         //Labels con informacion
         labelPersonnelData = new JLabel();
-        labelPersonnelData.setBounds(15, 5, 355, 80);
+        labelPersonnelData.setBounds(10, 0, 355, 100);
         labelPersonnelData.setFont(utility.getFontLabelBig());
-        labelPersonnelData.setForeground(Color.black);
+        labelPersonnelData.setForeground(Color.white);
         container.add(labelPersonnelData);
 
         //combobox
         JLabel labelComboSickType = new JLabel("Tipo de Parte");
-        labelComboSickType.setBounds(15, 90, 160, 20);
+        labelComboSickType.setBounds(15, 100, 160, 20);
         labelComboSickType.setForeground(Color.black);
         labelComboSickType.setFont(utility.getFontLabelFormulary());
         add(labelComboSickType);
@@ -107,13 +106,13 @@ public class SickFormulary extends JDialog implements ActionListener {
         comboSickType.addItem("Enfermo");
         comboSickType.addItem("Exceptuado");
         comboSickType.addItem("Maternidad");
-        comboSickType.setBounds(15, 110, 160, 20);
+        comboSickType.setBounds(15, 120, 160, 20);
         comboSickType.addActionListener(this);
         container.add(comboSickType);
         labelSickType = new JLabel("<html>Al modificar el tipo de parte se enviara al recuento la "
                 + "informacion actualmente guardada y se creara un nuevo parte. Revise esa informacion antes de proceder y "
                 + "recuerde modificar las fechas 'Desde' y 'Hasta' para el nuevo parte.<html>");
-        labelSickType.setBounds(180, 55, 250, 80);
+        labelSickType.setBounds(180, 65, 250, 80);
         labelSickType.setFont(utility.getFuenteLabelInfo());
         labelSickType.setForeground(Color.orange);
         labelSickType.setVisible(false);
@@ -122,64 +121,64 @@ public class SickFormulary extends JDialog implements ActionListener {
         comboNorasSiras = new JComboBox();
         comboNorasSiras.addItem("NORAS");
         comboNorasSiras.addItem("SIRAS");
-        comboNorasSiras.setBounds(240, 245, 160, 20);
+        comboNorasSiras.setBounds(240, 255, 160, 20);
         container.add(comboNorasSiras);
         labelNorasSiras = new JLabel("NORAS / SIRAS");
-        labelNorasSiras.setBounds(240, 220, 160, 20);
+        labelNorasSiras.setBounds(240, 230, 160, 20);
         labelNorasSiras.setForeground(Color.black);
         labelNorasSiras.setFont(utility.getFontLabelFormulary());
         container.add(labelNorasSiras);
         //datechooser
         labelSince = new JLabel("Desde *");
-        labelSince.setBounds(15, 135, 200, 20);
+        labelSince.setBounds(15, 145, 200, 20);
         labelSince.setFont(utility.getFontLabelFormulary());
         labelSince.setForeground(Color.black);
         container.add(labelSince);
         dateSince = new JDateChooser();
-        dateSince.setBounds(15, 155, 100, 20);
+        dateSince.setBounds(15, 165, 100, 20);
         dateSince.setForeground(Color.black);
         dateSince.setFont(utility.getFontTextFields());
         dateSince.setDateFormatString(MyDates.USER_DATE_FORMAT);
         container.add(dateSince);
         labelUntil = new JLabel("Hasta *");
-        labelUntil.setBounds(130, 135, 200, 20);
+        labelUntil.setBounds(130, 145, 200, 20);
         labelUntil.setFont(utility.getFontLabelFormulary());
         labelUntil.setForeground(Color.black);
         container.add(labelUntil);
         dateUntil = new JDateChooser();
-        dateUntil.setBounds(130, 155, 100, 20);
+        dateUntil.setBounds(130, 165, 100, 20);
         dateUntil.setForeground(Color.black);
         dateUntil.setFont(utility.getFontTextFields());
         dateUntil.setDateFormatString(MyDates.USER_DATE_FORMAT);
         container.add(dateUntil);
         //textfield
         labelObs = new JLabel("Observaciones *");
-        labelObs.setBounds(240, 135, 150, 20);
+        labelObs.setBounds(240, 145, 150, 20);
         labelObs.setFont(utility.getFontLabelFormulary());
         labelObs.setForeground(Color.black);
         container.add(labelObs);
         textObs = new JTextField();
-        textObs.setBounds(240, 155, 170, 20);
+        textObs.setBounds(240, 165, 170, 20);
         textObs.setFont(utility.getFontTextFields());
         textObs.setText(ENFERMO);
         container.add(textObs);
         labelDiag = new JLabel("Diagnostico *");
-        labelDiag.setBounds(15, 175, 200, 20);
+        labelDiag.setBounds(15, 185, 200, 20);
         labelDiag.setFont(utility.getFontLabelFormulary());
         labelDiag.setForeground(Color.black);
         container.add(labelDiag);
         textDiag = new JTextField();
-        textDiag.setBounds(15, 195, 215, 20);
+        textDiag.setBounds(15, 205, 215, 20);
         textDiag.setFont(utility.getFontTextFields());
         container.add(textDiag);
 
         labelCIE = new JLabel("CIE");
-        labelCIE.setBounds(240, 175, 100, 20);
+        labelCIE.setBounds(240, 185, 100, 20);
         labelCIE.setFont(utility.getFontLabelFormulary());
         labelCIE.setForeground(Color.black);
         container.add(labelCIE);
         textCIE = new JTextField();
-        textCIE.setBounds(240, 195, 170, 20);
+        textCIE.setBounds(240, 205, 170, 20);
         textCIE.setFont(utility.getFontTextFields());
         container.add(textCIE);
 
@@ -192,18 +191,18 @@ public class SickFormulary extends JDialog implements ActionListener {
         add(labelSuggestion);
         //BOTONES---------------------------------------------------------------
         buttonAdd = new JButton("<html>Guardar</html>", icons.getIconoSave());
-        buttonAdd.setBounds(15, 235, 90, 30);
+        buttonAdd.setBounds(15, 245, 90, 30);
         buttonAdd.setHorizontalAlignment(SwingConstants.LEFT);
         buttonAdd.addActionListener(this);
         container.add(buttonAdd);
         buttonUpdate = new JButton("<html>Guardar</html>", icons.getIconoSave());
-        buttonUpdate.setBounds(15, 235, 90, 30);
+        buttonUpdate.setBounds(15, 245, 90, 30);
         buttonUpdate.setHorizontalAlignment(SwingConstants.LEFT);
         buttonUpdate.addActionListener(this);
         buttonUpdate.setVisible(false);
         container.add(buttonUpdate);
         buttonHeal = new JButton("<html>Alta</html>",icons.getIconHealed());
-        buttonHeal.setBounds(125, 235, 90, 30);
+        buttonHeal.setBounds(125, 245, 90, 30);
         buttonHeal.addActionListener(this);
         buttonHeal.setVisible(false);
         container.add(buttonHeal);

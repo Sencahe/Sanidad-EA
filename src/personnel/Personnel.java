@@ -13,11 +13,12 @@ public class Personnel {
     private String subUnity;
     private char genre;
     private int dni;
+    private String esp;
     
     private int diasParte;
        
-    public Personnel(int id, int categorie, int grade, String completeName, String subUnity,
-            char genre,int dni){
+    public Personnel(int id, int categorie, int grade, String esp,String completeName, String subUnity,
+            char genre, int dni){
         this.id = id;
         this.categorie = categorie;
         this.grade = grade;
@@ -25,6 +26,7 @@ public class Personnel {
         this.subUnity = subUnity;        
         this.genre = genre;
         this.dni = dni;
+        this.esp = esp;
     }
 
     public int getId() {
@@ -90,11 +92,22 @@ public class Personnel {
     public void setDiasParte(int diasParte) {
         this.diasParte = diasParte;
     }
+
+    public String getEsp() {
+        return esp;
+    }
+
+    public void setEsp(String esp) {
+        this.esp = esp;
+    }
+    
+    
     
     @Override
     public String toString(){
-        return "<html>Grado: " + MyArrays.getGrades(categorie, grade) + "<br>Nombre: " + this.completeName 
-                + "<br>Destino: " + this.subUnity + "<br>DNI: " + this.dni + "</html>";
+        return "<html>Grado: " + MyArrays.getGrades(categorie, grade) +  "<br>Arma/Serv: " +this.esp  
+                + "<br>Nombre: " + this.completeName + "<br>Destino: " + 
+                this.subUnity + "<br>DNI: " + this.dni + "</html>";
     }
     
 }

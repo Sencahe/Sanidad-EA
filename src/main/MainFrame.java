@@ -68,6 +68,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private ListGenerator listGenerator;
     private CaducatedStudies caducatedStudies;
     private About about;
+    private Login login;
 
     public MainFrame() {
         //OBJETOS AUXILIARES
@@ -108,6 +109,9 @@ public class MainFrame extends JFrame implements ActionListener {
         listGenerator.setPersonnelPanel(personnelPanel);
         caducatedStudies.setPersonnelPanel(personnelPanel);
 
+        
+        login = new Login(this);
+        login.setVisible(true);
         //PROPIEDADES DEL FRAME
         setTitle(PERSONNEL);
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();

@@ -190,7 +190,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         if(cambios){
            config.setValues(); 
         }     
-        config.getValues();
+        config.getLeyend();
         
         config = null;
     }

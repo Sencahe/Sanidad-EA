@@ -89,8 +89,8 @@ public class Receiver extends DataBase {
     public void obtainInformation(SickFormulary sickFormulary) {
         try {
             // Recupero los datos del parte de enfermo para su formulario
-            PreparedStatement pst = super.getConnection().prepareStatement("SELECT id_personal, Categoria, Grado, Apellido,"
-                    + " Nombre, Destino, Sexo, DNI, TipoParte, NorasSiras, Diagnostico,Observacion, "
+            PreparedStatement pst = super.getConnection().prepareStatement("SELECT id_personal, Categoria, Grado, Arma,"
+                    + "Apellido, Nombre, Destino, Sexo, DNI, TipoParte, NorasSiras, Diagnostico,Observacion, "
                     + "CIE, Desde, Hasta FROM Parte INNER JOIN Personal ON Parte.id_personal = Personal.id "
                     + "WHERE Parte.id = " + this.id);
             ResultSet rs = pst.executeQuery();
@@ -115,12 +115,13 @@ public class Receiver extends DataBase {
             int id_personnel = rs.getInt("id_personal");
             int categorie = rs.getInt("Categoria");
             int grade = rs.getInt("Grado");
+            String esp = rs.getString("Arma");
             String name = rs.getString("Apellido") + " " + rs.getString("Nombre");
             String subUnity = rs.getString("Destino") != null ? rs.getString("Destino") : "";
             char genre = rs.getString("Sexo").charAt(0);
             int dni = rs.getInt("DNI");
             //creo el objeto personal en la clase formularioParte
-            sickFormulary.setPersonnel(new Personnel(id_personnel, categorie, grade, name, subUnity, genre, dni));
+            sickFormulary.setPersonnel(new Personnel(id_personnel, categorie, grade, esp, name, subUnity, genre, dni));
 
             myDates = null;
             super.getConnection().close();
@@ -135,7 +136,8 @@ public class Receiver extends DataBase {
     public boolean obtainInformation(ReCountPanel reCount, String statement) {
 
         reCount.getTableModel().setRowCount(0);
-        statement += " ORDER BY (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ASC";
+        statement += " ORDER BY (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ";
+        statement += reCount.getRadioAsc().isSelected() ? "ASC": "DESC";
         try {
             PreparedStatement pst = super.getConnection().prepareStatement(statement);
             ResultSet rs = pst.executeQuery();

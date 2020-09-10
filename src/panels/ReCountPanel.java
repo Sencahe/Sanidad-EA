@@ -36,7 +36,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
     private JButton buttonGetByDNI, buttonGetAll, buttonClean, buttonSearchByName;
     private JButton buttonReport;
 
-    private JLabel labelGetByDNI, labelGetByDate, labelGetByDates, labelSearchByName, labelInfoSearchByName;
+    private JLabel labelGetByDNI, labelGetByDate, labelGetByDates, labelSearchByName;
     private JDateChooser dateOne, dateTwo;
     private JTextField textGetByDNI, textSearchByName;
     private JTable table;
@@ -46,9 +46,10 @@ public class ReCountPanel extends JPanel implements ActionListener {
     private ButtonGroup bg;
     private JRadioButton radioDNI, radioSingleDate, radioBetweenDates;
     private JRadioButton radioBefore, radioAfter;
+    private JRadioButton radioAsc, radioDesc;
     //Flags
     int pointer;
-    boolean foud;
+    boolean found;
 
     private JScrollPane scrollContainer;
 
@@ -58,7 +59,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
     public ReCountPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         pointer = 0;
-        foud = false;
+        found = false;
         components();
         shortcuts();
     }
@@ -105,7 +106,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         add(textGetByDNI);
         textSearchByName = new JTextField();
         textSearchByName.setBounds(840, 65, 150, 20);
-        textSearchByName.setVisible(false);
+        textSearchByName.setVisible(true);
         textSearchByName.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -156,14 +157,8 @@ public class ReCountPanel extends JPanel implements ActionListener {
         labelSearchByName.setBounds(690, 60, 170, 30);
         labelSearchByName.setFont(utility.getFontLabelBig());
         labelSearchByName.setForeground(Color.black);
-        labelSearchByName.setVisible(false);
+        labelSearchByName.setVisible(true);
         add(labelSearchByName);
-        labelInfoSearchByName = new JLabel("<html>La lista completa del recuento esta "
-                + "ordenada en funcion a la fecha de alta (orden ascendiente de antiguedad).</html>");
-        labelInfoSearchByName.setBounds(690, 15, 210, 45);
-        labelInfoSearchByName.setForeground(Color.black);
-        labelInfoSearchByName.setVisible(false);
-        add(labelInfoSearchByName);
 
         //BOTONES---------------------------------------------------------------
         buttonGetByDNI = utility.customButton();
@@ -185,7 +180,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         buttonSearchByName.setText("<html>Buscar</html>");
         buttonSearchByName.setBounds(1005, 61, 80, 25);
         buttonSearchByName.addActionListener(this);
-        buttonSearchByName.setVisible(false);
+        buttonSearchByName.setVisible(true);
         add(buttonSearchByName);
 
         buttonSickPanel = utility.customButton();
@@ -243,6 +238,23 @@ public class ReCountPanel extends JPanel implements ActionListener {
         radioBefore.setSelected(true);
         add(radioBefore);
 
+        radioAsc = new JRadioButton("Fechas Ascendiente");
+        radioAsc.setBounds(510, 10, 200, 20);
+        radioAsc.setOpaque(false);
+        radioAsc.setFocusPainted(false);
+        radioAsc.setFont(utility.getFontLabelFormulary());
+        radioAsc.setForeground(Color.black);
+        radioAsc.setSelected(true);
+        add(radioAsc);
+
+        radioDesc = new JRadioButton("Fechas Descendiente");
+        radioDesc.setBounds(510, 25, 200, 20);
+        radioDesc.setOpaque(false);
+        radioDesc.setFocusPainted(false);
+        radioDesc.setFont(utility.getFontLabelFormulary());
+        radioDesc.setForeground(Color.black);
+        add(radioDesc);
+
         bg = new ButtonGroup();
         bg.add(radioDNI);
         bg.add(radioSingleDate);
@@ -251,6 +263,10 @@ public class ReCountPanel extends JPanel implements ActionListener {
         ButtonGroup bg2 = new ButtonGroup();
         bg2.add(radioBefore);
         bg2.add(radioAfter);
+
+        ButtonGroup bg3 = new ButtonGroup();
+        bg3.add(radioAsc);
+        bg3.add(radioDesc);
         //----------
         JLabel reporte = new JLabel("Generar Reportes");
         reporte.setFont(utility.getFontLabelBig());
@@ -334,30 +350,24 @@ public class ReCountPanel extends JPanel implements ActionListener {
         //JBUTTONS--------------------------------------------------------------
         //Buscadores con Base de Datos------------------------------------------
         if (e.getSource() == buttonGetByDNI) {
-            if(radioDNI.isSelected()){
+            if (radioDNI.isSelected()) {
                 getByDNI();
-            } else if(radioSingleDate.isSelected()){
+            } else if (radioSingleDate.isSelected()) {
                 getBySingleDate();
-            } else if(radioBetweenDates.isSelected()){
+            } else if (radioBetweenDates.isSelected()) {
                 getByTwoDates();
             }
-            
-            
+
         }
 
         if (e.getSource() == buttonGetAll) {
             Receiver receiver = new Receiver();
             String statement = "SELECT * FROM RecuentoParte";
             receiver.obtainInformation(this, statement);
-            if (table.getRowCount() > 0) {
-                labelInfoSearchByName.setVisible(true);
-                labelSearchByName.setVisible(true);
-                textSearchByName.setVisible(true);
-                buttonSearchByName.setVisible(true);
-
-            } else {
+            if (table.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(null, "No hay informacion cargada del recuento en la base de datos");
-            }
+
+            } 
             receiver = null;
         }
 
@@ -365,23 +375,15 @@ public class ReCountPanel extends JPanel implements ActionListener {
         if (e.getSource() == buttonClean) {
             ((DefaultTableModel) table.getModel()).setRowCount(0);
             updateWindow();
-            buttonSearchByName.setVisible(false);
-            labelSearchByName.setVisible(false);
-            labelInfoSearchByName.setVisible(false);
-            textSearchByName.setVisible(false);
 
         }
 
         // RESTABLECE LA PANTALLA -------------------------------------------------------
         if (e.getSource() == buttonSickPanel) {
             pointer = 0;
-            foud = false;
+            found = false;
             ((DefaultTableModel) table.getModel()).setRowCount(0);
             updateWindow();
-            buttonSearchByName.setVisible(false);
-            labelSearchByName.setVisible(false);
-            labelInfoSearchByName.setVisible(false);
-            textSearchByName.setVisible(false);
 
         }
         if (e.getSource() == buttonSearchByName) {
@@ -395,10 +397,16 @@ public class ReCountPanel extends JPanel implements ActionListener {
                 while (keepAsking) {
                     String title = JOptionPane.showInputDialog(null, "Ingrese un titulo", "Ingrese un titulo para el recuento", 1);
                     if (title != null && !title.equals("")) {
-                        Report report = new Report();
-                        report.createReCountReport(this, title);
-                        report = null;
-                        keepAsking = false;
+                        int opcion = JOptionPane.showConfirmDialog(null, "¿Imprimir con Diagnosticos?", "Opcion", 1);
+                        if (opcion == JOptionPane.YES_NO_OPTION || opcion == JOptionPane.NO_OPTION) {
+                            Report report = new Report();
+                            report.createReCountReport(this, title);
+                            report = null;
+                            keepAsking = false;
+                        } else if (opcion == JOptionPane.CANCEL_OPTION){
+                            keepAsking = false;
+                        }
+
                     } else if (title == null) {
                         keepAsking = false;
                     } else {
@@ -417,12 +425,12 @@ public class ReCountPanel extends JPanel implements ActionListener {
         try {
             long dni = Long.parseLong(textGetByDNI.getText());
             String stm = "SELECT * FROM RecuentoParte  WHERE DNI LIKE '%" + dni + "%'";
-            hideComponents();
             
+
             Receiver receptor = new Receiver();
             boolean result = receptor.obtainInformation(this, stm);
             receptor = null;
-            if(!result){
+            if (!result) {
                 JOptionPane.showMessageDialog(null, "No han habido resultados con ese numero de DNI.");
             }
         } catch (Exception ex) {
@@ -436,14 +444,14 @@ public class ReCountPanel extends JPanel implements ActionListener {
             MyDates mydates = new MyDates(MyDates.USER_DATE_FORMAT);
             int sendDate = mydates.getCustomYearAgo(dateOne.getDate());
             String stm = "SELECT * FROM RecuentoParte WHERE (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ";
-            stm += radioBefore.isSelected() ? " <= \"" + sendDate + "\"": " >= \"" + sendDate + "\"";
+            stm += radioBefore.isSelected() ? " <= \"" + sendDate + "\"" : " >= \"" + sendDate + "\"";
             mydates = null;
-            hideComponents();
-            
+     
+
             Receiver receptor = new Receiver();
             boolean result = receptor.obtainInformation(this, stm);
             receptor = null;
-            if(!result){
+            if (!result) {
                 JOptionPane.showMessageDialog(null, "No hubieron resultados. Revise la fecha ingresadas");
             }
         } else {
@@ -461,14 +469,13 @@ public class ReCountPanel extends JPanel implements ActionListener {
             String stm = "SELECT * FROM RecuentoParte WHERE ((SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2))"
                     + " <= \"" + sendDate2 + "\") AND ((SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) >= \"" + sendDate + "\")";
 
-            mydates = null;            
-            hideComponents();
-            
-            System.out.println(stm);
+            mydates = null;
+           
+
             Receiver receptor = new Receiver();
             boolean result = receptor.obtainInformation(this, stm);
             receptor = null;
-            if(!result){
+            if (!result) {
                 JOptionPane.showMessageDialog(null, "No hubieron resultados. Revise la fecha ingresadas");
             }
         } else {
@@ -476,12 +483,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void hideComponents() {
-        labelSearchByName.setVisible(false);
-        textSearchByName.setVisible(false);
-        buttonSearchByName.setVisible(false);
-        labelInfoSearchByName.setVisible(false);
-    }
+ 
 
     private void searchByName() {
         String nombre = "";
@@ -491,7 +493,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         while (searchNext) {
             if (pointer == table.getRowCount()) {
                 pointer = 0;
-                if (!foud) {
+                if (!found) {
                     searchNext = false;
                     JOptionPane.showMessageDialog(null, new JLabel("No se ha encontrado.", JLabel.CENTER));
                 }
@@ -501,7 +503,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
                     scrollTable.getVerticalScrollBar().setValue(pointer * 16);
                     table.setRowSelectionInterval(pointer, pointer);
                     searchNext = false;
-                    foud = true;
+                    found = true;
                     pointer++;
                 } else {
                     pointer++;
@@ -589,6 +591,10 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
     public DefaultTableModel getTableModel() {
         return (DefaultTableModel) table.getModel();
+    }
+
+    public JRadioButton getRadioAsc() {
+        return radioAsc;
     }
 
 }

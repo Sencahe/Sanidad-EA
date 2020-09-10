@@ -1,7 +1,5 @@
 package mytools;
 
-import java.util.HashMap;
-
 public class MyArrays {
 
     // ARREGLOS PARA LOS JTABLE

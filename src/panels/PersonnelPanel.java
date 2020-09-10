@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Logger;
 import mytools.Icons;
+import mytools.mycomponents.MyJScrollPane;
 
 public class PersonnelPanel extends JPanel implements ActionListener {
 
@@ -155,8 +156,8 @@ public class PersonnelPanel extends JPanel implements ActionListener {
             });
 
             //PROPIEDADES del Scroll y agregarlo al tabbedPane------------------
-            scrolls[i] = new JScrollPane(tables[i]);
-            scrolls[i].getViewport().setBackground(utility.getColorBackground().brighter().brighter());
+            scrolls[i] = new MyJScrollPane(tables[i]);
+            scrolls[i].getViewport().setBackground(utility.getColorBackground());
             scrolls[i].setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scrolls[i].setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             tabbedPane.addTab(categories[i], scrolls[i]);

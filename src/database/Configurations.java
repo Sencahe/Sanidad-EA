@@ -32,7 +32,7 @@ public class Configurations extends DataBase{
         
     }
     
-    public void getValues(){
+    public void getLeyend(){
         try {
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT (Leyenda) FROM Configuracion"
                     + " WHERE id = 1");
@@ -42,6 +42,21 @@ public class Configurations extends DataBase{
             configurator.setFlagLeyend(rs.getString("Leyenda"));   
             
             configurator.restore();
+            
+            super.getConnection().close();
+            
+        } catch (Exception e) {
+        }
+    }
+    
+    public void getPassword(){
+        try {
+            PreparedStatement pst = super.getConnection().prepareStatement("SELECT (Password) FROM Configuracion"
+                    + " WHERE id = 1");
+            
+            ResultSet rs = pst.executeQuery();
+            
+            
             
             super.getConnection().close();
             
