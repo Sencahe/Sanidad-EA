@@ -186,7 +186,6 @@ public class ReCountPanel extends JPanel implements ActionListener {
         buttonSickPanel = utility.customButton();
         buttonSickPanel.setText("<html><center>Volver al Parte</center></html>");
         buttonSickPanel.setBounds(10, 15, 110, 35);
-        buttonSickPanel.addActionListener(this);
         add(buttonSickPanel);
         //Radio Buttons--------------------------------------------------------      
         radioDNI = new JRadioButton("Buscar por DNI");
@@ -379,13 +378,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         }
 
         // RESTABLECE LA PANTALLA ----------------------------------------------
-        if (e.getSource() == buttonSickPanel) {
-            pointer = 0;
-            found = false;
-            ((DefaultTableModel) table.getModel()).setRowCount(0);
-            updateWindow();
-
-        }
+        
         if (e.getSource() == buttonSearchByName) {
             searchByName();
         }

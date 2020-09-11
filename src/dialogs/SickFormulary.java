@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import com.toedter.calendar.JDateChooser;
+import database.Deleter;
 import java.util.Date;
 import panels.SickPanel;
 
@@ -19,15 +20,15 @@ public class SickFormulary extends JDialog implements ActionListener {
     private static final String ENFERMO = "Lic. por Enfermedad";
     private static final String EXCEPTUADO = "Tareas Adm";
     private static final String MATERNIDAD = "Lic. por Maternidad";
-    
+
     private JLabel labelPersonnelData;
     private JLabel labelDiag, labelObs, labelSince, labelUntil, labelCIE,
             labelSickType, labelNorasSiras, labelSuggestion;
-   
+
     private JComboBox comboSickType, comboNorasSiras;
     private JTextField textDiag, textObs, textCIE;
     private JDateChooser dateSince, dateUntil;
-    private JButton buttonAdd, buttonUpdate, buttonHeal;
+    private JButton buttonAdd, buttonUpdate, buttonHeal, buttonDelete;
 
     private int idSick;
     private boolean beingModified;
@@ -108,7 +109,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         comboNorasSiras = new JComboBox();
         comboNorasSiras.addItem("NORAS");
         comboNorasSiras.addItem("SIRAS");
-        comboNorasSiras.setBounds(240, 255, 160, 20);
+        comboNorasSiras.setBounds(240, 255, 100, 20);
         container.add(comboNorasSiras);
         labelNorasSiras = new JLabel("NORAS / SIRAS");
         labelNorasSiras.setBounds(240, 230, 160, 20);
@@ -176,23 +177,40 @@ public class SickFormulary extends JDialog implements ActionListener {
         labelSuggestion.setForeground(Color.black);
         labelSuggestion.setVisible(false);
         add(labelSuggestion);
+
         //BOTONES---------------------------------------------------------------
-        buttonAdd = new JButton("<html>Guardar</html>", icons.getIconoSave());
-        buttonAdd.setBounds(15, 245, 90, 30);
-        buttonAdd.setHorizontalAlignment(SwingConstants.LEFT);
+        buttonAdd = utility.customButton();
+        buttonAdd.setToolTipText("Agregar Parte");
+        buttonAdd.setOpaque(false);
+        buttonAdd.setBounds(40, 245, 32, 32);
+        buttonAdd.setIcon(icons.getIconoSave());
         buttonAdd.addActionListener(this);
         container.add(buttonAdd);
-        buttonUpdate = new JButton("<html>Guardar</html>", icons.getIconoSave());
-        buttonUpdate.setBounds(15, 245, 90, 30);
-        buttonUpdate.setHorizontalAlignment(SwingConstants.LEFT);
+        buttonUpdate = utility.customButton();
+        buttonUpdate.setToolTipText("Guardar Cambios");
+        buttonUpdate.setOpaque(false);
+        buttonUpdate.setBounds(40, 240, 32, 32);
+        buttonUpdate.setIcon(icons.getIconoSave());
         buttonUpdate.addActionListener(this);
         buttonUpdate.setVisible(false);
         container.add(buttonUpdate);
-        buttonHeal = new JButton("<html>Alta</html>",icons.getIconHealed());
-        buttonHeal.setBounds(125, 245, 90, 30);
+        buttonHeal = utility.customButton();
+        buttonHeal.setToolTipText("Dar de alta");
+        buttonHeal.setOpaque(false);
+        buttonHeal.setBounds(110, 240, 32, 32);
+        buttonHeal.setIcon(icons.getIconHealed());
         buttonHeal.addActionListener(this);
         buttonHeal.setVisible(false);
         container.add(buttonHeal);
+
+        buttonDelete = utility.customButton();
+        buttonDelete.setToolTipText("Eliminar parte");
+        buttonDelete.setOpaque(false);
+        buttonDelete.setBounds(165, 240, 32, 32);
+        buttonDelete.setIcon(icons.getIconDelete2());
+        buttonDelete.addActionListener(this);
+        buttonDelete.setVisible(false);
+        container.add(buttonDelete);
 
         //--------------------------------------
         this.getContentPane().add(container);
@@ -259,6 +277,21 @@ public class SickFormulary extends JDialog implements ActionListener {
                 }
             }
         }
+        //------------------------BOTON BORRAR------------------------------
+        if (e.getSource() == buttonDelete) {
+            int option = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar el parte? "
+                    + "Si lo hace, este parte no se enviara al recuento", "Confirmar", 0);
+            if (option == JOptionPane.YES_OPTION) {
+                Deleter deleter = new Deleter(idSick);
+                deleter.delete(SickPanel.TABLE_NAME);
+                deleter.update(sickPanel);
+                deleter = null;
+                sickPanel.updateWindow();
+                dispose();
+                empty();
+            }
+        }
+
         //---------------COMBO TIPO PARTE---------------------------
         if (e.getSource() == comboSickType) {
             //si se cambia el tipo de parte se borran las fechas
@@ -270,7 +303,7 @@ public class SickFormulary extends JDialog implements ActionListener {
                 dateUntil.setDate(null);
 
                 //sino, se colocan las actuales    
-            } else if(beingModified){
+            } else if (beingModified) {
                 beingModifiedSickType = false;
                 labelSickType.setVisible(false);
                 buttonHeal.setVisible(true);
@@ -302,7 +335,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         buttonAdd.setVisible(true);
         buttonHeal.setVisible(false);
         buttonUpdate.setVisible(false);
-
+        buttonDelete.setVisible(false);
 
         beingModified = false;
         beingModifiedSickType = false;
@@ -316,7 +349,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         textObs.setText(ENFERMO);
         textCIE.setText("");
         ((JTextField) dateSince.getDateEditor().getUiComponent()).setText("");
-        ((JTextField) dateUntil.getDateEditor().getUiComponent()).setText("");        
+        ((JTextField) dateUntil.getDateEditor().getUiComponent()).setText("");
         labelSickType.setVisible(false);
 
         dispose();
@@ -340,6 +373,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         buttonAdd.setVisible(false);
         buttonHeal.setVisible(true);
         buttonUpdate.setVisible(true);
+        buttonDelete.setVisible(true);
 
         Receiver receiver = new Receiver(this.idSick);
         receiver.obtainInformation(this);
@@ -355,20 +389,17 @@ public class SickFormulary extends JDialog implements ActionListener {
     }
 
     //----------------------METODO VALIDAR--------------------------------------
-    
-
-    
     private boolean validation() {
         labelDiag.setForeground(Color.black);
         labelObs.setForeground(Color.black);
         labelSince.setForeground(Color.black);
         labelUntil.setForeground(Color.black);
-               
+
         //validando campos vacios
         boolean fieldDiag = textDiag.getText().equals("");
         boolean fieldObs = textObs.getText().equals("");
         boolean fieldSince = ((JTextField) dateSince.getDateEditor().getUiComponent()).getText().equals("");
-        boolean fieldUntil = ((JTextField) dateUntil.getDateEditor().getUiComponent()).getText().equals("");        
+        boolean fieldUntil = ((JTextField) dateUntil.getDateEditor().getUiComponent()).getText().equals("");
         if (fieldDiag || fieldObs || fieldSince || fieldUntil) {
             labelDiag.setForeground(fieldDiag ? Color.red : Color.black);
             labelObs.setForeground(fieldObs ? Color.red : Color.black);
@@ -378,7 +409,6 @@ public class SickFormulary extends JDialog implements ActionListener {
             return false;
         }
         //validando fechas mal escritas
-       
 
         if (dateSince.getDate() == null || dateUntil.getDate() == null) {
             labelSince.setForeground(fieldDiag ? Color.red : Color.black);
@@ -389,13 +419,13 @@ public class SickFormulary extends JDialog implements ActionListener {
             return false;
         }
         //validando la coherencia de las fechas Desde y Hasta ingresadas por el usuario
-         MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
+        MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
         if (beingModifiedSickType) {
-            if (!myDates.validateBetweenTwoDates(dateSince.getDate(),dateUntil.getDate(),flagSince)) {
+            if (!myDates.validateBetweenTwoDates(dateSince.getDate(), dateUntil.getDate(), flagSince)) {
                 return false;
             }
         } else {
-            if (!myDates.validateBetweenTwoDates(dateSince.getDate(), dateUntil.getDate())){
+            if (!myDates.validateBetweenTwoDates(dateSince.getDate(), dateUntil.getDate())) {
                 return false;
             }
         }

@@ -110,8 +110,11 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         textLeyend = new JTextField();
         textLeyend.setBounds(15, 150, 300, 25);
         container.add(textLeyend);
-        buttonSave = new JButton(icons.getIconoSave());
-        buttonSave.setBounds(320, 150, 50, 25);
+        buttonSave = utility.customButton();
+        buttonSave.setToolTipText("Guardar leyenda");
+        buttonSave.setOpaque(false);
+        buttonSave.setIcon( icons.getIconoSave());
+        buttonSave.setBounds(330, 150, 32, 32);
         buttonSave.addActionListener(this);
         buttonSave.setFocusPainted(false);
         container.add(buttonSave);
@@ -134,8 +137,12 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         textNewPass2.setBounds(15, 275, 300, 25);
         container.add(textNewPass2);
         new TextPrompt("Repita Nueva Contraseña", textNewPass2);
-        buttonSavePass = new JButton(icons.getIconoSave());
-        buttonSavePass.setBounds(320, 275, 50, 25);
+        
+        buttonSavePass =  utility.customButton();
+        buttonSavePass.setToolTipText("Guardar nueva contraseña");
+        buttonSavePass.setOpaque(false);
+        buttonSavePass.setIcon( icons.getIconoSave());
+        buttonSavePass.setBounds(330, 275, 32, 32);
         buttonSavePass.addActionListener(this);
         buttonSavePass.setFocusPainted(false);
         container.add(buttonSavePass);

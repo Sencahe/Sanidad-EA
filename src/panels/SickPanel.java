@@ -59,7 +59,7 @@ public class SickPanel extends JPanel implements ActionListener {
         scrollContainer = new JScrollPane(this);
         scrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollContainer.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollContainer.getVerticalScrollBar().setUnitIncrement(16);
+        scrollContainer.getVerticalScrollBar().setUnitIncrement(30);
 
         //TABLAS DEL PARTE------------------------------------------------------       
         tables = new JTable[MyArrays.getSickTypesLength()];

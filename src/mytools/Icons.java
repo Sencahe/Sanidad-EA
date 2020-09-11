@@ -13,6 +13,7 @@ public class Icons {
     private ImageIcon iconoSave;
     private ImageIcon iconHealed;
     private ImageIcon iconDelete;
+    private ImageIcon iconDelete2;
     private ImageIcon iconConfig;
     private ImageIcon iconPlus;
     private ImageIcon iconCalculator;
@@ -31,6 +32,7 @@ public class Icons {
         this.iconPlus = new ImageIcon("src/myimages/plus.png");
         this.iconCalculator = new ImageIcon("src/myimages/calculator.png");
         this.iconPdf = new ImageIcon("src/myimages/pdf.png");
+        this.iconDelete2 = new ImageIcon("src/myimages/delete2.png");
     }
 
    
@@ -76,6 +78,10 @@ public class Icons {
 
     public ImageIcon getIconPdf() {
         return iconPdf;
+    }
+
+    public ImageIcon getIconDelete2() {
+        return iconDelete2;
     }
     
 
