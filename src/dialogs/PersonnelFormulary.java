@@ -70,22 +70,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         setTitle("Agregar Personal");
         setIconImage(icons.getIconHealthService().getImage());
         //fondo del frame
-        JPanel container = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                Graphics2D g2d = (Graphics2D) grphcs;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(50, 500,
-                        getBackground().brighter(), 200, 170,
-                        getBackground().darker());
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-
-            }
-        };
-        container.setBackground(utilitie.getColorBackground());
+        JPanel container = new JPanel() ;
+        container.setBackground(utilitie.getColorBackground().darker());
         Dimension dimension = new Dimension(480, 500);
         container.setPreferredSize(dimension);
         container.setLayout(null);
@@ -110,7 +96,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         buttonCalcIMC.addActionListener(this);
         container.add(buttonCalcIMC);
         labelSick = new JLabel("<html>Parte de Sanidad<html>");
-        labelSick.setBounds(370, 435, 150, 30);
+        labelSick.setBounds(375, 435, 150, 30);
         labelSick.setFont(utilitie.getFontLabelFormulary());
         labelSick.setForeground(Color.black);
         labelSick.setVisible(false);
@@ -130,11 +116,8 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         for (int i = 0; i < textField.length; i++) {
             textField[i] = new JTextField();
             textField[i].setFont(utilitie.getFontTextFields());
-            if (i == 0 || i == 1) {
-                TextPrompt holder = new TextPrompt("Campo obligatorio", textField[i]);
-                holder.setFont(utilitie.getFontHolder());
-                holder.setForeground(Color.GRAY);
-                holder = null;
+            if (i == 0 || i == 1 || i == 3) {
+                new TextPrompt("Campo obligatorio", textField[i]);
             }
             if (i >= 4 && i <= 6) {
                 textField[i].addKeyListener(utilitie.bloquearLetras);
@@ -222,6 +205,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         textField[3].setBounds(240, 120, 80, 20);
         textField[3].setDocument(new JTextFieldLimit(9));
         textField[3].addKeyListener(utilitie.soloNumeros);
+        new TextPrompt("Obligatorio", textField[3]);
         //Nacimiento DATE CHOOSER 0  
         labels[7].setBounds(335, 95, 150, 20);
         labels[7].setText("Fecha de Nacimiento");

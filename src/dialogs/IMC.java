@@ -2,10 +2,6 @@ package dialogs;
 
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -52,21 +48,8 @@ public class IMC extends JDialog implements ActionListener {
         //------------------------------
         Utilities utility = new Utilities();
         //Fondo del frame
-        JPanel container = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                Graphics2D g2d = (Graphics2D) grphcs;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(200, 170,
-                        getBackground().brighter().brighter(), 0, 200,
-                        getBackground().darker().darker());
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-        container.setBackground(utility.getColorBackground());
+        JPanel container = new JPanel();
+        container.setBackground(utility.getColorBackground().brighter());
         Dimension dimension = new Dimension(250, 140);
         container.setPreferredSize(dimension);
         container.setLayout(null);

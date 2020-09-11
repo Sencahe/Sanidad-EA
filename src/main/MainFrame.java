@@ -11,6 +11,8 @@ import mytools.MyArrays;
 import mytools.Icons;
 import mytools.Utilities;
 import dialogs.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import panels.*;
 
 public class MainFrame extends JFrame implements ActionListener {
@@ -70,7 +72,8 @@ public class MainFrame extends JFrame implements ActionListener {
     private About about;
     private Login login;
 
-    public MainFrame() {
+    public MainFrame(Loading loading) {
+        
         //OBJETOS AUXILIARES
         icons = new Icons();
         utility = new Utilities();
@@ -85,7 +88,7 @@ public class MainFrame extends JFrame implements ActionListener {
         imc = new IMC(this, true);
         configurator = new Configurator(this, true);
         listGenerator = new ListGenerator(this, true);
-        caducatedStudies = new CaducatedStudies(this,true);
+        caducatedStudies = new CaducatedStudies(this, true);
         about = new About(this, true);
 
         personnelPanel.setFormulary(personnelFormulary);
@@ -109,10 +112,7 @@ public class MainFrame extends JFrame implements ActionListener {
         listGenerator.setPersonnelPanel(personnelPanel);
         caducatedStudies.setPersonnelPanel(personnelPanel);
 
-        
-        login = new Login(this);
-        login.setVisible(true);
-        //PROPIEDADES DEL FRAME
+       //PROPIEDADES DEL FRAME
         setTitle(PERSONNEL);
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) (screen.getWidth() < 1525 ? screen.getWidth() : 1525);
@@ -120,7 +120,14 @@ public class MainFrame extends JFrame implements ActionListener {
         screen = null;
         setSize(x, y);
         setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                login.setVisible(true);
+                dispose();
+            }
+        });
         setIconImage(icons.getIconHealthService().getImage());
         setLocationRelativeTo(null);
         setFocusable(true);
@@ -144,9 +151,18 @@ public class MainFrame extends JFrame implements ActionListener {
         buttonSickPanel2 = reCountPanel.getButtonSickPanel();
         buttonSickPanel2.addActionListener(this);
 
+        
+         //login
+        login = new Login(this);
+        login.setConfigurator(configurator);
+        
+        loading.dispose();
+        login.setVisible(true);
+        
         //Fin del constructor----------------
         icons = null;
         utility = null;
+        
     }
 
     private void components(Icons iconos) {
@@ -212,7 +228,7 @@ public class MainFrame extends JFrame implements ActionListener {
         itemObs = new JMenuItem("Observaciones");
         itemObs.addActionListener(this);
         menuFilter.add(itemObs);
-        
+
         //genero
         menuFilerGenre = new JMenu("Genero");
         menuFilter.add(menuFilerGenre);
@@ -223,7 +239,7 @@ public class MainFrame extends JFrame implements ActionListener {
         itemGenre[1] = new JMenuItem("Masculino");
         itemGenre[1].addActionListener(this);
         menuFilerGenre.add(itemGenre[1]);
-        
+
         //----------------------------------------------------------
         JPopupMenu.Separator separador2 = new JPopupMenu.Separator();
         menuFilter.add(separador2);
@@ -320,16 +336,16 @@ public class MainFrame extends JFrame implements ActionListener {
         // programa peso saludable
         for (int i = 0; i < itemsPPS.length; i++) {
             if (e.getSource() == itemsPPS[i]) {
-                
+
                 if (i != 0) {
                     personnelPanel.setPPSFilter(itemsPPS[i].getText());
                     personnelPanel.update(PersonnelPanel.FILTER_PPS, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                     personnelPanel.setFiltered(true);
-                    
+
                     deleteChecksPPS();
                     menuFilterPPS.setIcon(check);
                     itemsPPS[i].setIcon(check);
-                    
+
                 } else {
                     imc.setVisible(true);
                 }
@@ -347,7 +363,7 @@ public class MainFrame extends JFrame implements ActionListener {
                 }
                 personnelPanel.update(PersonnelPanel.FILTER_APTITUDE, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 personnelPanel.setFiltered(true);
-                
+
                 deleteChecksAptitude();
                 menuFilterAptitude.setIcon(check);
                 itemsAptitude[i].setIcon(check);
@@ -366,8 +382,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
                 }
                 personnelPanel.setFiltered(true);
-                
-                
+
                 deleteChecksPathologies();
                 menuPathologies.setIcon(check);
                 itemsPathologies[i].setIcon(check);
@@ -380,16 +395,16 @@ public class MainFrame extends JFrame implements ActionListener {
 
             itemObs.setIcon(check);
         }
-        
+
         //genero
         for (int i = 0; i < itemGenre.length; i++) {
-            if(e.getSource() == itemGenre[i]){
+            if (e.getSource() == itemGenre[i]) {
                 personnelPanel.setGenreFilter(i == 0 ? 'F' : 'M');
                 personnelPanel.update(PersonnelPanel.FILTER_GENRE, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 deleteChecksGenre();
                 menuFilerGenre.setIcon(check);
                 itemGenre[i].setIcon(check);
-                
+
             }
         }
         //-----------------------------------
@@ -437,37 +452,35 @@ public class MainFrame extends JFrame implements ActionListener {
             about.setVisible(true);
         }
     }
-    
-    
-    public void deleteCheckCaducatedStudy(){
+
+    public void deleteCheckCaducatedStudy() {
         itemCaducatedStudies.setIcon(null);
     }
-    
-    public void deleteChecksPPS(){
-         menuFilterPPS.setIcon(null);
+
+    public void deleteChecksPPS() {
+        menuFilterPPS.setIcon(null);
         for (int i = 0; i < itemsPPS.length; i++) {
             itemsPPS[i].setIcon(null);
         }
     }
-         
-    public void deleteChecksAptitude(){
+
+    public void deleteChecksAptitude() {
         menuFilterAptitude.setIcon(null);
         for (int i = 0; i < itemsAptitude.length; i++) {
             itemsAptitude[i].setIcon(null);
         }
     }
-    
-    public void deleteChecksPathologies(){
+
+    public void deleteChecksPathologies() {
         menuPathologies.setIcon(null);
         for (int i = 0; i < itemsPathologies.length; i++) {
             itemsPathologies[i].setIcon(null);
         }
     }
-    
-    public void deleteCheckObs(){
+
+    public void deleteCheckObs() {
         itemObs.setIcon(null);
     }
-
 
     public void deleteChecksShowBy() {
         for (int i = 0; i < itemSubUnities.length; i++) {
@@ -480,14 +493,13 @@ public class MainFrame extends JFrame implements ActionListener {
             itemsOrderBy[i].setIcon(null);
         }
     }
-    
-    public void deleteChecksGenre(){
+
+    public void deleteChecksGenre() {
         menuFilerGenre.setIcon(null);
         for (int i = 0; i < itemGenre.length; i++) {
             itemGenre[i].setIcon(null);
         }
     }
-    
 
     public void deleteChecks() {
         //FILTROS
@@ -553,7 +565,5 @@ public class MainFrame extends JFrame implements ActionListener {
     public JMenuItem getItemCaducatedStudies() {
         return itemCaducatedStudies;
     }
-    
-    
 
 }

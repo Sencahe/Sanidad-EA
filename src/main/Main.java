@@ -7,6 +7,9 @@ public class Main {
 
     public static void main(String[] args) {
 
+        Loading load = new Loading(null,false);
+        load.setVisible(true);
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -25,8 +28,7 @@ public class Main {
         }
         
         //ARRANQUE DEL PROGRAMA-------------------------------------------------
-        MainFrame mainFrame = new MainFrame();
-        mainFrame.setVisible(true);
+        new MainFrame(load);
         System.gc();
 
     }

@@ -105,7 +105,7 @@ public class Personnel {
     
     @Override
     public String toString(){
-        return "<html>Grado: " + MyArrays.getGrades(categorie, grade) +  "<br>Arma/Serv: " +this.esp  
+        return "<html>Grado: " + MyArrays.getGrades(categorie, grade) +  "   Arma/Serv: " +this.esp  
                 + "<br>Nombre: " + this.completeName + "<br>Destino: " + 
                 this.subUnity + "<br>DNI: " + this.dni + "</html>";
     }

@@ -1,6 +1,7 @@
 package dialogs;
 
 import database.Configurations;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GradientPaint;
@@ -18,6 +19,7 @@ import javax.swing.table.JTableHeader;
 import main.MainFrame;
 import mytools.Icons;
 import mytools.Utilities;
+import mytools.TextPrompt;
 import panels.PersonnelPanel;
 import panels.SickPanel;
 import panels.ReCountPanel;
@@ -31,10 +33,12 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
 
     public JCheckBox configColumns, configRow;
 
-    private JButton buttonRestore, buttonSave;
+    private JButton buttonRestore, buttonSave, buttonSavePass;
     
     private JTextField textLeyend;
+    private JPasswordField textCurrentPass, textNewPass1, textNewPass2;
     private String flagLeyend;
+    private String flagPassword;
 
     public Configurator(Frame parent, boolean modal) {
         super(parent, modal);
@@ -58,27 +62,14 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         Utilities utility = mainFrame.getUtility();
         Icons icons = mainFrame.getIcons();
         // FRAME DEL BUSCADOR
-        setSize(390, 250);
+        setSize(390, 360);
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Configuraciones");
         setIconImage(icons.getIconHealthService().getImage());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        JPanel container = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                Graphics2D g2d = (Graphics2D) grphcs;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(200, 170,
-                        getBackground().brighter().brighter(), 0, 200,
-                        getBackground().darker().darker());
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-        container.setBackground(utility.getColorBackground());
+        JPanel container = new JPanel();
+        container.setBackground(utility.getColorBackground().brighter());
         Dimension dimension = new Dimension(390, 270);
         container.setPreferredSize(dimension);
         container.setLayout(null);
@@ -111,14 +102,44 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         labelRestaurar.setFont(utility.getFontLabelFormulary());
         container.add(labelRestaurar);
         //textfield
+        JLabel labelLeyend = new JLabel("Cambiar Leyenda");
+        labelLeyend.setBounds(15,130,300,20);
+        labelLeyend.setForeground(Color.black);
+        labelLeyend.setFont(utility.getFontLabelFormulary());
+        container.add(labelLeyend);
         textLeyend = new JTextField();
-        textLeyend.setBounds(15, 140, 300, 25);
+        textLeyend.setBounds(15, 150, 300, 25);
         container.add(textLeyend);
         buttonSave = new JButton(icons.getIconoSave());
-        buttonSave.setBounds(320, 140, 50, 25);
+        buttonSave.setBounds(320, 150, 50, 25);
         buttonSave.addActionListener(this);
         buttonSave.setFocusPainted(false);
         container.add(buttonSave);
+        
+        
+        JLabel labelPass = new JLabel("Cambiar contraseña");
+        labelPass.setBounds(15,180,300,20);
+        labelPass.setForeground(Color.black);
+        labelPass.setFont(utility.getFontLabelFormulary());
+        container.add(labelPass);
+        textCurrentPass = new JPasswordField();
+        textCurrentPass.setBounds(15, 205, 300, 25);
+        container.add(textCurrentPass);
+        new TextPrompt("Contraseña Actual", textCurrentPass);
+        textNewPass1 = new JPasswordField();
+        textNewPass1.setBounds(15, 245, 300, 25);
+        container.add(textNewPass1);
+        new TextPrompt("Nueva Contraseña", textNewPass1);
+        textNewPass2 = new JPasswordField();
+        textNewPass2.setBounds(15, 275, 300, 25);
+        container.add(textNewPass2);
+        new TextPrompt("Repita Nueva Contraseña", textNewPass2);
+        buttonSavePass = new JButton(icons.getIconoSave());
+        buttonSavePass.setBounds(320, 275, 50, 25);
+        buttonSavePass.addActionListener(this);
+        buttonSavePass.setFocusPainted(false);
+        container.add(buttonSavePass);
+        
         //obtener de la base de datos
         savedValues(false);
         //fin        
@@ -139,6 +160,30 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         }
         if (e.getSource() == buttonSave) {
             savedValues(true);
+        }
+        
+        if(e.getSource() == buttonSavePass){
+            String inputCurrentPass = String.valueOf(textCurrentPass.getPassword());
+            boolean currentPass = inputCurrentPass.equals(flagPassword);
+            
+            String newPass1 = String.valueOf(textNewPass1.getPassword());
+            String newPass2 = String.valueOf(textNewPass2.getPassword());
+            boolean equalsNewPass = newPass1.equals(newPass2);
+            
+            if(currentPass && equalsNewPass){
+                Configurations config = new Configurations();
+                config.setPassword(this);
+                config = null;
+                textCurrentPass.setText("");
+                textNewPass1.setText("");
+                textNewPass2.setText("");
+            } else {
+                if(!currentPass){
+                    JOptionPane.showMessageDialog(null,"La contraseña actual ingresada es incorrecta.");
+                } else if(!equalsNewPass){
+                    JOptionPane.showMessageDialog(null, "La nueva contraseña ingresada debe ser igual en ambos campos.");
+                }
+            }
         }
         
     }
@@ -186,11 +231,11 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
 
     //------------------------------- VALORES ----------------------------------
     private void savedValues(boolean cambios) {
-        Configurations config = new Configurations(this);
+        Configurations config = new Configurations();
         if(cambios){
-           config.setValues(); 
+           config.setValues(this); 
         }     
-        config.getLeyend();
+        config.getSavedValues(this);
         
         config = null;
     }
@@ -225,5 +270,18 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
     public void setFlagLeyend(String flagLeyend) {
         this.flagLeyend = flagLeyend;
     }
+
+    public void setFlagPassword(String flagPassword) {
+        this.flagPassword = flagPassword;
+    }
+
+    public String getFlagPassword() {
+        return flagPassword;
+    }
+
+    public JPasswordField getTextNewPass1() {
+        return textNewPass1;
+    }
+    
     
 }

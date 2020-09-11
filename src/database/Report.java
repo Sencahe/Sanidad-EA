@@ -302,9 +302,9 @@ public class Report extends DataBase {
 
     }
 
-    public void createReCountReport(ReCountPanel reCountPanel, String title) {
+    public void createReCountReport(ReCountPanel reCountPanel, String title, boolean diag) {
 
-        defaults("Recuento Parte de Sanidad.pdf");
+        defaults("Recuento Parte de Sanidad" + (diag ? " CONFIDENCIAL":"") +".pdf");
         try {
             //tamaño de la hoja
             document.setPageSize(PageSize.LEGAL.rotate());
@@ -314,17 +314,19 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add(title);
+            p3.add(title + "\n\n");
             document.add(p3);
             p3.remove(0);
 
-            //CREACION DE LA TABLA PARA EL PDF----------------------------------                           
+            //CREACION DE LA TABLA PARA EL PDF----------------------------------
+            int jump;
             String[] columnasRecuento = MyArrays.getReCountColumns();
             int[] tamañoColumnas = MyArrays.getReCountColumnsSize();
             //float[] para el tamaño escalado de las columnas de la tabla 
-            float columnsWidth[] = new float[columnasRecuento.length];
+            float columnsWidth[] = new float[columnasRecuento.length - (!diag ? 2 : 0)];
             for (int i = 0; i < columnsWidth.length; i++) {
-                float scaledWidth = (tamañoColumnas[i] * 65) / 100;
+                jump = i >= 5 && !diag ? 2 : 0;
+                float scaledWidth = (tamañoColumnas[i + jump] * 65) / 100;
                 columnsWidth[i] = scaledWidth;
             }
 
@@ -335,18 +337,20 @@ public class Report extends DataBase {
             //header de la tabla   
             Paragraph header[] = new Paragraph[columnsWidth.length];
             for (int i = 0; i < columnsWidth.length; i++) {
+                jump = i >= 5 && !diag ? 2 : 0;
                 header[i] = new Paragraph();
                 header[i].setFont(FontFactory.getFont("Times-Roman", 10, Font.BOLD, BaseColor.BLACK));
                 header[i].setAlignment(Paragraph.ALIGN_CENTER);
-                header[i].add(columnasRecuento[i]);
+                header[i].add(columnasRecuento[i + jump]);
                 pdfTable.addCell(header[i]);
             }
 
             //ciclos para llenar la tabla
             String content;
             for (int j = 0; j < reCountPanel.getTable().getRowCount(); j++) { //itera sobre las filas                   
-                for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
-                    content = String.valueOf(reCountPanel.getTable().getValueAt(j, k));
+                for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas   
+                    jump = k >= 5 && !diag ? 2 : 0;
+                    content = String.valueOf(reCountPanel.getTable().getValueAt(j, k + jump));
                     Paragraph para = new Paragraph();
                     para.setFont(FontFactory.getFont("Times-Roman", 9, 0, BaseColor.BLACK));
                     para.add(!content.equals("null") ? content : "");
@@ -372,7 +376,7 @@ public class Report extends DataBase {
             System.gc();
 
         } catch (Exception e) {
-
+            System.out.println(e);
         }
     }
 

@@ -4,10 +4,6 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -53,20 +49,7 @@ public class CaducatedStudies extends JDialog implements ActionListener {
         setTitle("Anexos 27 vencidos o por vencer");
         setIconImage(icons.getIconHealthService().getImage());
         //Fondo del frame
-        JPanel container = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                Graphics2D g2d = (Graphics2D) grphcs;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(50, 500,
-                        getBackground().brighter(), 200, 170,
-                        getBackground().darker());
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
+        JPanel container = new JPanel();
         container.setBackground(utility.getColorBackground());
         Dimension dimension = new Dimension(450, 345);
         container.setPreferredSize(dimension);

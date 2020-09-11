@@ -378,7 +378,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
         }
 
-        // RESTABLECE LA PANTALLA -------------------------------------------------------
+        // RESTABLECE LA PANTALLA ----------------------------------------------
         if (e.getSource() == buttonSickPanel) {
             pointer = 0;
             found = false;
@@ -394,15 +394,22 @@ public class ReCountPanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(null, "No hay informacion mostrada, busque por DNI o presione el boton \"Todos\"");
             } else {
                 boolean keepAsking = true;
+                
                 while (keepAsking) {
                     String title = JOptionPane.showInputDialog(null, "Ingrese un titulo", "Ingrese un titulo para el recuento", 1);
+                    
                     if (title != null && !title.equals("")) {
+                        
                         int opcion = JOptionPane.showConfirmDialog(null, "¿Imprimir con Diagnosticos?", "Opcion", 1);
+                        
                         if (opcion == JOptionPane.YES_NO_OPTION || opcion == JOptionPane.NO_OPTION) {
+                            
+                            boolean diag = JOptionPane.NO_OPTION != opcion;
                             Report report = new Report();
-                            report.createReCountReport(this, title);
+                            report.createReCountReport(this, title, diag);
                             report = null;
                             keepAsking = false;
+                            
                         } else if (opcion == JOptionPane.CANCEL_OPTION){
                             keepAsking = false;
                         }
@@ -423,6 +430,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
     //-----------------------METODOS / FUNCIONES--------------------------------
     private void getByDNI() {
         try {
+            
             long dni = Long.parseLong(textGetByDNI.getText());
             String stm = "SELECT * FROM RecuentoParte  WHERE DNI LIKE '%" + dni + "%'";
             
@@ -433,6 +441,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
             if (!result) {
                 JOptionPane.showMessageDialog(null, "No han habido resultados con ese numero de DNI.");
             }
+            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "El numero ingresado es incorrecto.");
         }
@@ -440,7 +449,9 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
     private void getBySingleDate() {
         String date = ((JTextField) dateOne.getDateEditor().getUiComponent()).getText();
+        
         if (!date.equals("") && dateOne.getDate() != null) {
+            
             MyDates mydates = new MyDates(MyDates.USER_DATE_FORMAT);
             int sendDate = mydates.getCustomYearAgo(dateOne.getDate());
             String stm = "SELECT * FROM RecuentoParte WHERE (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ";
@@ -451,6 +462,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
             Receiver receptor = new Receiver();
             boolean result = receptor.obtainInformation(this, stm);
             receptor = null;
+            
             if (!result) {
                 JOptionPane.showMessageDialog(null, "No hubieron resultados. Revise la fecha ingresadas");
             }
@@ -462,19 +474,22 @@ public class ReCountPanel extends JPanel implements ActionListener {
     private void getByTwoDates() {
         String date = ((JTextField) dateOne.getDateEditor().getUiComponent()).getText();
         String date2 = ((JTextField) dateTwo.getDateEditor().getUiComponent()).getText();
+        
         if (!date.equals("") && dateOne.getDate() != null && !date2.equals("") && dateTwo.getDate() != null) {
+            
             MyDates mydates = new MyDates(MyDates.USER_DATE_FORMAT);
             int sendDate = mydates.getCustomYearAgo(dateOne.getDate());
             int sendDate2 = mydates.getCustomYearAgo(dateTwo.getDate());
+            mydates = null;
             String stm = "SELECT * FROM RecuentoParte WHERE ((SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2))"
                     + " <= \"" + sendDate2 + "\") AND ((SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) >= \"" + sendDate + "\")";
-
-            mydates = null;
+            
            
 
             Receiver receptor = new Receiver();
             boolean result = receptor.obtainInformation(this, stm);
             receptor = null;
+            
             if (!result) {
                 JOptionPane.showMessageDialog(null, "No hubieron resultados. Revise la fecha ingresadas");
             }
@@ -519,8 +534,6 @@ public class ReCountPanel extends JPanel implements ActionListener {
             int location = tcm.getColumnIndex(model.getColumnName(j));
             tcm.moveColumn(location, j);
         }
-        model = null;
-        tcm = null;
     }
 
     public void updateWindow() {

@@ -5,10 +5,6 @@ import mytools.Icons;
 import mytools.Utilities;
 import main.MainFrame;
 import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -30,21 +26,8 @@ public class References extends javax.swing.JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             setTitle("Referencias");
             setIconImage(icons.getIconHealthService().getImage());
-             JPanel container = new JPanel() {
-                @Override
-                protected void paintComponent(Graphics grphcs) {
-                    super.paintComponent(grphcs);
-                    Graphics2D g2d = (Graphics2D) grphcs;
-                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-                    GradientPaint gp = new GradientPaint(200, 170,
-                            getBackground().brighter().brighter(), 0, 200,
-                            getBackground().darker().darker());
-                    g2d.setPaint(gp);
-                    g2d.fillRect(0, 0, getWidth(), getHeight());
-                }
-            };
-            container.setBackground(utility.getColorBackground());
+             JPanel container = new JPanel();
+            container.setBackground(utility.getColorBackground().brighter());
             Dimension dimension = new Dimension(280, 310);
             container.setPreferredSize(dimension);
             container.setLayout(null);

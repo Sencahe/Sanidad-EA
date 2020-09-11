@@ -32,8 +32,8 @@ public class TextPrompt extends JLabel implements FocusListener, DocumentListene
         document = component.getDocument();
 
         setText(text);
-        setFont(component.getFont());
-        setForeground(component.getForeground());
+        setFont(new Font("Tahoma", 2, 10));
+        setForeground(Color.GRAY);
         setBorder(new EmptyBorder(component.getInsets()));
         setHorizontalAlignment(JLabel.LEADING);
 
