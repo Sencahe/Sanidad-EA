@@ -111,7 +111,7 @@ public class Report extends DataBase {
         System.gc();
     }
 
-    public void createListReport(PersonnelPanel personnelPanel, String title, boolean jump[]) {
+    public void createListReport(PersonnelPanel personnelPanel, String title, String body, boolean jump[]) {
 
         defaults(title + ".pdf");
         try {
@@ -139,9 +139,20 @@ public class Report extends DataBase {
             document.add(p);
             document.add(p2);
             p3.setFont(FontFactory.getFont("Times-Roman", 12, Font.BOLD, BaseColor.BLACK));
-            p3.add(title + "\n\n\n");
+            p3.add(title + "\n\n");
             document.add(p3);
             p3.remove(0);
+
+            //cuerpo
+            if (!body.trim().equals("")) {
+                p3.setFont(FontFactory.getFont("Times-Roman", 10, Font.NORMAL, BaseColor.BLACK));
+                p3.setTabSettings(new TabSettings(56f));
+                p3.add(Chunk.TABBING);
+                p3.add(Chunk.TABBING);
+                p3.setAlignment(Paragraph.ALIGN_JUSTIFIED);
+                p3.add(body + "\n\n");
+                document.add(p3);
+            }
 
             //header de la tabla   
             Paragraph header[] = new Paragraph[columnsWidth.length];
@@ -304,7 +315,7 @@ public class Report extends DataBase {
 
     public void createReCountReport(ReCountPanel reCountPanel, String title, boolean diag) {
 
-        defaults("Recuento Parte de Sanidad" + (diag ? " CONFIDENCIAL":"") +".pdf");
+        defaults("Recuento Parte de Sanidad" + (diag ? " CONFIDENCIAL" : "") + ".pdf");
         try {
             //tamaño de la hoja
             document.setPageSize(PageSize.LEGAL.rotate());

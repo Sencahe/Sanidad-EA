@@ -71,6 +71,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private String PPSFilter;
     private String aptitudeFilter;
     private String pathologyColumn;
+    private String obsFilter;
     private char genreFilter;
 
     //OBJETOS PARA LAS VENTANAS
@@ -508,6 +509,14 @@ public class PersonnelPanel extends JPanel implements ActionListener {
 
     public void setGenreFilter(char genreFilter) {
         this.genreFilter = genreFilter;
+    }
+
+    public String getObsFilter() {
+        return obsFilter;
+    }
+
+    public void setObsFilter(String obsFilter) {
+        this.obsFilter = obsFilter;
     }
        
     

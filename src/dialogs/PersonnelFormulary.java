@@ -185,7 +185,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         //Categoria COMBO 0
         labels[0].setBounds(15, 10, 60, 20);
         labels[0].setText("Categoria");
-        comboBox[0].setBounds(80, 10, 110, 20);
+        comboBox[0].setBounds(80, 10, 110, 22);
         comboBox[0].addActionListener(this);
         for (int i = 0; i < MyArrays.getCategoriesLength(); i++) {
             comboBox[0].addItem(MyArrays.getCategories(i));
@@ -193,85 +193,85 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         //Grado COMBO 1
         labels[1].setBounds(15, 45, 60, 20);
         labels[1].setText("Grado");
-        comboBox[1].setBounds(15, 70, 80, 20);
+        comboBox[1].setBounds(15, 70, 80, 22);
         //apellido TEXTFIELD 0 
         labels[2].setBounds(105, 45, 65, 20);
         labels[2].setText("Apellido *");
-        textField[0].setBounds(105, 70, 175, 20);
+        textField[0].setBounds(105, 70, 175, 22);
         //nombre TEXTFIELD 1
         labels[3].setBounds(285, 45, 65, 20);
         labels[3].setText("Nombre *");
-        textField[1].setBounds(285, 70, 175, 20);
+        textField[1].setBounds(285, 70, 175, 22);
         //arma/servicio TEXTFIELD 2
         labels[4].setBounds(15, 95, 100, 20);
         labels[4].setText("Arma / Servicio");
-        textField[2].setBounds(15, 120, 95, 20);
+        textField[2].setBounds(15, 120, 95, 22);
         textField[2].setHorizontalAlignment((int) CENTER_ALIGNMENT);
         //Destino COMBO 2
         labels[5].setBounds(130, 95, 60, 20);
         labels[5].setText("Destino");
-        comboBox[2].setBounds(130, 120, 90, 20);
+        comboBox[2].setBounds(130, 120, 90, 22);
         for (int i = 0; i < MyArrays.getSubUnities().length; i++) {
             comboBox[2].addItem(MyArrays.getSubUnities()[i]);
         }
         //DNI TEXTFIELD 3
         labels[6].setBounds(240, 95, 100, 20);
         labels[6].setText("DNI *");
-        textField[3].setBounds(240, 120, 80, 20);
+        textField[3].setBounds(240, 120, 80, 22);
         textField[3].setDocument(new JTextFieldLimit(9));
         textField[3].addKeyListener(utilities.soloNumeros);
         new TextPrompt("Obligatorio", textField[3]);
         //Nacimiento DATE CHOOSER 0  
         labels[7].setBounds(335, 95, 150, 20);
         labels[7].setText("Fecha de Nacimiento");
-        dateChooser[0].setBounds(335, 120, 100, 20);
+        dateChooser[0].setBounds(335, 120, 100, 22);
          //DM TEXTFIELD10
         labels[18].setBounds(15, 145, 120, 20);
         labels[18].setText("D.M.");
-        textField[10].setBounds(15, 170, 140, 20);
+        textField[10].setBounds(15, 170, 140, 22);
         //-------------------------
         //Ultimo Anexo27 DATE CHOOSER 1
         labels[8].setBounds(15, 230, 200, 20);
         labels[8].setText("Fecha Ult. Anexo27");
-        dateChooser[1].setBounds(15, 255, 110, 20);
+        dateChooser[1].setBounds(15, 255, 110, 22);
         //Aptitud COMBO 3
         labels[9].setBounds(155, 230, 70, 20);
         labels[9].setText("Aptitud");
-        comboBox[3].setBounds(145, 255, 80, 20);
+        comboBox[3].setBounds(145, 255, 80, 22);
         for (int i = 0; i < MyArrays.getAptitudeLength(); i++) {
             comboBox[3].addItem(MyArrays.getAptitude(i));
         }
         //Peso TEXT 4
         labels[10].setBounds(15, 280, 70, 20);
         labels[10].setText("Peso (Kgs)");
-        textField[4].setBounds(20, 305, 50, 20);
+        textField[4].setBounds(20, 305, 50, 22);
         //Altura TEXT 5
         labels[11].setBounds(90, 280, 80, 20);
         labels[11].setText("Altura (Mts)");
-        textField[5].setBounds(100, 305, 50, 20);
+        textField[5].setBounds(100, 305, 50, 22);
         //IMC TEXT 6
         labels[12].setBounds(230, 280, 80, 20);
         labels[12].setText("IMC");
-        textField[6].setBounds(220, 305, 50, 20);
+        textField[6].setBounds(220, 305, 50, 22);
         //PPS COMBO 4
         labels[13].setBounds(290, 280, 220, 20);
         labels[13].setText("Programa Peso Saludable");
-        comboBox[4].setBounds(290, 305, 130, 20);
+        comboBox[4].setBounds(290, 305, 130, 22);
         for (int i = 0; i < MyArrays.getPPSLength(); i++) {
             comboBox[4].addItem(MyArrays.getPPS(i));
         }
         //Observaciones TEXTFIELD 7
         labels[14].setBounds(15, 345, 90, 20);
         labels[14].setText("Observaciones");
-        textField[7].setBounds(15, 370, 265, 20);
+        textField[7].setBounds(15, 370, 265, 22);
         //Legajo TEXTFIELD 8
         labels[15].setBounds(15, 425, 120, 20);
         labels[15].setText("Legajo");
-        textField[8].setBounds(15, 445, 140, 20);
+        textField[8].setBounds(15, 445, 140, 22);
         //Expediente TEXTFIELD 9
         labels[16].setBounds(195, 425, 120, 20);
         labels[16].setText("Nro de Expediente");
-        textField[9].setBounds(195, 445, 140, 20);
+        textField[9].setBounds(195, 445, 140, 22);
         textField[9].setEnabled(false);
        
         //CheckBoxes D 0 - H 1 - A 2 - T 3 - ACT 4 - INF 5

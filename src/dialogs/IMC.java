@@ -10,6 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 import main.MainFrame;
+import mytools.Icons;
 import mytools.Utilities;
 import panels.PersonnelPanel;
 
@@ -46,7 +47,9 @@ public class IMC extends JDialog implements ActionListener {
 
     private void components() {
         //------------------------------
-        Utilities utility = new Utilities();
+        Utilities utility = mainFrame.getUtility();
+        Icons icons = mainFrame.getIcons();
+        this.setIconImage(icons.getIconHealthService().getImage());
         //Fondo del frame
         JPanel container = new JPanel();
         container.setBackground(utility.getColorBackground().brighter());
@@ -98,6 +101,7 @@ public class IMC extends JDialog implements ActionListener {
         //--------------------------
         this.getContentPane().add(container);
         utility = null;
+        icons = null;
     }
 
     @Override

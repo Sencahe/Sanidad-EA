@@ -16,6 +16,7 @@ public class Searcher extends JDialog implements ActionListener {
     private JRadioButton radioName, radioDNI;
     private KeyAdapter onlyNumbers;
 
+    private int rowPointer;
     private int pointer;
     private int categorie;
     private String search;
@@ -32,7 +33,7 @@ public class Searcher extends JDialog implements ActionListener {
         super(parent, modal);
         this.mainFrame = (MainFrame) parent;
         this.search = "";
-        this.categorie = -1;
+        this.categorie = 0;
         this.found = false;
         this.column = PersonnelPanel.NAME_COLUMN;
         Componentes();
@@ -42,7 +43,6 @@ public class Searcher extends JDialog implements ActionListener {
                 pointer = 0;
                 search = "";
                 found = false;
-                categorie = -1;
                 labelMessage.setText("");
                 setTitle("Buscar");
                 dispose();
@@ -140,7 +140,7 @@ public class Searcher extends JDialog implements ActionListener {
     //------------------------------------------------------------------------
     //-----------------METODO PARA BUSCAR EN LAS TABLAS-----------------------
     public void buscarPorNombre() {
-
+           
         //SOLO BUSCA SI HAY TEXTO EN EL TEXT FIELD
         if (!"".equals(textSearch.getText())) {
             //REINICIA EL PUNTERO SI SE CAMBIA LA PALABRA A SER BUSCADA
@@ -154,10 +154,16 @@ public class Searcher extends JDialog implements ActionListener {
                 found = false;
                 setTitle("Buscando en " + personnelPanel.getTabbedPane().getTitleAt(personnelPanel.getTabbedPane().getSelectedIndex()).trim());
             }
-
+            if(rowPointer != personnelPanel.getTables(categorie).getRowCount()){
+                pointer = 0;
+                found = false;
+            }
+            
             searching = "";
             search = textSearch.getText().toLowerCase().trim();
             categorie = personnelPanel.getTabbedPane().getSelectedIndex();
+            rowPointer = personnelPanel.getTables(categorie).getRowCount();
+            
             searchNext = true;
 
             while (searchNext) {

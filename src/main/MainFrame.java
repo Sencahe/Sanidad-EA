@@ -69,6 +69,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private ReCountPanel reCountPanel;
     private ListGenerator listGenerator;
     private CaducatedStudies caducatedStudies;
+    private Observations observations;
     private About about;
     private Login login;
 
@@ -90,6 +91,7 @@ public class MainFrame extends JFrame implements ActionListener {
         listGenerator = new ListGenerator(this, true);
         caducatedStudies = new CaducatedStudies(this, true);
         about = new About(this, true);
+        observations = new Observations(this,true);
 
         personnelPanel.setFormulary(personnelFormulary);
         personnelPanel.setSearcher(searcher);
@@ -111,6 +113,7 @@ public class MainFrame extends JFrame implements ActionListener {
         configurator.setReCountPanel(reCountPanel);
         listGenerator.setPersonnelPanel(personnelPanel);
         caducatedStudies.setPersonnelPanel(personnelPanel);
+        observations.setPersonnelPanel(personnelPanel);
 
        //PROPIEDADES DEL FRAME
         setTitle(PERSONNEL);
@@ -301,6 +304,7 @@ public class MainFrame extends JFrame implements ActionListener {
             cl.show(this.getContentPane(), SICK);
             menuFilter.setVisible(false);
             menuSearch.setVisible(false);
+            searcher.dispose();
             setTitle(SICK);
         }
         if (e.getSource() == buttonPersonnelPanel) {
@@ -315,6 +319,7 @@ public class MainFrame extends JFrame implements ActionListener {
             cl.show(this.getContentPane(), RECOUNT);
             menuFilter.setVisible(false);
             menuSearch.setVisible(false);
+            searcher.dispose();
             setTitle(RECOUNT);
         }
 
@@ -390,10 +395,7 @@ public class MainFrame extends JFrame implements ActionListener {
         }
         // observaciones 
         if (e.getSource() == itemObs) {
-            personnelPanel.update(PersonnelPanel.FILTER_OBS, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
-            personnelPanel.setFiltered(true);
-
-            itemObs.setIcon(check);
+            observations.setVisible(true);
         }
 
         //genero
@@ -550,6 +552,12 @@ public class MainFrame extends JFrame implements ActionListener {
         return itemsPPS[0];
     }
 
+    public JMenuItem getItemObs() {
+        return itemObs;
+    }
+
+    
+    
     public ImageIcon getCheck() {
         return check;
     }

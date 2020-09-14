@@ -111,7 +111,7 @@ public class DataBase {
         }
         if (filterList.contains(PersonnelPanel.FILTER_OBS)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
-            statement.append("Observaciones IS NOT NULL");
+            statement.append(personnelPanel.getObsFilter());
         }
         if (filterList.contains(PersonnelPanel.FILTER_IMC)) {
             statement.append(initStatement < statement.length() ? " AND " : " WHERE ");
