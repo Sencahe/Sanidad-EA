@@ -111,7 +111,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         //PESTAÑAS DE LAS TABLAS
         UIManager.put("TabbedPane.contentOpaque", false);
         tabbedPane = new JTabbedPane();
-        tabbedPane.setOpaque(false);
         tabbedPane.setBounds(10, 70, 1485, 460);
         tabbedPane.setFont(utility.getFontTabbedPane());
         add(tabbedPane);

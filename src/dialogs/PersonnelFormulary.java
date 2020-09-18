@@ -16,6 +16,7 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
+import javax.swing.border.Border;
 import panels.PersonnelPanel;
 
 public class PersonnelFormulary extends JDialog implements ActionListener {
@@ -410,6 +411,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             if (sick) {
                 JOptionPane.showMessageDialog(null, personnel.getCompleteName()
                         + " ya cuenta con un Parte de Sanidad activo.");
+                
             } else {
                 sickFormulary.newSick(this);
             }

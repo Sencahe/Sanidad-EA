@@ -191,8 +191,14 @@ public class Utilities {
                 int dias = myDates.getDays(date) - 1;
                 if (dias >= 0) {
                     c.setForeground(Color.red);
+                    if(isSelected){
+                        c.setForeground(Color.ORANGE);
+                    }
                 } else {
                     c.setForeground(Color.black);
+                    if(isSelected){
+                        c.setForeground(Color.white);
+                    }
                 }
              
 

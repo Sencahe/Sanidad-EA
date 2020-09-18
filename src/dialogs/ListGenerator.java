@@ -100,7 +100,7 @@ public class ListGenerator extends JDialog implements ActionListener {
         civ.setFocusPainted(false);
         add(civ);
 
-        JLabel labelBody = new JLabel("Cuerpo de la lista (opcional)");
+        JLabel labelBody = new JLabel("Texto de la lista (opcional)");
         labelBody.setBounds(10, 125, 400, 30);
         labelBody.setFont(utilidad.getFontLabelFormulary());
         labelBody.setForeground(Color.black);

@@ -10,6 +10,7 @@ import personnel.Personnel;
 import mytools.MyDates;
 import dialogs.PersonnelFormulary;
 import dialogs.SickFormulary;
+import javax.swing.JDialog;
 
 public class Receiver extends DataBase {
 
@@ -87,12 +88,14 @@ public class Receiver extends DataBase {
     }
 
     public void obtainInformation(SickFormulary sickFormulary) {
+       
         try {
             // Recupero los datos del parte de enfermo para su formulario
             PreparedStatement pst = super.getConnection().prepareStatement("SELECT id_personal, Categoria, Grado, Arma,"
                     + "Apellido, Nombre, Destino, Sexo, DNI, TipoParte, NorasSiras, Diagnostico,Observacion, "
                     + "CIE, Desde, Hasta FROM Parte INNER JOIN Personal ON Parte.id_personal = Personal.id "
-                    + "WHERE Parte.id = " + this.id);
+                    + "WHERE Parte.id = ?");
+            pst.setInt(1,this.id);
             ResultSet rs = pst.executeQuery();
 
             MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
@@ -120,9 +123,9 @@ public class Receiver extends DataBase {
             String subUnity = rs.getString("Destino") != null ? rs.getString("Destino") : "";
             char genre = rs.getString("Sexo").charAt(0);
             int dni = rs.getInt("DNI");
-            //creo el objeto personal en la clase formularioParte
-            sickFormulary.setPersonnel(new Personnel(id_personnel, categorie, grade, esp, name, subUnity, genre, dni));
-
+            
+            //creo el objeto personal o paso su referencia si este metodo es llamado desde el personnelFormulary
+                       
             myDates = null;
             super.getConnection().close();
 
@@ -137,7 +140,7 @@ public class Receiver extends DataBase {
 
         reCount.getTableModel().setRowCount(0);
         statement += " ORDER BY (SUBSTR(Alta,1,4)||SUBSTR(Alta,6,2)||SUBSTR(Alta,9,2)) ";
-        statement += reCount.getRadioAsc().isSelected() ? "ASC": "DESC";
+        statement += reCount.getRadioAsc().isSelected() ? "ASC" : "DESC";
         try {
             PreparedStatement pst = super.getConnection().prepareStatement(statement);
             ResultSet rs = pst.executeQuery();
@@ -179,7 +182,6 @@ public class Receiver extends DataBase {
             return false;
         }
 
-        
     }
 
 }

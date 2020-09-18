@@ -100,9 +100,7 @@ public class Personnel {
     public void setEsp(String esp) {
         this.esp = esp;
     }
-    
-    
-    
+      
     @Override
     public String toString(){
         return "<html>Grado: " + MyArrays.getGrades(categorie, grade) +  "&ensp&ensp Arma/Serv: " +this.esp  
