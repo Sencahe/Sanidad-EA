@@ -183,9 +183,10 @@ public class CaducatedStudies extends JDialog implements ActionListener {
                 //En caso de querer filtrar todas las fechas con un año de antiguedad  
                 int yearAgo = mydates.getYearAgo();
                 personnelPanel.setStudiesFilter(yearAgo);
+                personnelPanel.setBetweenTwoDates(false);
                 personnelPanel.update(PersonnelPanel.FILTER_A27, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 personnelPanel.setFiltered(true);
-                personnelPanel.setBetweenTwoDates(false);
+                
 
                 mainFrame.getItemCaducatedStudies().setIcon(mainFrame.getCheck());
                 empty();

@@ -6,11 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import panels.ReCountPanel;
-import personnel.Personnel;
 import mytools.MyDates;
 import dialogs.PersonnelFormulary;
 import dialogs.SickFormulary;
-import javax.swing.JDialog;
+import personnel.Personnel;
+
 
 public class Receiver extends DataBase {
 
@@ -118,14 +118,15 @@ public class Receiver extends DataBase {
             int id_personnel = rs.getInt("id_personal");
             int categorie = rs.getInt("Categoria");
             int grade = rs.getInt("Grado");
-            String esp = rs.getString("Arma");
+            String esp = rs.getString("Arma") != null ? rs.getString("Arma") : "";
             String name = rs.getString("Apellido") + " " + rs.getString("Nombre");
             String subUnity = rs.getString("Destino") != null ? rs.getString("Destino") : "";
             char genre = rs.getString("Sexo").charAt(0);
             int dni = rs.getInt("DNI");
             
-            //creo el objeto personal o paso su referencia si este metodo es llamado desde el personnelFormulary
-                       
+            //creo el objeto personal
+             sickFormulary.setPersonnel(new Personnel(id_personnel,categorie,grade,esp,name,subUnity,genre,dni));
+            
             myDates = null;
             super.getConnection().close();
 

@@ -15,8 +15,6 @@ import dialogs.Configurator;
 import dialogs.ListGenerator;
 import dialogs.CaducatedStudies;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.logging.Logger;
 import mytools.Icons;
 import mytools.mycomponents.MyJScrollPane;
 

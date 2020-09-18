@@ -3,6 +3,7 @@ package dialogs;
 import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.*;
+import java.awt.Font;
 
 public class About extends JDialog {
 
@@ -20,6 +21,7 @@ public class About extends JDialog {
         area.setEditable(false);
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
+        area.setFont(new Font("Verdana",0,12));
         add(area);
 
         area.setText("Software desarrolado sin fines de lucro por Francisco Cahe "
