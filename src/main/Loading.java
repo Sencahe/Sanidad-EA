@@ -23,7 +23,7 @@ public class Loading extends javax.swing.JDialog {
     public Loading(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        ImageIcon icon = new ImageIcon("src/myimages/Sanidad.png");
+        ImageIcon icon = new ImageIcon(getClass().getResource("/myimages/Sanidad.png"));
         setIconImage(icon.getImage());
         this.getContentPane().setBackground(Color.white);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
