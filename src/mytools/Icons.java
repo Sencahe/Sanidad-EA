@@ -20,19 +20,19 @@ public class Icons {
     private ImageIcon iconPdf;
     
     public Icons(){        
-        this.iconRefresh = new ImageIcon("src/myimages/refresh.png");
-        this.iconoCheck = new ImageIcon("src/myimages/check.png");
-        this.iconSearch = new ImageIcon("src/myimages/searchGrande.png");
-        this.iconLittleSearch = new ImageIcon("src/myimages/search.png");
-        this.iconHealthService = new ImageIcon("src/myimages/Sanidad.png");
-        this.iconoSave = new ImageIcon("src/myimages/save.png");
-        this.iconHealed = new ImageIcon("src/myimages/alta.png");
-        this.iconDelete = new ImageIcon("src/myimages/delete.png");
-        this.iconConfig = new ImageIcon("src/myimages/config.png");
-        this.iconPlus = new ImageIcon("src/myimages/plus.png");
-        this.iconCalculator = new ImageIcon("src/myimages/calculator.png");
-        this.iconPdf = new ImageIcon("src/myimages/pdf.png");
-        this.iconDelete2 = new ImageIcon("src/myimages/delete2.png");
+        this.iconRefresh = new ImageIcon(getClass().getResource("/myimages/refresh.png"));
+        this.iconoCheck = new ImageIcon(getClass().getResource("/myimages/check.png"));
+        this.iconSearch = new ImageIcon(getClass().getResource("/myimages/searchGrande.png"));
+        this.iconLittleSearch = new ImageIcon(getClass().getResource("/myimages/search.png"));
+        this.iconHealthService = new ImageIcon(getClass().getResource("/myimages/Sanidad.png"));
+        this.iconoSave = new ImageIcon(getClass().getResource("/myimages/save.png"));
+        this.iconHealed = new ImageIcon(getClass().getResource("/myimages/alta.png"));
+        this.iconDelete = new ImageIcon(getClass().getResource("/myimages/delete.png"));
+        this.iconConfig = new ImageIcon(getClass().getResource("/myimages/config.png"));
+        this.iconPlus = new ImageIcon(getClass().getResource("/myimages/plus.png"));
+        this.iconCalculator = new ImageIcon(getClass().getResource("/myimages/calculator.png"));
+        this.iconPdf = new ImageIcon(getClass().getResource("/myimages/pdf.png"));
+        this.iconDelete2 = new ImageIcon(getClass().getResource("/myimages/delete2.png"));
     }
 
    
