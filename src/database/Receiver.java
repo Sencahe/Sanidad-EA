@@ -6,11 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import panels.ReCountPanel;
+import personnel.Personnel;
 import mytools.MyDates;
 import dialogs.PersonnelFormulary;
 import dialogs.SickFormulary;
-import personnel.Personnel;
-
 
 public class Receiver extends DataBase {
 
@@ -25,7 +24,7 @@ public class Receiver extends DataBase {
         this.id = 0;
     }
 
-    public void obtainInformation(PersonnelFormulary sickFormulary) {
+    public void obtainInformation(PersonnelFormulary personnelFormulary) {
 
         String[] text = MyArrays.getTextField();
         String[] combo = MyArrays.getComboBox();
@@ -42,38 +41,38 @@ public class Receiver extends DataBase {
             //SOLICITO LOS DATOS QUE VAN A LOS TEXTFIELD
             for (int i = 0; i < text.length; i++) {
                 receiver = rs.getString(text[i]);
-                sickFormulary.getTextField(i).setText(receiver != null ? receiver : "");
+                personnelFormulary.getTextField(i).setText(receiver != null ? receiver : "");
             }
             //SOLICITO LOS DATOS QUE VAN A LOS COMBO BOX
             for (int i = 0; i < combo.length; i++) {
                 if (i < 2) {
-                    sickFormulary.getComboBox(i).setSelectedIndex(rs.getInt(combo[i]));
+                    personnelFormulary.getComboBox(i).setSelectedIndex(rs.getInt(combo[i]));
                 } else {
                     receiver = rs.getString(combo[i]);
-                    sickFormulary.getComboBox(i).setSelectedItem(receiver != null ? receiver : "");
+                    personnelFormulary.getComboBox(i).setSelectedItem(receiver != null ? receiver : "");
                 }
             }
             //SOLICITO LOS DATOS QUE VAN A LOS DATE CHOOSER
             for (int i = 0; i < date.length; i++) {
                 receiver = rs.getString(date[i]);
                 if (receiver != null) {
-                    sickFormulary.getDateChooser(i).setDate(myDates.toDate(receiver));
+                    personnelFormulary.getDateChooser(i).setDate(myDates.toDate(receiver));
                 }
             }
             //SOLICITO LOS DATOS QUE VAN A LOS CHECK BOX
             for (int i = 0; i < check.length; i++) {
-                sickFormulary.getCheckBox(i).setSelected((rs.getString(check[i]) != null));
+                personnelFormulary.getCheckBox(i).setSelected((rs.getString(check[i]) != null));
             }
-            boolean enabled = sickFormulary.getCheckBox(4).isSelected() || sickFormulary.getCheckBox(5).isSelected();
-            sickFormulary.getTextField(9).setEnabled(enabled);
+            boolean enabled = personnelFormulary.getCheckBox(4).isSelected() || personnelFormulary.getCheckBox(5).isSelected();
+            personnelFormulary.getTextField(9).setEnabled(enabled);
             //SOLICITO LOS VALORES DE LOS RADIOBUTTON
             if (rs.getString("Sexo").equals("M")) {
-                sickFormulary.getM().setSelected(true);
+                personnelFormulary.getM().setSelected(true);
             } else {
-                sickFormulary.getF().setSelected(true);
+                personnelFormulary.getF().setSelected(true);
             }
             //SOLICITO VALORES FLAG 
-            sickFormulary.setSick(1 == rs.getInt("Parte"));
+            personnelFormulary.setSick(1 == rs.getInt("Parte"));
 
             //fin de la solicitud a la base de datos
             super.getConnection().close();
@@ -118,15 +117,16 @@ public class Receiver extends DataBase {
             int id_personnel = rs.getInt("id_personal");
             int categorie = rs.getInt("Categoria");
             int grade = rs.getInt("Grado");
-            String esp = rs.getString("Arma") != null ? rs.getString("Arma") : "";
+            String esp = rs.getString("Arma");
             String name = rs.getString("Apellido") + " " + rs.getString("Nombre");
             String subUnity = rs.getString("Destino") != null ? rs.getString("Destino") : "";
             char genre = rs.getString("Sexo").charAt(0);
             int dni = rs.getInt("DNI");
             
             //creo el objeto personal
-             sickFormulary.setPersonnel(new Personnel(id_personnel,categorie,grade,esp,name,subUnity,genre,dni));
-            
+            Personnel personnel = new Personnel(id_personnel,categorie,grade,esp,name,subUnity,genre,dni );
+            sickFormulary.setPersonnel(personnel);
+                       
             myDates = null;
             super.getConnection().close();
 

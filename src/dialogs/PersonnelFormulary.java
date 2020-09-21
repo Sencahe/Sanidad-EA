@@ -41,11 +41,13 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
     private SickFormulary sickFormulary;
     private Personnel personnel;
     private MainFrame mainFrame;
+    DecimalFormat roundOut;
 
     public PersonnelFormulary(Frame parent, boolean modal) {
         super(parent, modal);
         this.sick = false;
         this.mainFrame = (MainFrame) parent;
+        this.roundOut = new DecimalFormat("0.00");
         components();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -70,7 +72,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         setTitle("Agregar Personal");
         setIconImage(icons.getIconHealthService().getImage());
         //fondo del frame
-        JPanel container = new JPanel() ;
+        JPanel container = new JPanel();
         container.setBackground(utilities.getColorBackground().darker());
         Dimension dimension = new Dimension(480, 500);
         container.setPreferredSize(dimension);
@@ -80,14 +82,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         buttonAdd = utilities.customButton();
         buttonAdd.setToolTipText("Agregar a la base de datos");
         buttonAdd.setOpaque(false);
-        buttonAdd.setIcon( icons.getIconoSave());
+        buttonAdd.setIcon(icons.getIconoSave());
         buttonAdd.setBounds(430, 360, 32, 32);
         buttonAdd.addActionListener(this);
         container.add(buttonAdd);
         buttonModify = utilities.customButton();
         buttonModify.setToolTipText("Guardar cambios");
         buttonModify.setOpaque(false);
-        buttonModify.setIcon( icons.getIconoSave());
+        buttonModify.setIcon(icons.getIconoSave());
         buttonModify.setBounds(430, 360, 32, 32);
         buttonModify.addActionListener(this);
         buttonModify.setVisible(false);
@@ -95,7 +97,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         buttonDelete = utilities.customButton();
         buttonDelete.setToolTipText("Eliminar de la base de datos");
         buttonDelete.setOpaque(false);
-        buttonDelete.setIcon( icons.getIconDelete2());
+        buttonDelete.setIcon(icons.getIconDelete2());
         buttonDelete.setBounds(375, 360, 32, 32);
         buttonDelete.addActionListener(this);
         buttonDelete.setVisible(false);
@@ -103,7 +105,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         buttonCalcIMC = utilities.customButton();
         buttonCalcIMC.setToolTipText("Calcular IMC");
         buttonCalcIMC.setOpaque(false);
-        buttonCalcIMC.setIcon( icons.getIconCalculator());
+        buttonCalcIMC.setIcon(icons.getIconCalculator());
         buttonCalcIMC.setBounds(170, 298, 32, 32);
         buttonCalcIMC.addActionListener(this);
         container.add(buttonCalcIMC);
@@ -113,11 +115,11 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labelSick.setForeground(Color.black);
         labelSick.setVisible(false);
         container.add(labelSick);
-        buttonSick =utilities.customButton();
+        buttonSick = utilities.customButton();
         buttonSick.setToolTipText("Agregar este personal al parte");
         buttonSick.setOpaque(false);
-        buttonSick.setIcon( icons.getIconPlus());
-        buttonSick.setBounds(405, 435,32, 32);
+        buttonSick.setIcon(icons.getIconPlus());
+        buttonSick.setBounds(405, 435, 32, 32);
         buttonSick.addActionListener(this);
         buttonSick.setVisible(false);
         container.add(buttonSick);
@@ -225,7 +227,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[7].setBounds(335, 95, 150, 20);
         labels[7].setText("Fecha de Nacimiento");
         dateChooser[0].setBounds(335, 120, 100, 22);
-         //DM TEXTFIELD10
+        //DM TEXTFIELD10
         labels[18].setBounds(15, 145, 120, 20);
         labels[18].setText("D.M.");
         textField[10].setBounds(15, 170, 140, 22);
@@ -273,7 +275,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labels[16].setText("Nro de Expediente");
         textField[9].setBounds(195, 445, 140, 22);
         textField[9].setEnabled(false);
-       
+
         //CheckBoxes D 0 - H 1 - A 2 - T 3 - ACT 4 - INF 5
         int X = 15;
         for (int i = 0; i < checkBox.length; i++) {
@@ -339,9 +341,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
                 textField[i + 4].setForeground(Color.black);
             }
             try {
-                String[] dataIMC = calculateIMC(Double.parseDouble(textField[4].getText()), Double.parseDouble(textField[5].getText()));
-                textField[6].setText(dataIMC[0]);
-                comboBox[4].setSelectedIndex(Integer.parseInt(dataIMC[1]));
+               calculateIMC(Double.parseDouble(textField[4].getText()), Double.parseDouble(textField[5].getText()));
             } catch (Exception ex) {
                 for (int i = 0; i < 2; i++) {
                     textField[i + 4].setForeground(Color.red);
@@ -410,7 +410,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
             if (sick) {
                 JOptionPane.showMessageDialog(null, personnel.getCompleteName()
                         + " ya cuenta con un Parte de Sanidad activo.");
-                
+
             } else {
                 sickFormulary.newSick(this);
             }
@@ -495,7 +495,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         }
         //VALIDAR LA FECHA
         labelIndex = 7;
-        for (int i = 0; i < dateChooser.length; i++) {    
+        for (int i = 0; i < dateChooser.length; i++) {
             String date = ((JTextField) dateChooser[i].getDateEditor().getUiComponent()).getText();
             if (!date.equals("") && dateChooser[i].getDate() == null) {
                 labels[labelIndex].setForeground(Color.red);
@@ -565,36 +565,31 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
 
     //------------------------------------------------------
     //-----------------METODO CALCULAR IMC------------------
-    private String[] calculateIMC(double weight, double height) {
-        String index = "0";
+    private void calculateIMC(double weight, double height) {
+        int index = 0;
         String IMCFinal;
         double IMC = weight / (height * height);
-        DecimalFormat roundOut = new DecimalFormat("0.00");
         IMCFinal = roundOut.format(IMC);
-        //ciclo para cambiar "," POR "." en el resultado del decimal format
-        for (int i = 0; i < IMCFinal.length(); i++) {
-            if (IMCFinal.charAt(i) == ',') {
-                IMCFinal = IMCFinal.substring(0, i) + "." + IMCFinal.substring(i + 1);
-            }
-        }
+        IMCFinal = IMCFinal.replace(',', '.');
+
         if (IMC >= 17.5 && IMC < 25) {
-            index = "1";
+            index = 1;
         }
         if (IMC >= 25 && IMC < 30) {
-            index = "2";
+            index = 2;
         }
         if (IMC >= 30 && IMC < 35) {
-            index = "3";
+            index = 3;
         }
         if (IMC >= 35) {
-            index = "4";
+            index = 4;
         }
         if (IMC < 17.5) {
-            index = "5";
+            index = 5;
         }
-        String[] data = {IMCFinal, index};
-        roundOut = null;
-        return data;
+
+        textField[6].setText(IMCFinal);
+        comboBox[4].setSelectedIndex(index);
     }
 
     //---------------------SETTERS Y GETTERS----------------------------
