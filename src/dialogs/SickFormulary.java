@@ -14,6 +14,7 @@ import com.toedter.calendar.JDateChooser;
 import database.Deleter;
 import java.util.Date;
 import panels.SickPanel;
+import mytools.mycomponents.MyJButton;
 
 public class SickFormulary extends JDialog implements ActionListener {
 
@@ -179,14 +180,14 @@ public class SickFormulary extends JDialog implements ActionListener {
         add(labelSuggestion);
 
         //BOTONES---------------------------------------------------------------
-        buttonAdd = utility.customButton();
+        buttonAdd = new MyJButton();
         buttonAdd.setToolTipText("Agregar Parte");
         buttonAdd.setOpaque(false);
         buttonAdd.setBounds(40, 245, 32, 32);
         buttonAdd.setIcon(icons.getIconoSave());
         buttonAdd.addActionListener(this);
         container.add(buttonAdd);
-        buttonUpdate = utility.customButton();
+        buttonUpdate = new MyJButton();
         buttonUpdate.setToolTipText("Guardar Cambios");
         buttonUpdate.setOpaque(false);
         buttonUpdate.setBounds(40, 240, 32, 32);
@@ -194,7 +195,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         buttonUpdate.addActionListener(this);
         buttonUpdate.setVisible(false);
         container.add(buttonUpdate);
-        buttonHeal = utility.customButton();
+        buttonHeal = new MyJButton();
         buttonHeal.setToolTipText("Dar de alta");
         buttonHeal.setOpaque(false);
         buttonHeal.setBounds(110, 240, 32, 32);
@@ -203,7 +204,7 @@ public class SickFormulary extends JDialog implements ActionListener {
         buttonHeal.setVisible(false);
         container.add(buttonHeal);
 
-        buttonDelete = utility.customButton();
+        buttonDelete = new MyJButton();
         buttonDelete.setToolTipText("Eliminar parte");
         buttonDelete.setOpaque(false);
         buttonDelete.setBounds(165, 240, 32, 32);

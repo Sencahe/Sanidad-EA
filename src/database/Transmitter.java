@@ -206,7 +206,7 @@ public class Transmitter extends DataBase {
             
 
             //dependiendo de si es un alta definitiva o no, se guardaran las fechas de distinta manera
-            MyDates myDates = new MyDates("dd/MM/yyyy");
+            MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
             LocalDate since;
             LocalDate until;
             int days;

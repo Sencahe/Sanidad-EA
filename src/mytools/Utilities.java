@@ -25,9 +25,9 @@ import panels.SickPanel;
 
 public class Utilities {
 
-    private final Color colorTable, colorBackground, colorButton, colorButtonFont;
+    private final Color colorTable, colorBackground, colorButtonFont;
 
-    private final Font fontTabbedPane, fontTable, fontButton, fontLabelSummary, fontTableHeader;
+    private final Font fontTabbedPane, fontTable, fontLabelSummary, fontTableHeader;
     private final Font fontLabelFormulary, fontTextFields, fontHolder, fontChecks, fontLabelBig;
     private final Font fontLabelSearcher, fontLabelResult;
     private final Font fuenteLabelsRef;
@@ -39,11 +39,9 @@ public class Utilities {
     public Utilities() {
         this.colorTable = new Color(255, 255, 255);
         this.colorBackground = new Color(0, 100, 220);
-        this.colorButton = new Color(0, 70, 170);
         this.colorButtonFont = new Color(240, 240, 240);
         this.fontTabbedPane = new Font("Tahoma", 1, 16);
         this.fontTable = new Font("Arial", 0, 13);
-        this.fontButton = new Font("Tahoma", 1, 13);
         this.fontLabelSummary = new Font("Tahoma", 1, 14);
         this.fontTableHeader = new Font("Tahoma", 1, 12);
         this.fontLabelFormulary = fontTableHeader;
@@ -54,46 +52,9 @@ public class Utilities {
         this.fontLabelSearcher = new Font("Tahoma", 1, 11);
         this.fontLabelResult = new Font("Tahoma", 0, 11);
         this.fuenteLabelInfo = fontLabelResult;
-        this.fuenteLabelsRef = fontButton;
+        this.fuenteLabelsRef = new Font("Tahoma", 1, 13);
         this.fontLabelTitle = new Font("Impact", 0, 20);
         this.pointCursor = new Cursor(Cursor.HAND_CURSOR);
-    }
-
-    //-------------------------BOTON PERSONALIZADO------------------------------
-    public JButton customButton() {
-        JButton button = new JButton();
-        button.setFont(getFontButton());
-        button.setBackground(getColorButton());
-        button.setForeground(getColorButtonFont());
-        button.setContentAreaFilled(false);
-        button.setOpaque(true);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setCursor(getPointCursor());
-        button.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                button.setBackground(button.getBackground().brighter());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(button.getBackground().darker());
-            }
-        });
-        return button;
     }
 
     //---------------------TABLA PERSONALIZADA----------------------------------
@@ -241,9 +202,6 @@ public class Utilities {
         return colorBackground;
     }
 
-    public Color getColorButton() {
-        return colorButton;
-    }
 
     public Color getColorButtonFont() {
         return colorButtonFont;
@@ -261,10 +219,6 @@ public class Utilities {
 
     public Font getFontTable() {
         return fontTable;
-    }
-
-    public Font getFontButton() {
-        return fontButton;
     }
 
     public Font getFontLabelSummary() {

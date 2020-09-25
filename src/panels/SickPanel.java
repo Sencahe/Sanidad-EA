@@ -13,7 +13,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import mytools.Icons;
-
+import mytools.mycomponents.MyJButton;
 
 public class SickPanel extends JPanel implements ActionListener {
     
@@ -125,11 +125,11 @@ public class SickPanel extends JPanel implements ActionListener {
         }
 
         //BOTONES---------------------------------------------------------------
-        buttonPersonnelPanel = utility.customButton();
+        buttonPersonnelPanel = new MyJButton();
         buttonPersonnelPanel.setText("Volver");
         buttonPersonnelPanel.setBounds(10, 15, 110, 35);
         add(buttonPersonnelPanel);
-        buttonReCountPanel = utility.customButton();
+        buttonReCountPanel = new MyJButton();
         buttonReCountPanel.setText("<html><center>Ver Recuento</center></html>");
         buttonReCountPanel.setBounds(150, 15, 110, 35);
         add(buttonReCountPanel);
@@ -143,12 +143,12 @@ public class SickPanel extends JPanel implements ActionListener {
         labelPdf.setIcon(icons.getIconPdf());
         labelPdf.setBounds(1050, 15, 32, 32);
         add(labelPdf);
-        buttonReport = utility.customButton();
+        buttonReport = new MyJButton();
         buttonReport.setText("<html><center>Parte con<br>Diagnosticos</center></html>");
         buttonReport.setBounds(1090, 15, 110, 35);
         buttonReport.addActionListener(this);
         add(buttonReport);
-        buttonReport2 = utility.customButton();
+        buttonReport2 = new MyJButton();
         buttonReport2.setText("<html><center>Parte sin<br>Diagnosticos</center></html>");
         buttonReport2.setBounds(1210, 15, 110, 35);
         buttonReport2.addActionListener(this);

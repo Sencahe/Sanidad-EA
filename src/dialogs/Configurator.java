@@ -4,10 +4,6 @@ import database.Configurations;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -23,6 +19,7 @@ import mytools.TextPrompt;
 import panels.PersonnelPanel;
 import panels.SickPanel;
 import panels.ReCountPanel;
+import mytools.mycomponents.MyJButton;
 
 public class Configurator extends JDialog implements ActionListener, ChangeListener {
 
@@ -110,7 +107,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         textLeyend = new JTextField();
         textLeyend.setBounds(15, 150, 300, 25);
         container.add(textLeyend);
-        buttonSave = utility.customButton();
+        buttonSave = new MyJButton();
         buttonSave.setToolTipText("Guardar leyenda");
         buttonSave.setOpaque(false);
         buttonSave.setIcon( icons.getIconoSave());
@@ -138,7 +135,7 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
         container.add(textNewPass2);
         new TextPrompt("Repita Nueva Contraseña", textNewPass2);
         
-        buttonSavePass =  utility.customButton();
+        buttonSavePass =  new MyJButton();
         buttonSavePass.setToolTipText("Guardar nueva contraseña");
         buttonSavePass.setOpaque(false);
         buttonSavePass.setIcon( icons.getIconoSave());

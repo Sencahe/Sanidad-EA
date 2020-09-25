@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import mytools.Icons;
 import mytools.mycomponents.MyJScrollPane;
+import mytools.mycomponents.MyJButton;
 
 public class PersonnelPanel extends JPanel implements ActionListener {
 
@@ -164,12 +165,11 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         }
         //----------------------------------------------------------------------
         // BOTONES 
-        buttonSickPanel = utility.customButton();
+        buttonSickPanel = new MyJButton();
         buttonSickPanel.setText("<html><center>PARTE DE<br>SANIDAD</center></html>");
         buttonSickPanel.setBounds(10, 15, 110, 35);
-        buttonSickPanel.setFont(utility.getFontButton());
         add(buttonSickPanel);
-        buttonAdd = utility.customButton();
+        buttonAdd = new MyJButton();
         buttonAdd.setText("<html><center>Agregar<br>Personal</center></html>");
         buttonAdd.setBounds(150, 15, 110, 35);
         buttonAdd.addActionListener(this);
@@ -184,17 +184,17 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         labelPdf.setIcon(icons.getIconPdf());
         labelPdf.setBounds(1050, 15, 32, 32);
         add(labelPdf);
-        buttonReport = utility.customButton();
+        buttonReport = new MyJButton();
         buttonReport.setText("<html><center>Lista de<br>Personal</center></html>");
         buttonReport.setBounds(1090, 15, 110, 35);
         buttonReport.addActionListener(this);
         add(buttonReport);
-        buttonReport2 = utility.customButton();
+        buttonReport2 = new MyJButton();
         buttonReport2.setText("<html><center>Carta de<br>Situacion</center></html>");
         buttonReport2.setBounds(1210, 15, 110, 35);
         buttonReport2.addActionListener(this);
         add(buttonReport2);
-        buttonReport3 = utility.customButton();
+        buttonReport3 = new MyJButton();
         buttonReport3.setText("<html><center>Control de<br>IMC</center></html>");
         buttonReport3.setBounds(1330, 15, 110, 35);
         buttonReport3.addActionListener(this);

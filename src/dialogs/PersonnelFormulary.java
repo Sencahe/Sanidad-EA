@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
 import panels.PersonnelPanel;
+import mytools.mycomponents.MyJButton;
 
 public class PersonnelFormulary extends JDialog implements ActionListener {
 
@@ -79,14 +80,14 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         container.setLayout(null);
         dimension = null;
         //BOTONES PRINCIPALES         
-        buttonAdd = utilities.customButton();
+        buttonAdd = new MyJButton();
         buttonAdd.setToolTipText("Agregar a la base de datos");
         buttonAdd.setOpaque(false);
         buttonAdd.setIcon(icons.getIconoSave());
         buttonAdd.setBounds(430, 360, 32, 32);
         buttonAdd.addActionListener(this);
         container.add(buttonAdd);
-        buttonModify = utilities.customButton();
+        buttonModify = new MyJButton();
         buttonModify.setToolTipText("Guardar cambios");
         buttonModify.setOpaque(false);
         buttonModify.setIcon(icons.getIconoSave());
@@ -94,7 +95,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         buttonModify.addActionListener(this);
         buttonModify.setVisible(false);
         container.add(buttonModify);
-        buttonDelete = utilities.customButton();
+        buttonDelete = new MyJButton();
         buttonDelete.setToolTipText("Eliminar de la base de datos");
         buttonDelete.setOpaque(false);
         buttonDelete.setIcon(icons.getIconDelete2());
@@ -102,7 +103,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         buttonDelete.addActionListener(this);
         buttonDelete.setVisible(false);
         container.add(buttonDelete);
-        buttonCalcIMC = utilities.customButton();
+        buttonCalcIMC = new MyJButton();
         buttonCalcIMC.setToolTipText("Calcular IMC");
         buttonCalcIMC.setOpaque(false);
         buttonCalcIMC.setIcon(icons.getIconCalculator());
@@ -115,7 +116,7 @@ public class PersonnelFormulary extends JDialog implements ActionListener {
         labelSick.setForeground(Color.black);
         labelSick.setVisible(false);
         container.add(labelSick);
-        buttonSick = utilities.customButton();
+        buttonSick = new MyJButton();
         buttonSick.setToolTipText("Agregar este personal al parte");
         buttonSick.setOpaque(false);
         buttonSick.setIcon(icons.getIconPlus());

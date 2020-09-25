@@ -26,6 +26,7 @@ import database.Report;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import mytools.Icons;
+import mytools.mycomponents.MyJButton;
 
 public class ReCountPanel extends JPanel implements ActionListener {
 
@@ -205,29 +206,29 @@ public class ReCountPanel extends JPanel implements ActionListener {
         add(labelSearchByName);
 
         //BOTONES---------------------------------------------------------------
-        buttonGetByDNI = utility.customButton();
+        buttonGetByDNI = new MyJButton();
         buttonGetByDNI.setText("<html>Buscar</html>");
         buttonGetByDNI.setBounds(420, 81, 70, 25);
         buttonGetByDNI.addActionListener(this);
         add(buttonGetByDNI);
-        buttonGetAll = utility.customButton();
+        buttonGetAll = new MyJButton();
         buttonGetAll.setText("<html>Todos</html>");
         buttonGetAll.setBounds(510, 81, 70, 25);
         buttonGetAll.addActionListener(this);
         add(buttonGetAll);
-        buttonClean = utility.customButton();
+        buttonClean = new MyJButton();
         buttonClean.setText("<html>Limpiar</html>");
         buttonClean.setBounds(600, 81, 70, 25);
         buttonClean.addActionListener(this);
         add(buttonClean);
-        buttonSearchByName = utility.customButton();
+        buttonSearchByName = new MyJButton();
         buttonSearchByName.setText("<html>Buscar</html>");
         buttonSearchByName.setBounds(1005, 81, 80, 25);
         buttonSearchByName.addActionListener(this);
         buttonSearchByName.setVisible(false);
         add(buttonSearchByName);
 
-        buttonSickPanel = utility.customButton();
+        buttonSickPanel = new MyJButton();
         buttonSickPanel.setText("<html><center>Volver al Parte</center></html>");
         buttonSickPanel.setBounds(10, 15, 110, 35);
         add(buttonSickPanel);
@@ -354,7 +355,7 @@ public class ReCountPanel extends JPanel implements ActionListener {
         pdf.setIcon(icons.getIconPdf());
         pdf.setBounds(1050, 15, 32, 32);
         add(pdf);
-        buttonReport = utility.customButton();
+        buttonReport = new MyJButton();
         buttonReport.setText("<html><center>Recuento<br>Partes</center></html>");
         buttonReport.setBounds(1090, 15, 110, 35);
         buttonReport.addActionListener(this);
@@ -613,11 +614,10 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
     private void searchByName() {
                      
-        if(rowFlag != table.getRowCount() && nameToSearch != textSearchByName.getText().toLowerCase().trim()){
+        if(rowFlag != table.getRowCount() || nameToSearch != textSearchByName.getText().toLowerCase().trim()){
             pointer = 0;
             found = false;
         }
-        
         
         String nombre = "";
         nameToSearch = textSearchByName.getText().toLowerCase().trim();
