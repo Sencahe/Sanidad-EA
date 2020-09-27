@@ -97,7 +97,6 @@ public class MainFrame extends JFrame implements ActionListener {
         personnelPanel.setSearcher(searcher);
         personnelPanel.setConfig(configurator);
         personnelPanel.setListGenerator(listGenerator);
-        personnelPanel.setCaducatedStudies(caducatedStudies);
         sickPanel.setFormularySick(sickFormulary);
         sickPanel.setConfig(configurator);
         reCountPanel.setConfig(configurator);

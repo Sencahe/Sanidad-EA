@@ -15,8 +15,6 @@ import dialogs.Configurator;
 import dialogs.ListGenerator;
 import dialogs.CaducatedStudies;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.logging.Logger;
 import mytools.Icons;
 import mytools.mycomponents.MyJScrollPane;
 import mytools.mycomponents.MyJButton;
@@ -81,7 +79,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private Searcher searcher;
     private Configurator config;
     private ListGenerator listGenerator;
-    private CaducatedStudies caducatedStudies;
 
     
     public PersonnelPanel(MainFrame mainFrame) {       
@@ -480,10 +477,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
 
     public void setListGenerator(ListGenerator listGenerator) {
         this.listGenerator = listGenerator;
-    }
-
-    public void setCaducatedStudies(CaducatedStudies caducatedStudies) {
-        this.caducatedStudies = caducatedStudies;
     }
 
     public int getStudiesFilter2() {

@@ -27,7 +27,7 @@ public class Main {
             java.util.logging.Logger.getLogger(PersonnelPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
-        //ARRANQUE DEL PROGRAMA-------------------------------------------------
+        
         new MainFrame(load);
         System.gc();
 

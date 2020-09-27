@@ -166,9 +166,9 @@ public class DataBase {
                 categorie = rs.getInt("Categoria"); //obteniendo la categoria                                                           
                 row[0] = ++num[categorie];
                 aux = 1; //indice inicial para el resto de los datos que iran en la fila
-                for (String i : columnsName) {
-                    if (rs.getObject(i) != null) {
-                        switch (i) {
+                for (String column : columnsName) {
+                    if (rs.getObject(column) != null) {
+                        switch (column) {
                             case "Grado":
                                 row[aux] = grades[categorie][rs.getInt("Grado")];
                                 break;
@@ -179,10 +179,10 @@ public class DataBase {
                                 row[aux] = myDates.toUserDate(rs.getString("Anexo27"));
                                 break;
                             case "FechaNacimiento":
-                                row[aux] = myDates.getEdad(rs.getString(i));
+                                row[aux] = myDates.getEdad(rs.getString(column));
                                 break;
                             default:
-                                row[aux] = rs.getObject(i);
+                                row[aux] = rs.getObject(column);
                                 break;
                         }
                     }

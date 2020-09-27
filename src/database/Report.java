@@ -273,7 +273,7 @@ public class Report extends DataBase {
                 document.add(p5);
                 p5.remove(0);
 
-                for (int j = -1; j < parte.getTablas(i).getRowCount(); j++) { //itera sobre las filas                         
+                for (int j = -1; j < parte.getTables(i).getRowCount(); j++) { //itera sobre las filas                         
                     for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
                         if (j == -1) {
                             //agregar los headers
@@ -281,7 +281,7 @@ public class Report extends DataBase {
                         } else {
                             //agregar el contenido de las celdas
                             jump = k >= 4 && !diagnostico ? 2 : 0;
-                            content = String.valueOf(parte.getTablas(i).getValueAt(j, k + jump));
+                            content = String.valueOf(parte.getTables(i).getValueAt(j, k + jump));
                             Paragraph para = new Paragraph();
                             para.setFont(FontFactory.getFont("Times-Roman", 7, 0, BaseColor.BLACK));
                             para.add(!content.equals("null") ? content : "");

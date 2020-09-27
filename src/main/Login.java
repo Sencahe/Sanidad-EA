@@ -4,8 +4,6 @@ import database.Configurations;
 import dialogs.Configurator;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import javax.swing.JOptionPane;
-import mytools.Encryption;
 import mytools.Icons;
 import mytools.Utilities;
 
@@ -36,12 +34,10 @@ public class Login extends javax.swing.JFrame {
         
         if(result){
             mainFrame.setVisible(true);
-            configurator.setFlagPassword(input);
-            jPasswordField1.setText("");
+            configurator.setFlagPassword(input);           
             dispose();
-        } else {
-            jPasswordField1.setText("");
-        }
+        } 
+        jPasswordField1.setText("");
         
     }
 

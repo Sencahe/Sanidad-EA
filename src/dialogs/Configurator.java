@@ -205,28 +205,28 @@ public class Configurator extends JDialog implements ActionListener, ChangeListe
                 //casualmente tanto tabla como parte tiene 4 tablas
                 JTableHeader headerTabla = personnelPanel.getTables(i).getTableHeader();
                 headerTabla.setReorderingAllowed(desplazar);
-                JTableHeader headerParte = sickPanel.getTablas(i).getTableHeader();
+                JTableHeader headerParte = sickPanel.getTables(i).getTableHeader();
                 headerParte.setReorderingAllowed(desplazar);
             }
         }
         //Configuracion SELECCION de Filas
         if (e.getSource() == configRow) {
-            boolean individualmente = configRow.isSelected();
+            boolean individually = configRow.isSelected();
 
-            if (individualmente) {
-                reCountPanel.getTable().setCellSelectionEnabled(individualmente);
+            if (individually) {
+                reCountPanel.getTable().setCellSelectionEnabled(individually);
                 for (int i = 0; i < 4; i++) {
-                    personnelPanel.getTables(i).setCellSelectionEnabled(individualmente);
-                    sickPanel.getTablas(i).setCellSelectionEnabled(individualmente);
+                    personnelPanel.getTables(i).setCellSelectionEnabled(individually);
+                    sickPanel.getTables(i).setCellSelectionEnabled(individually);
                 }
             } else {
-                reCountPanel.getTable().setCellSelectionEnabled(individualmente);
-                reCountPanel.getTable().setRowSelectionAllowed(!individualmente);
+                reCountPanel.getTable().setCellSelectionEnabled(individually);
+                reCountPanel.getTable().setRowSelectionAllowed(!individually);
                 for (int i = 0; i < 4; i++) {
-                    personnelPanel.getTables(i).setCellSelectionEnabled(individualmente);
-                    sickPanel.getTablas(i).setCellSelectionEnabled(individualmente);
-                    personnelPanel.getTables(i).setRowSelectionAllowed(!individualmente);
-                    sickPanel.getTablas(i).setRowSelectionAllowed(!individualmente);
+                    personnelPanel.getTables(i).setCellSelectionEnabled(individually);
+                    sickPanel.getTables(i).setCellSelectionEnabled(individually);
+                    personnelPanel.getTables(i).setRowSelectionAllowed(!individually);
+                    sickPanel.getTables(i).setRowSelectionAllowed(!individually);
                 }
             }
         }
