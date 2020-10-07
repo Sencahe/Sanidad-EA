@@ -16,7 +16,6 @@ import panels.ReCountPanel;
 
 public class Report extends DataBase {
 
-    private String leyend;
     private String route;
     private Chunk glue;
     private Document document;
@@ -209,7 +208,7 @@ public class Report extends DataBase {
             JOptionPane.showMessageDialog(null, title + " confeccionado. El archivo se guardo en el Escritorio");
             System.gc();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
 
     }
@@ -273,7 +272,7 @@ public class Report extends DataBase {
                 document.add(p5);
                 p5.remove(0);
 
-                for (int j = -1; j < parte.getTables(i).getRowCount(); j++) { //itera sobre las filas                         
+                for (int j = -1; j < parte.getTablas(i).getRowCount(); j++) { //itera sobre las filas                         
                     for (int k = 0; k < columnsWidth.length; k++) { //itera sobre las columnas
                         if (j == -1) {
                             //agregar los headers
@@ -281,7 +280,7 @@ public class Report extends DataBase {
                         } else {
                             //agregar el contenido de las celdas
                             jump = k >= 4 && !diagnostico ? 2 : 0;
-                            content = String.valueOf(parte.getTables(i).getValueAt(j, k + jump));
+                            content = String.valueOf(parte.getTablas(i).getValueAt(j, k + jump));
                             Paragraph para = new Paragraph();
                             para.setFont(FontFactory.getFont("Times-Roman", 7, 0, BaseColor.BLACK));
                             para.add(!content.equals("null") ? content : "");
@@ -387,7 +386,7 @@ public class Report extends DataBase {
             System.gc();
 
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -529,11 +528,11 @@ public class Report extends DataBase {
             document = new Document();
 
             //recuperando los valores que deben ser guardados en la base de datos;
-            PreparedStatement pst = super.getConnection().prepareStatement("SELECT (Leyenda) FROM Configuracion"
+            PreparedStatement pst = super.getConnection().prepareStatement("SELECT Leyenda, Unidad FROM Configuracion"
                     + " WHERE id = 1");
             ResultSet rs = pst.executeQuery();
-            leyend = rs.getString("Leyenda");
-
+            String leyend = rs.getString("Leyenda");
+            String unity = rs.getString("Unidad");
             super.getConnection().close();
 
             //Enviando el pdf al escritorio
@@ -545,9 +544,16 @@ public class Report extends DataBase {
 
             //Defino el header del documento
             //texto a la izquierda --- EJERCITO ARGENTINO
+            int blanks = (unity.length() - 16) / 4;
+            String blank = "";
+            if(blanks > 0){
+                for (int i = 0; i < blanks; i++) {
+                    blank += " ";
+                }
+            }
             p = new Paragraph();
             p.setFont(FontFactory.getFont("Times-Roman", 16, Font.BOLD, BaseColor.BLACK));
-            p.add("   Ejercito Argentino");
+            p.add(blank + "Ejercito Argentino");
             //texto a la derecha ---- LEYENDA
             p.add(new Chunk(glue));
             p.setFont(FontFactory.getFont("Times-Roman", 9, Font.ITALIC, BaseColor.BLACK));
@@ -555,7 +561,7 @@ public class Report extends DataBase {
             //texto a la izquierda pero abajo - REGIMIENTO DE INFANTERIA 1
             p2 = new Paragraph();
             p2.setFont(FontFactory.getFont("Times-Roman", 14, Font.BOLD, BaseColor.BLACK));
-            p2.add("Regimiento de Infanteria 1\n\n\n");
+            p2.add(unity + "\n\n\n");
             //titulo del documento
             p3 = new Paragraph();
             p3.setAlignment(Paragraph.ALIGN_CENTER);
@@ -566,7 +572,7 @@ public class Report extends DataBase {
             p4.add("Ciudad Autónoma de Buenos Aires, " + day + " de " + month + " de " + year);
 
         } catch (Exception e) {
-
+            System.out.println(e + " // Defaults");
         }
     }
 

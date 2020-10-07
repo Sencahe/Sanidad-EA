@@ -108,7 +108,7 @@ public class IMC extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == filter) {
            filter();
-           
+           dispose();
         }
     }
 
@@ -126,7 +126,6 @@ public class IMC extends JDialog implements ActionListener {
             mainFrame.deleteChecksPPS();
             mainFrame.getMenuFilterPPS().setIcon(mainFrame.getCheck());
             mainFrame.getItemIMC().setIcon(mainFrame.getCheck());
-            dispose();
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Numero ingresado incorrecto.");

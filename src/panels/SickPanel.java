@@ -276,7 +276,7 @@ public class SickPanel extends JPanel implements ActionListener {
         return tables;
     }
 
-    public JTable getTables(int index) {
+    public JTable getTablas(int index) {
         return tables[index];
     }
 

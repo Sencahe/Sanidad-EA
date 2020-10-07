@@ -72,6 +72,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private Observations observations;
     private About about;
     private Login login;
+    private Advanced advanced;
 
     public MainFrame(Loading loading) {
         
@@ -92,11 +93,13 @@ public class MainFrame extends JFrame implements ActionListener {
         caducatedStudies = new CaducatedStudies(this, true);
         about = new About(this, true);
         observations = new Observations(this,true);
-
+        advanced = new Advanced(this,true);
+        
         personnelPanel.setFormulary(personnelFormulary);
         personnelPanel.setSearcher(searcher);
         personnelPanel.setConfig(configurator);
         personnelPanel.setListGenerator(listGenerator);
+        personnelPanel.setCaducatedStudies(caducatedStudies);
         sickPanel.setFormularySick(sickFormulary);
         sickPanel.setConfig(configurator);
         reCountPanel.setConfig(configurator);
@@ -110,9 +113,11 @@ public class MainFrame extends JFrame implements ActionListener {
         configurator.setPersonnelPanel(personnelPanel);
         configurator.setSickPanel(sickPanel);
         configurator.setReCountPanel(reCountPanel);
+        configurator.setAdvanced(advanced);
         listGenerator.setPersonnelPanel(personnelPanel);
         caducatedStudies.setPersonnelPanel(personnelPanel);
         observations.setPersonnelPanel(personnelPanel);
+        
 
        //PROPIEDADES DEL FRAME
         setTitle(PERSONNEL);

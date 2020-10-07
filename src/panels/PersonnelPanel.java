@@ -41,22 +41,20 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private JScrollPane[] scrolls;
 
     private JLabel[] labelsSummary;
-    
-    
+
     //FILTROS DE LA TABLA
     private ArrayList<Integer> filterList;
-    
+
     public static final int FILTER_A27 = 1,
-                            FILTER_PPS = 2,
-                            FILTER_APTITUDE = 3,
-                            FILTER_PATHOLOGY = 4,
-                            FILTER_AJM = 5,
-                            FILTER_OBS = 6,
-                            FILTER_IMC = 7,
-                            FILTER_ALL_PATHOLOGIES = 8,
-                            FILTER_GENRE = 9;
-    
-    
+            FILTER_PPS = 2,
+            FILTER_APTITUDE = 3,
+            FILTER_PATHOLOGY = 4,
+            FILTER_AJM = 5,
+            FILTER_OBS = 6,
+            FILTER_IMC = 7,
+            FILTER_ALL_PATHOLOGIES = 8,
+            FILTER_GENRE = 9;
+
     private boolean filtered;
 
     private int showBySubUnity;
@@ -79,13 +77,13 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     private Searcher searcher;
     private Configurator config;
     private ListGenerator listGenerator;
+    private CaducatedStudies caducatedStudies;
 
-    
-    public PersonnelPanel(MainFrame mainFrame) {       
+    public PersonnelPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.betweenTwoDates = false;
         filterList = new ArrayList<Integer>();
-        
+
         components();
         shortcuts();
     }
@@ -276,12 +274,12 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     }
 
     public void update(int filter, int showBySubUnity, int rowOrdering) {
-        if(filter == 0){
+        if (filter == 0) {
             filterList.clear();
-        } else if(filter > 0){
-            if(!filterList.contains(filter)){
+        } else if (filter > 0) {
+            if (!filterList.contains(filter)) {
                 filterList.add(filter);
-            } 
+            }
         }
         this.showBySubUnity = showBySubUnity;
         this.rowOrdering = rowOrdering;
@@ -401,7 +399,6 @@ public class PersonnelPanel extends JPanel implements ActionListener {
         this.filtered = filtered;
     }
 
-
     public int getShowBySubUnity() {
         return showBySubUnity;
     }
@@ -432,8 +429,7 @@ public class PersonnelPanel extends JPanel implements ActionListener {
 
     public ArrayList<Integer> getFilterList() {
         return filterList;
-    }    
- 
+    }
 
     public void setAptitudeFilter(String aptitudeFilter) {
         this.aptitudeFilter = aptitudeFilter;
@@ -470,13 +466,17 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     public void setStudiesFilter(int studiesFilter) {
         this.studiesFilter = studiesFilter;
     }
-    
+
     public void setConfig(Configurator config) {
         this.config = config;
     }
 
     public void setListGenerator(ListGenerator listGenerator) {
         this.listGenerator = listGenerator;
+    }
+
+    public void setCaducatedStudies(CaducatedStudies caducatedStudies) {
+        this.caducatedStudies = caducatedStudies;
     }
 
     public int getStudiesFilter2() {
@@ -510,6 +510,5 @@ public class PersonnelPanel extends JPanel implements ActionListener {
     public void setObsFilter(String obsFilter) {
         this.obsFilter = obsFilter;
     }
-       
-    
+
 }

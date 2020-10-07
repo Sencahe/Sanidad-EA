@@ -1,5 +1,7 @@
 package mytools;
 
+import database.Configurations;
+
 public class MyArrays {
 
     // ARREGLOS PARA LOS JTABLE
@@ -73,8 +75,17 @@ public class MyArrays {
     private static String[] months = {"","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"};
     //=================================================================================
     //=================================================================================
+    private static MyArrays myArrays;
+    
     private MyArrays() {
-
+        Configurations config = new Configurations();
+        subUnities = config.getSubUnitiesArray(true);
+    }
+    
+    public static void initialize(){
+        if(myArrays == null){
+            myArrays = new MyArrays();
+        }
     }
 
     //=================================================================================

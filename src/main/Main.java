@@ -1,6 +1,7 @@
 package main;
 
 
+import mytools.MyArrays;
 import panels.PersonnelPanel;
 
 public class Main {
@@ -27,7 +28,8 @@ public class Main {
             java.util.logging.Logger.getLogger(PersonnelPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
-        
+        //ARRANQUE DEL PROGRAMA-------------------------------------------------
+        MyArrays.initialize();
         new MainFrame(load);
         System.gc();
 

@@ -78,12 +78,10 @@ public class Transmitter extends DataBase {
                 if (i < 2) {
                     intTransmitter = personnelFormulary.getComboBox(i).getSelectedIndex();
                     pst.setInt(index++, intTransmitter);
-
                 } else {
                     transmitter = String.valueOf(personnelFormulary.getComboBox(i).getSelectedItem());
                     pst.setObject(index++, !transmitter.equals("") ? transmitter : null);
                 }
-
             }
             //Se envian los datos de los dateChooser
             for (int i = 0; i < personnelFormulary.getDateChooserLength(); i++) {
@@ -197,14 +195,13 @@ public class Transmitter extends DataBase {
             //Se recupera la informacion de la base de datos ya que es la guardada.                  
             //de esta manera, el nuevo parte comenzara el mismo dia que termino el anterior   
             String sickType = sickFormulary.getComboSickType().getItemAt(rs.getInt("TipoParte")).toString();
-
+           
             pst.setString(7, rs.getString("Diagnostico"));
             pst.setObject(8, rs.getObject("CIE"));
             pst.setString(9, rs.getString("Observacion"));
             pst.setString(10, rs.getString("NorasSiras"));
             pst.setString(11, sickType);
             
-
             //dependiendo de si es un alta definitiva o no, se guardaran las fechas de distinta manera
             MyDates myDates = new MyDates(MyDates.USER_DATE_FORMAT);
             LocalDate since;
