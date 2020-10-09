@@ -19,6 +19,7 @@ import javax.swing.WindowConstants;
 import main.MainFrame;
 import mytools.Icons;
 import mytools.JTextFieldLimit;
+import mytools.MyArrays;
 import mytools.Utilities;
 
 public class Advanced extends JDialog implements ActionListener {
@@ -38,7 +39,7 @@ public class Advanced extends JDialog implements ActionListener {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent e) {               
+            public void windowClosing(WindowEvent e) {
                 dispose();
                 setSavedSubUnities();
                 System.gc();
@@ -80,8 +81,12 @@ public class Advanced extends JDialog implements ActionListener {
         }
 
         //----------------------
+        JLabel labelCombo = new JLabel("Indicar la cantidad de Destinos");
+        labelCombo.setBounds(15,40,150,30);
+        labelCombo.setForeground(Color.black);
+        add(labelCombo);
         comboSubUnities = new JComboBox();
-        comboSubUnities.setBounds(15, 45, 50, 20);
+        comboSubUnities.setBounds(180, 45, 50, 20);
         for (int i = 0; i < 20; i++) {
             comboSubUnities.addItem(i + 1);
         }
@@ -121,22 +126,27 @@ public class Advanced extends JDialog implements ActionListener {
         }
 
         if (e.getSource() == buttonSave) {
-            int option = JOptionPane.showConfirmDialog(null, "Advertencia", 
-                    "Al modificar los destinos los cambios no se veran afectados a la informacion ya guardada\n ¿Esta seguro que desea continuar?", 1);
-            if (JOptionPane.YES_NO_OPTION == option && validation()) {
-                Configurations config = new Configurations();
-                config.setSubUnitiesArray(this);
-                config = null;
-                dispose();
-                setSavedSubUnities();
-            } else {
-                JOptionPane.showMessageDialog(null,"Debe llenar los campos disponibles  ");
+            String message = "<html><center> Con esta accion no se les aplicaran cambios a los registros actuales, por lo que debera hacerlo manualmente\n" +
+                    "<br>¿Esta seguro que desea continuar? </center></html>";
+            int option = JOptionPane.showConfirmDialog(null,new JLabel(message, JLabel.CENTER),
+                   "Advertencia", 0,2);            
+            if (JOptionPane.YES_NO_OPTION == option) {
+                if (validation()) {
+                    Configurations config = new Configurations();
+                    config.setSubUnitiesArray(this);
+                    flagSubUnities = config.getSubUnitiesArray(false);
+                    config = null;
+                    dispose();
+                    setSavedSubUnities();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Debe llenar los campos disponibles  ");
+                }
             }
         }
     }
 
     private boolean validation() {
-        int selectedIndex = comboSubUnities.getSelectedIndex();
+        int selectedIndex = comboSubUnities.getSelectedIndex() + 1;
         for (int i = 0; i < selectedIndex; i++) {
             if (textSubUnities[i].getText().equals("")) {
                 return false;
@@ -159,8 +169,8 @@ public class Advanced extends JDialog implements ActionListener {
     public JTextField[] getTextSubUnities() {
         return textSubUnities;
     }
-    
-    public JTextField getTextSubUnities(int index){
+
+    public JTextField getTextSubUnities(int index) {
         return textSubUnities[index];
     }
 

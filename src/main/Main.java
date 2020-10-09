@@ -29,7 +29,7 @@ public class Main {
         }
         
         //ARRANQUE DEL PROGRAMA-------------------------------------------------
-        MyArrays.initialize();
+        MyArrays.savedValues();
         new MainFrame(load);
         System.gc();
 

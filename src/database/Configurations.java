@@ -152,7 +152,7 @@ public class Configurations extends DataBase {
             pst.setString(1, jsonA.toString());
             pst.executeUpdate();
             
-            JOptionPane.showMessageDialog(null, "Se han modificado los Destinos.");
+            JOptionPane.showMessageDialog(null, "Se han modificado los Destinos. Reinicie el programa para aplicar los cambios");
             
         } catch (Exception e) {
         }
