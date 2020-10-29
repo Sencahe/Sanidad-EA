@@ -33,8 +33,9 @@ public class Deleter extends DataBase {
             super.getConnection().close();
             
             if(tableNameDB.equals(SickPanel.TABLE_NAME)){
-                pst = super.getConnection().prepareStatement("UPDATE Personal SET Parte = 0 WHERE id = ?");
-                pst.setInt(1, parentId);
+                pst = super.getConnection().prepareStatement("UPDATE Personal SET Parte = ? WHERE id = ?");
+                pst.setInt( 1 , 0);
+                pst.setInt(2 , parentId);
                 pst.executeUpdate();
                 super.getConnection().close();
             }

@@ -11,8 +11,10 @@ import mytools.MyArrays;
 import mytools.Icons;
 import mytools.Utilities;
 import dialogs.*;
+import java.awt.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import panels.*;
 
 public class MainFrame extends JFrame implements ActionListener {
@@ -345,8 +347,11 @@ public class MainFrame extends JFrame implements ActionListener {
         // programa peso saludable
         for (int i = 0; i < itemsPPS.length; i++) {
             if (e.getSource() == itemsPPS[i]) {
-
                 if (i != 0) {
+                    //quitar el filtro del mismo tipo
+                    if(personnelPanel.getFilterList().contains(PersonnelPanel.FILTER_IMC)){
+                        personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_IMC);
+                    }
                     personnelPanel.setPPSFilter(itemsPPS[i].getText());
                     personnelPanel.update(PersonnelPanel.FILTER_PPS, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                     personnelPanel.setFiltered(true);
@@ -356,6 +361,9 @@ public class MainFrame extends JFrame implements ActionListener {
                     itemsPPS[i].setIcon(check);
 
                 } else {
+                    if(personnelPanel.getFilterList().contains(PersonnelPanel.FILTER_PPS)){
+                        personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_PPS);
+                    }
                     imc.setVisible(true);
                 }
             }
@@ -381,17 +389,24 @@ public class MainFrame extends JFrame implements ActionListener {
         // patologias
         for (int i = 0; i < itemsPathologies.length; i++) {
             if (e.getSource() == itemsPathologies[i]) {
-                if (i < itemsPathologies.length - 1 && i != 0) {
+
+                if (i < itemsPathologies.length - 1 && i != 0) {    
+                    personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_AJM);
+                    personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_ALL_PATHOLOGIES);                   
                     personnelPanel.setPathologyColumn(MyArrays.getCheckBox(i - 1));
                     personnelPanel.update(PersonnelPanel.FILTER_PATHOLOGY, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 } else if (i != 0) {
+                    personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_PATHOLOGY);
+                    personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_ALL_PATHOLOGIES);
                     personnelPanel.update(PersonnelPanel.FILTER_AJM, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
                 } else {
+                    personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_PATHOLOGY);
+                    personnelPanel.getFilterList().remove((Object)PersonnelPanel.FILTER_AJM);
                     personnelPanel.update(PersonnelPanel.FILTER_ALL_PATHOLOGIES, personnelPanel.getShowBySubUnity(), personnelPanel.getRowOrdering());
 
                 }
+                
                 personnelPanel.setFiltered(true);
-
                 deleteChecksPathologies();
                 menuPathologies.setIcon(check);
                 itemsPathologies[i].setIcon(check);

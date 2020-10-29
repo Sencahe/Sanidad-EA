@@ -281,7 +281,7 @@ public class DataBase {
                 row[11] = rs.getInt("id");
                 sickType = rs.getInt("TipoParte");
                 /*
-                si getDias() con la fecha de until devuelve un numero positivo 
+                si getDays() con la fecha de until devuelve un numero positivo 
                 significa que NO PASO NOVEDAD, es decir que no se presento en la 
                 fecha de control. En consecuencia se lo colocara en esa tabla
                 sin tener que modificar su tipo de parte 

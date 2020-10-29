@@ -614,9 +614,10 @@ public class ReCountPanel extends JPanel implements ActionListener {
 
     private void searchByName() {
                      
-        if(rowFlag != table.getRowCount() || nameToSearch != textSearchByName.getText().toLowerCase().trim()){
+        if( (rowFlag != table.getRowCount()) || (!nameToSearch.equals(textSearchByName.getText().toLowerCase().trim()) ) ){
             pointer = 0;
             found = false;
+          
         }
         
         String nombre = "";
@@ -637,11 +638,9 @@ public class ReCountPanel extends JPanel implements ActionListener {
                     scrollTable.getVerticalScrollBar().setValue(pointer * 16);
                     table.setRowSelectionInterval(pointer, pointer);
                     searchNext = false;
-                    found = true;
-                    pointer++;
-                } else {
-                    pointer++;
-                }
+                    found = true;                                                   
+                } 
+                pointer++;    
             }
         }
     }

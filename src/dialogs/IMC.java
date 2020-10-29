@@ -108,7 +108,7 @@ public class IMC extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == filter) {
            filter();
-           dispose();
+
         }
     }
 
