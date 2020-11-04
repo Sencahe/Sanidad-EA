@@ -283,7 +283,7 @@ public class SickFormulary extends JDialog implements ActionListener {
             int option = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar el parte? "
                     + "Si lo hace, este parte no se enviara al recuento", "Confirmar", 0);
             if (option == JOptionPane.YES_OPTION) {
-                Deleter deleter = new Deleter(idSick);
+                Deleter deleter = new Deleter(idSick, personnel.getId());
                 deleter.delete(SickPanel.TABLE_NAME);
                 deleter.update(sickPanel);
                 deleter = null;

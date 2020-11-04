@@ -29,16 +29,15 @@ public class Deleter extends DataBase {
             pst.executeUpdate();
             
             JOptionPane.showMessageDialog(null, "Eliminado con exito.");
-            
-            super.getConnection().close();
-            
+                                   
             if(tableNameDB.equals(SickPanel.TABLE_NAME)){
                 pst = super.getConnection().prepareStatement("UPDATE Personal SET Parte = ? WHERE id = ?");
                 pst.setInt( 1 , 0);
                 pst.setInt(2 , parentId);
                 pst.executeUpdate();
-                super.getConnection().close();
             }
+            
+            super.getConnection().close();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error//Eliminador//Eliminar//" + e
